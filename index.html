@@ -594,17 +594,16 @@
     }
 
     function parseVtt(vttText) {
-      const normalizedText = String(vttText).split(String.fromCharCode(13)).join("");
+      const carriageReturn = String.fromCharCode(13);
+      const lineFeed = String.fromCharCode(10);
+      const normalizedText = String(vttText).split(carriageReturn).join("");
+      const blocks = normalizedText.split(lineFeed + lineFeed);
 
-      return normalizedText
-        .split("
-
-")
+      return blocks
         .map(block => block.trim())
         .filter(block => block && !block.startsWith("WEBVTT"))
         .map(block => {
-          const lines = block.split("
-");
+          const lines = block.split(lineFeed);
           const timeLine = lines.find(line => line.includes("-->"));
           if (!timeLine) return null;
 
