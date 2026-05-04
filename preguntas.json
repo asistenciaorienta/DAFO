@@ -2,7 +2,37 @@
   {
     "tipo": "Debilidad",
     "pregunta": "¿Qué aspecto interno limita más tu avance?",
-    "respuesta_adecuada": "identificar una limitación interna concreta",
+    "respuesta_adecuada": "1",
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+  }
+  {
+    "tipo": "Debilidad",
+    "pregunta": "¿Qué aspecto interno limita más tu avance2?",
+    "respuesta_adecuada": "2",
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos2."
+  }
+  {
+    "tipo": "Debilidad",
+    "pregunta": "¿Qué aspecto interno limita más tu avance3?",
+    "respuesta_adecuada": "3",
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos3."
+  }
+  {
+    "tipo": "Fortaleza",
+    "pregunta": "¿Fortaleza1?",
+    "respuesta_adecuada": "1",
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+  }
+  {
+    "tipo": "Fortaleza",
+    "pregunta": "¿Fortaleza2?",
+    "respuesta_adecuada": "2",
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+  }
+  {
+    "tipo": "Fortaleza",
+    "pregunta": "¿Fortaleza3?",
+    "respuesta_adecuada": "3",
     "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
   }
 ]
