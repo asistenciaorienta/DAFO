@@ -314,18 +314,45 @@
 
     .dot.active { background: var(--lime); }
 
-    textarea {
+    .options-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .option-button {
       width: 100%;
-      min-height: 128px;
-      resize: vertical;
-      border: 2px solid rgba(255,255,255,.28);
-      border-radius: 20px;
-      padding: 16px 18px;
-      font: inherit;
-      font-size: 1.1rem;
+      text-align: left;
+      border-radius: 18px;
+      padding: 18px 22px;
       background: rgba(255,255,255,.92);
       color: #10383b;
-      outline: none;
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+      font-size: 1.08rem;
+      line-height: 1.25;
+    }
+
+    .option-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .option-button.selected {
+      outline: 4px solid var(--lime);
+      background: #ffffff;
+    }
+
+    .option-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+      border-radius: 999px;
+      background: var(--turquoise-dark);
+      color: white;
+      font-weight: 900;
     }
 
     .feedback {
@@ -390,7 +417,7 @@
       h2 { font-size: 2.3rem; }
       .app-layout { gap: 24px; align-items: start; }
       .video-panel { margin-top: 4px; }
-      textarea { min-height: 110px; }
+      .option-button { width: 100%; font-size: 1rem; padding: 15px 16px; }
       button { width: 100%; font-size: 1.05rem; }
     }
   </style>
@@ -432,7 +459,8 @@
               <h3 id="questionText"></h3>
             </div>
 
-            <textarea id="answerInput" required placeholder="Escribe aquí tu reflexión..."></textarea>
+            <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></div>
+            <input id="answerInput" type="hidden" required>
             <div id="feedbackBox" class="feedback hidden"></div>
             <div class="actions">
               <button type="submit">Guardar respuesta</button>
@@ -488,6 +516,7 @@
     let questionIndex = 0;
     let answers = [];
     let currentQuestion = null;
+    let selectedOptionIndex = null;
 
     const intro = document.querySelector("#intro");
     const app = document.querySelector("#app");
@@ -534,6 +563,7 @@
       currentQuestion = sectionQuestions[questionIndex];
       if (!currentQuestion) { goNext(); return; }
 
+      selectedOptionIndex = null;
       document.querySelector("#sectionTitle").textContent = pluralTitle(type);
       document.querySelector("#questionText").textContent = currentQuestion.pregunta;
       document.querySelector("#answerInput").value = "";
@@ -541,6 +571,7 @@
       skipFeedbackBtn.classList.add("hidden");
       document.querySelector("#yesDot").classList.remove("active");
       document.querySelector("#noDot").classList.remove("active");
+      renderOptions(currentQuestion.opciones || []);
       document.querySelector(".question-area").classList.add("waiting-video");
 
       renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo");
@@ -597,31 +628,56 @@
       }
     }
 
-    function normalizeText(text) {
-      return String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9ñ\s]/g, "").trim();
+    function renderOptions(options) {
+      const optionsList = document.querySelector("#optionsList");
+      optionsList.innerHTML = "";
+
+      if (!Array.isArray(options) || options.length === 0) {
+        optionsList.innerHTML = `<p class="muted">No hay opciones definidas para esta pregunta.</p>`;
+        return;
+      }
+
+      options.forEach((optionText, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option-button";
+        button.innerHTML = `<span class="option-number">${index + 1}</span>${escapeHtml(optionText)}`;
+        button.addEventListener("click", () => selectOption(index));
+        optionsList.appendChild(button);
+      });
     }
 
-    function isAnswerAdequate(userAnswer, adequateAnswer) {
-      const user = normalizeText(userAnswer);
-      const expected = normalizeText(adequateAnswer);
-      if (!expected) return true;
-      if (user.includes(expected)) return true;
-      const expectedWords = expected.split(/\s+/).filter(word => word.length > 3);
-      const matchedWords = expectedWords.filter(word => user.includes(word));
-      return expectedWords.length > 0 && matchedWords.length / expectedWords.length >= 0.6;
+    function selectOption(index) {
+      selectedOptionIndex = index;
+      document.querySelector("#answerInput").value = String(index);
+      document.querySelectorAll(".option-button").forEach((button, buttonIndex) => {
+        button.classList.toggle("selected", buttonIndex === index);
+      });
+    }
+
+    function isAnswerAdequate(selectedIndex, adequateAnswer) {
+      return Number(selectedIndex) === Number(adequateAnswer);
     }
 
     function handleAnswerSubmit(event) {
       event.preventDefault();
-      const answer = document.querySelector("#answerInput").value.trim();
-      if (!answer) return;
 
-      const adequate = isAnswerAdequate(answer, currentQuestion.respuesta_adecuada);
+      if (selectedOptionIndex === null) {
+        alert("Selecciona una respuesta antes de continuar.");
+        return;
+      }
+
+      const selectedText = currentQuestion.opciones?.[selectedOptionIndex] || "";
+      const adequate = isAnswerAdequate(selectedOptionIndex, currentQuestion.respuesta_adecuada);
+      const adequateText = currentQuestion.opciones?.[Number(currentQuestion.respuesta_adecuada)] || "";
+
       answers.push({
         tipo: currentQuestion.tipo,
         pregunta: currentQuestion.pregunta,
-        respuestaUsuario: answer,
-        respuestaAdecuada: currentQuestion.respuesta_adecuada || "",
+        respuestaUsuario: selectedText,
+        respuestaUsuarioIndice: selectedOptionIndex,
+        respuestaAdecuada: adequateText,
+        respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
         correcta: adequate,
         feedback: adequate ? "Respuesta adecuada." : currentQuestion.feedback || "Revisa este apartado con más profundidad."
       });
@@ -634,6 +690,8 @@
       feedbackBox.textContent = adequate ? "Respuesta registrada. Puedes continuar." : (currentQuestion.feedback || "Revisa este apartado con más profundidad.");
       feedbackBox.classList.remove("hidden");
       skipFeedbackBtn.classList.remove("hidden");
+
+      document.querySelectorAll(".option-button").forEach(button => button.disabled = true);
     }
 
     function goNext() {
