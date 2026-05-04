@@ -290,29 +290,12 @@
 
     .question-row {
       display: grid;
-      grid-template-columns: 70px 70px 1fr;
-      gap: 24px;
+      grid-template-columns: 1fr;
+      gap: 16px;
       align-items: start;
       margin: 28px 0;
     }
 
-    .yes-no {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-weight: 800;
-    }
-
-    .dot {
-      width: 19px;
-      height: 19px;
-      border-radius: 999px;
-      display: inline-block;
-      background: white;
-      box-shadow: 0 2px 7px rgba(0,0,0,.16);
-    }
-
-    .dot.active { background: var(--lime); }
 
     .options-list {
       display: grid;
@@ -355,16 +338,15 @@
       font-weight: 900;
     }
 
-    .feedback {
-      border-left: 7px solid #ffdbd2;
+    .saved-message {
+      border-left: 7px solid var(--lime);
       background: rgba(0,0,0,.20);
       padding: 14px 16px;
       border-radius: 14px;
       margin-top: 16px;
       color: white;
+      font-weight: 800;
     }
-
-    .feedback.ok { border-left-color: var(--lime); }
 
     .actions {
       display: flex;
@@ -454,14 +436,12 @@
 
           <form id="questionForm">
             <div class="question-row">
-              <div class="yes-no"><span>Sí</span><span id="yesDot" class="dot"></span></div>
-              <div class="yes-no"><span>No</span><span id="noDot" class="dot"></span></div>
               <h3 id="questionText"></h3>
             </div>
 
             <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></div>
             <input id="answerInput" type="hidden" required>
-            <div id="feedbackBox" class="feedback hidden"></div>
+            <div id="savedMessage" class="saved-message hidden">Respuesta guardada. Puedes continuar.</div>
             <div class="actions">
               <button type="submit">Guardar respuesta</button>
               <button id="skipFeedbackBtn" class="secondary hidden" type="button">Continuar</button>
@@ -517,6 +497,8 @@
     let answers = [];
     let currentQuestion = null;
     let selectedOptionIndex = null;
+    let currentVideoType = null;
+    let watchedVideoTypes = new Set();
 
     const intro = document.querySelector("#intro");
     const app = document.querySelector("#app");
@@ -567,14 +549,20 @@
       document.querySelector("#sectionTitle").textContent = pluralTitle(type);
       document.querySelector("#questionText").textContent = currentQuestion.pregunta;
       document.querySelector("#answerInput").value = "";
-      document.querySelector("#feedbackBox").classList.add("hidden");
+      document.querySelector("#savedMessage").classList.add("hidden");
       skipFeedbackBtn.classList.add("hidden");
-      document.querySelector("#yesDot").classList.remove("active");
-      document.querySelector("#noDot").classList.remove("active");
       renderOptions(currentQuestion.opciones || []);
-      document.querySelector(".question-area").classList.add("waiting-video");
 
-      renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo");
+      if (currentVideoType !== type) {
+        currentVideoType = type;
+        renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo", type);
+      }
+
+      if (watchedVideoTypes.has(type)) {
+        document.querySelector(".question-area").classList.remove("waiting-video");
+      } else {
+        document.querySelector(".question-area").classList.add("waiting-video");
+      }
       updateProgress();
     }
 
@@ -587,7 +575,7 @@
       }[type] || type;
     }
 
-    function renderVideo(selector, source, buttonText = "Ver vídeo") {
+    function renderVideo(selector, source, buttonText = "Ver vídeo", type = null) {
       const container = document.querySelector(selector);
       if (!source) { container.innerHTML = ""; return; }
 
@@ -600,6 +588,7 @@
         const layer = container.querySelector(".video-start-layer");
         layer.addEventListener("click", () => {
           layer.remove();
+          if (type) watchedVideoTypes.add(type);
           document.querySelector(".question-area")?.classList.remove("waiting-video");
         });
       } else {
@@ -619,6 +608,7 @@
         });
 
         video.addEventListener("ended", () => {
+          if (type) watchedVideoTypes.add(type);
           document.querySelector(".question-area")?.classList.remove("waiting-video");
         });
 
@@ -682,13 +672,7 @@
         feedback: adequate ? "Respuesta adecuada." : currentQuestion.feedback || "Revisa este apartado con más profundidad."
       });
 
-      document.querySelector("#yesDot").classList.toggle("active", adequate);
-      document.querySelector("#noDot").classList.toggle("active", !adequate);
-
-      const feedbackBox = document.querySelector("#feedbackBox");
-      feedbackBox.className = adequate ? "feedback ok" : "feedback";
-      feedbackBox.textContent = adequate ? "Respuesta registrada. Puedes continuar." : (currentQuestion.feedback || "Revisa este apartado con más profundidad.");
-      feedbackBox.classList.remove("hidden");
+      document.querySelector("#savedMessage").classList.remove("hidden");
       skipFeedbackBtn.classList.remove("hidden");
 
       document.querySelectorAll(".option-button").forEach(button => button.disabled = true);
@@ -732,7 +716,7 @@
       app.classList.add("hidden");
       result.classList.remove("hidden");
       const key = chooseSummaryVideoKey();
-      renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen");
+      renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen", null);
       document.querySelector(".question-area")?.classList.remove("waiting-video");
       const failed = answers.filter(answer => !answer.correcta).length;
       document.querySelector("#resultText").textContent = failed
