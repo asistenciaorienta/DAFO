@@ -64,5 +64,71 @@
     ],
     "respuesta_adecuada": 2,
     "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Amenaza",
+    "pregunta": "¿Amenaza1?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 0,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Amenaza",
+    "pregunta": "¿Amenaza2?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 1,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Amenaza",
+    "pregunta": "¿Amenaza3?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 2,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Oportunidad",
+    "pregunta": "¿Oportunidad1?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 0,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Oportunidad",
+    "pregunta": "¿Oportunidad2?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 1,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Oportunidad",
+    "pregunta": "¿Oportunidad3?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 2,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   }
 ]
