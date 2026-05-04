@@ -594,9 +594,9 @@
     }
 
     function parseVtt(vttText) {
-      return vttText
-        .replace(/
-/g, "")
+      const normalizedText = String(vttText).split(String.fromCharCode(13)).join("");
+
+      return normalizedText
         .split("
 
 ")
