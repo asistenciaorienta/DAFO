@@ -21,18 +21,18 @@
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza1?",
     "respuesta_adecuada": "1",
-    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   },
   {
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza2?",
     "respuesta_adecuada": "2",
-    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   },
   {
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza3?",
     "respuesta_adecuada": "3",
-    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   }
 ]
