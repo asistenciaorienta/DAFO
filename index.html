@@ -409,19 +409,6 @@
       .option-button { width: 100%; font-size: 1rem; padding: 15px 16px; }
       button { width: 100%; font-size: 1.05rem; }
     }
-.intro-subtitle {
-  max-width: 760px;
-  margin-top: 28px;
-  padding: 18px 22px;
-  border-radius: 18px;
-  background: rgba(0,0,0,.32);
-  color: white;
-  font-size: clamp(1.2rem, 2.2vw, 2rem);
-  font-weight: 800;
-  line-height: 1.25;
-  box-shadow: var(--shadow);
-}
-    
   </style>
 </head>
 <body>
@@ -435,7 +422,6 @@
           <div class="qr-card" aria-label="Código QR opcional">
             <div class="qr-placeholder">QR<br>opcional</div>
           </div>
-          <p id="introSubtitle" class="intro-subtitle hidden"></p>
         </div>
         <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
       </div>
@@ -503,11 +489,22 @@
     };
 
     const SUMMARY_VIDEOS = {
-      refuerzo_debilidades: "videos/resumen_positivo.mp4",
-      refuerzo_amenazas: "videos/resumen-amenazas.mp4",
-      potenciar_fortalezas: "videos/resumen-fortalezas.mp4",
-      aprovechar_oportunidades: "videos/resumen-oportunidades.mp4",
-      equilibrado: "videos/resumen-equilibrado.mp4"
+      feedback_1: "videos/feedback-1.mp4",
+      feedback_2: "videos/feedback-2.mp4",
+      feedback_3: "videos/feedback-3.mp4",
+      feedback_4: "videos/feedback-4.mp4",
+      feedback_5: "videos/feedback-5.mp4",
+      feedback_6: "videos/feedback-6.mp4",
+      feedback_7: "videos/feedback-7.mp4",
+      feedback_8: "videos/feedback-8.mp4",
+      feedback_9: "videos/feedback-9.mp4",
+      feedback_10: "videos/feedback-10.mp4",
+      feedback_11: "videos/feedback-11.mp4",
+      feedback_12: "videos/feedback-12.mp4",
+      feedback_13: "videos/feedback-13.mp4",
+      feedback_14: "videos/feedback-14.mp4",
+      feedback_15: "videos/feedback-15.mp4",
+      feedback_16: "videos/feedback-16.mp4"
     };
 
     let questions = [];
@@ -540,120 +537,29 @@
     downloadPdfBtn.addEventListener("click", savePdf);
     sharePdfBtn.addEventListener("click", sharePdf);
 
-let introCues = [];
-let introSubtitleTimer = null;
+    async function handleStartButton() {
+      if (!introAudioStarted) {
+        introAudioStarted = true;
+        introAudio = new Audio("inicio.mp3");
+        introAudio.preload = "auto";
+        startBtn.textContent = "Entrar ›";
 
-async function handleStartButton() {
-  if (!introAudioStarted) {
-    introAudioStarted = true;
-    introAudio = new Audio("inicio.mp3");
-    introAudio.preload = "auto";
-    startBtn.textContent = "Entrar ›";
+        try {
+          await introAudio.play();
+        } catch (error) {
+          console.warn("No se pudo reproducir inicio.mp3 automáticamente.", error);
+        }
+        return;
+      }
 
-    await loadIntroSubtitles();
+      if (introAudio) {
+        introAudio.pause();
+        introAudio.currentTime = 0;
+      }
 
-    try {
-      await introAudio.play();
-      startIntroSubtitles();
-    } catch (error) {
-      console.warn("No se pudo reproducir inicio.mp3 automáticamente.", error);
+      startApp();
     }
 
-    return;
-  }
-
-  stopIntroSubtitles();
-
-  if (introAudio) {
-    introAudio.pause();
-    introAudio.currentTime = 0;
-  }
-
-  startApp();
-}
-
-async function loadIntroSubtitles() {
-  try {
-    const response = await fetch("inicio.vtt");
-    if (!response.ok) throw new Error("No se pudo cargar inicio.vtt");
-
-    const vttText = await response.text();
-    introCues = parseVtt(vttText);
-  } catch (error) {
-    console.warn("No se pudieron cargar los subtítulos de inicio.", error);
-    introCues = [];
-  }
-}
-
-function parseVtt(vttText) {
-  return vttText
-    .replace(/\r/g, "")
-    .split("\n\n")
-    .map(block => block.trim())
-    .filter(block => block && !block.startsWith("WEBVTT"))
-    .map(block => {
-      const lines = block.split("\n");
-      const timeLine = lines.find(line => line.includes("-->"));
-      if (!timeLine) return null;
-
-      const [start, end] = timeLine.split("-->").map(time => time.trim());
-      const text = lines.slice(lines.indexOf(timeLine) + 1).join(" ");
-
-      return {
-        start: vttTimeToSeconds(start),
-        end: vttTimeToSeconds(end),
-        text
-      };
-    })
-    .filter(Boolean);
-}
-
-function vttTimeToSeconds(time) {
-  const parts = time.split(":");
-  const secondsParts = parts.pop().split(".");
-  const seconds = Number(secondsParts[0]);
-  const milliseconds = Number(secondsParts[1] || 0);
-
-  const minutes = Number(parts.pop() || 0);
-  const hours = Number(parts.pop() || 0);
-
-  return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
-}
-
-function startIntroSubtitles() {
-  const subtitleBox = document.querySelector("#introSubtitle");
-  if (!subtitleBox || !introAudio) return;
-
-  subtitleBox.classList.remove("hidden");
-
-  introSubtitleTimer = setInterval(() => {
-    const currentTime = introAudio.currentTime;
-    const cue = introCues.find(item => currentTime >= item.start && currentTime <= item.end);
-
-    subtitleBox.textContent = cue ? cue.text : "";
-    subtitleBox.classList.toggle("hidden", !cue);
-  }, 150);
-
-  introAudio.addEventListener("ended", () => {
-    stopIntroSubtitles();
-    startBtn.textContent = "Entrar ›";
-  }, { once: true });
-}
-
-function stopIntroSubtitles() {
-  const subtitleBox = document.querySelector("#introSubtitle");
-
-  if (introSubtitleTimer) {
-    clearInterval(introSubtitleTimer);
-    introSubtitleTimer = null;
-  }
-
-  if (subtitleBox) {
-    subtitleBox.textContent = "";
-    subtitleBox.classList.add("hidden");
-  }
-}
-    
     async function startApp() {
       try {
         const response = await fetch("preguntas.json");
@@ -866,20 +772,32 @@ function stopIntroSubtitles() {
       document.querySelector("#progressBar").style.width = `${percent}%`;
     }
 
+    function isBlockPassed(type) {
+      const blockAnswers = answers.filter(answer => answer.tipo === type);
+
+      if (blockAnswers.length === 0) return true;
+
+      return blockAnswers.every(answer => answer.correcta);
+    }
+
     function chooseSummaryVideoKey() {
-      const failuresByType = SECTION_ORDER.reduce((acc, type) => {
-        acc[type] = answers.filter(answer => answer.tipo === type && !answer.correcta).length;
-        return acc;
-      }, {});
-      const maxFailures = Math.max(...Object.values(failuresByType));
-      if (maxFailures === 0) return "equilibrado";
-      const weakestType = SECTION_ORDER.find(type => failuresByType[type] === maxFailures);
-      return {
-        Debilidad: "refuerzo_debilidades",
-        Amenaza: "refuerzo_amenazas",
-        Fortaleza: "potenciar_fortalezas",
-        Oportunidad: "aprovechar_oportunidades"
-      }[weakestType];
+      const fortalezasOk = isBlockPassed("Fortaleza");
+      const debilidadesOk = isBlockPassed("Debilidad");
+      const amenazasOk = isBlockPassed("Amenaza");
+      const oportunidadesOk = isBlockPassed("Oportunidad");
+
+      let feedbackNumber = 1;
+
+      if (!fortalezasOk) feedbackNumber += 8;
+      if (!debilidadesOk) feedbackNumber += 4;
+      if (!amenazasOk) feedbackNumber += 2;
+      if (!oportunidadesOk) feedbackNumber += 1;
+
+      return `feedback_${feedbackNumber}`;
+    }
+
+    function getFeedbackNumberFromKey(key) {
+      return Number(String(key).replace("feedback_", ""));
     }
 
     function showResult() {
@@ -889,10 +807,8 @@ function stopIntroSubtitles() {
       renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen", null);
       const questionArea = document.querySelector(".question-area");
           if (questionArea) questionArea.classList.remove("waiting-video");
-      const failed = answers.filter(answer => !answer.correcta).length;
-      document.querySelector("#resultText").textContent = failed
-        ? "Has completado la reflexión. El resumen se ha seleccionado según los apartados que necesitan más atención."
-        : "Has completado la reflexión con un resultado equilibrado.";
+      const feedbackNumber = getFeedbackNumberFromKey(key);
+      document.querySelector("#resultText").textContent = `Has completado la reflexión. Se mostrará el vídeo de feedback ${feedbackNumber}, seleccionado según el resultado global de cada bloque DAFO.`;
       document.querySelector("#answersList").innerHTML = answers.map(answer => `
         <article class="answer-item">
           <strong>${answer.tipo}</strong>
@@ -981,7 +897,6 @@ function stopIntroSubtitles() {
       if (y + needed > pageHeight - margin) { doc.addPage(); return margin; }
       return y;
     }
-    
   </script>
 </body>
 </html>
