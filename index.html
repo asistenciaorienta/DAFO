@@ -214,16 +214,20 @@
       filter: drop-shadow(0 20px 30px rgba(0,0,0,.24));
     }
 
-    .brand-row {
-      position: absolute;
-      left: 28px;
-      bottom: 28px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-weight: 800;
-      color: white;
-    }
+      .brand-row {
+        position: absolute;
+        left: 28px;
+        bottom: 28px;
+        display: flex;
+        align-items: center;
+      }
+      
+      .brand-logo {
+        width: min(240px, 42vw);
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 8px 18px rgba(0,0,0,.18));
+      }
 
     .brand-mark {
       width: 66px;
@@ -468,7 +472,15 @@
       .qr-card { right: 18px; top: 18px; width: 64px; }
       .blocks-visual { justify-self: center; max-width: 300px; }
       .start-button { right: 18px; bottom: 24px; }
-      .brand-row { position: static; margin-top: 28px; }
+      .brand-row {
+          position: static;
+          margin-top: 28px;
+          justify-content: flex-start;
+        }
+        
+        .brand-logo {
+          width: min(190px, 60vw);
+        }
       .question-area { padding-right: 0; }
       .corner-logo { position: static; width: 120px; margin-bottom: 12px; }
       .question-row { grid-template-columns: 1fr; gap: 10px; margin: 18px 0; }
@@ -508,10 +520,9 @@
           <div class="qr-placeholder">QR<br>opcional</div>
         </div>
       </div>
-      <div class="brand-row">
-        <div class="brand-mark">▲</div>
-        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo</small><small>Servicio Andaluz de Empleo</small></div>
-      </div>
+        <div class="brand-row">
+          <img class="brand-logo" src="logo_junta.png" alt="Junta de Andalucía">
+        </div>
     </section>
 
     <section id="app" class="screen hidden">
@@ -538,8 +549,7 @@
       </div>
 
       <div class="brand-row">
-        <div class="brand-mark">▲</div>
-        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo · Servicio Andaluz de Empleo</small></div>
+        <img class="brand-logo" src="logo_junta.png" alt="Junta de Andalucía">
       </div>
     </section>
 
