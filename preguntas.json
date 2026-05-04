@@ -2,37 +2,67 @@
   {
     "tipo": "Debilidad",
     "pregunta": "¿Qué aspecto interno limita más tu avance?",
-    "respuesta_adecuada": "1",
+    "opciones": [
+      "Me debilita esto",
+      "Me debilita aquello",
+      "Me debilita esto otro"
+    ],
+    "respuesta_adecuada": 0,
     "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
   },
   {
     "tipo": "Debilidad",
     "pregunta": "¿Qué aspecto interno limita más tu avance2?",
-    "respuesta_adecuada": "2",
+    "opciones": [
+      "Me debilita esto",
+      "Me debilita aquello",
+      "Me debilita esto otro"
+    ],
+    "respuesta_adecuada": 1,
     "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos2."
   },
   {
     "tipo": "Debilidad",
     "pregunta": "¿Qué aspecto interno limita más tu avance3?",
-    "respuesta_adecuada": "3",
+    "opciones": [
+      "Me debilita esto",
+      "Me debilita aquello",
+      "Me debilita esto otro"
+    ],
+    "respuesta_adecuada": 2,
     "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos3."
   },
   {
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza1?",
-    "respuesta_adecuada": "1",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 0,
     "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   },
   {
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza2?",
-    "respuesta_adecuada": "2",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 1,
     "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   },
   {
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza3?",
-    "respuesta_adecuada": "3",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 2,
     "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
   }
 ]
