@@ -3,196 +3,416 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reflexión DAFO</title>
-  <meta name="description" content="Aplicación de reflexión DAFO con vídeos, preguntas, feedback y PDF final." />
+  <title>Logra tus sueños profesionales | DAFO</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
-      --bg: #f7f7fb;
-      --card: #ffffff;
-      --text: #1d1d26;
-      --muted: #66677a;
-      --primary: #3858e9;
-      --danger: #b42318;
-      --ok: #067647;
-      --border: #dedff0;
+      --turquoise: #07838a;
+      --turquoise-dark: #026c74;
+      --turquoise-light: #36b8bb;
+      --teal-soft: rgba(255,255,255,.12);
+      --lime: #b6d63b;
+      --white: #ffffff;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.86);
+      --grey: #737480;
+      --shadow: 0 28px 70px rgba(0,0,0,.24);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
+      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
       color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.24), transparent 28%),
+        linear-gradient(135deg, var(--turquoise-light), var(--turquoise-dark));
+      overflow-x: hidden;
     }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.10), rgba(255,255,255,.10)),
+        linear-gradient(rgba(255,255,255,.07), rgba(255,255,255,.07));
+      background-size: 90px 90px, 180px 180px;
+      mask-image: radial-gradient(circle, #000 0 55%, transparent 80%);
+      opacity: .55;
+    }
+
+    .bubble {
+      position: fixed;
+      border: 2px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .bubble:nth-child(1) { width: 72px; height: 72px; left: 7%; top: 24%; }
+    .bubble:nth-child(2) { width: 94px; height: 94px; left: 53%; top: 23%; }
+    .bubble:nth-child(3) { width: 68px; height: 68px; right: 8%; top: 36%; }
+    .bubble:nth-child(4) { width: 54px; height: 54px; left: 78%; top: 8%; }
+    .bubble:nth-child(5) { width: 84px; height: 84px; left: 16%; bottom: 12%; }
 
     main {
-      max-width: 980px;
+      position: relative;
+      z-index: 1;
+      max-width: 1220px;
+      min-height: 100vh;
       margin: 0 auto;
-      padding: 32px 18px 56px;
+      padding: 38px 28px;
     }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 12px 40px rgba(26, 26, 44, 0.08);
+    .hidden { display: none !important; }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(3rem, 7vw, 6.8rem);
+      line-height: .98;
+      letter-spacing: .01em;
+      font-weight: 900;
+      text-shadow: 0 3px 18px rgba(0,0,0,.08);
     }
 
-    .hidden { display: none; }
+    h2 {
+      font-size: clamp(2.4rem, 5vw, 5rem);
+      line-height: 1;
+      font-weight: 900;
+    }
 
-    h1, h2, h3 { margin-top: 0; }
+    h3 {
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
+      line-height: 1.2;
+    }
 
     .muted { color: var(--muted); }
 
+    .screen {
+      min-height: calc(100vh - 76px);
+      display: grid;
+      align-items: center;
+    }
+
+    .intro-layout {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .intro-copy {
+      padding-left: clamp(0px, 5vw, 88px);
+    }
+
+    .qr-card {
+      width: min(360px, 72vw);
+      aspect-ratio: 1;
+      background: white;
+      padding: 22px;
+      display: grid;
+      place-items: center;
+      margin: 42px 0 0 22%;
+      box-shadow: var(--shadow);
+    }
+
+    .qr-placeholder {
+      width: 100%;
+      height: 100%;
+      color: #000;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-weight: 900;
+      border: 14px solid #000;
+    }
+
+    .blocks-visual {
+      justify-self: end;
+      width: min(430px, 86vw);
+      filter: drop-shadow(0 20px 30px rgba(0,0,0,.24));
+    }
+
+    .brand-row {
+      position: absolute;
+      left: 28px;
+      bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .brand-mark {
+      width: 66px;
+      height: auto;
+    }
+
+    .brand-text small {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      opacity: .85;
+    }
+
+    .start-button, button {
+      border: 0;
+      border-radius: 14px;
+      padding: 18px 34px;
+      font: inherit;
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: .02em;
+      cursor: pointer;
+      color: white;
+      background: var(--grey);
+      box-shadow: 0 12px 28px rgba(0,0,0,.22);
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    button:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    button.secondary { background: rgba(255,255,255,.20); box-shadow: none; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+
+    .start-button {
+      position: absolute;
+      right: 28px;
+      bottom: 48px;
+      text-transform: uppercase;
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 44px;
+      align-items: center;
+      min-height: calc(100vh - 76px);
+    }
+
+    .video-panel {
+      position: relative;
+      background: rgba(0,0,0,.12);
+      padding: 0;
+      box-shadow: var(--shadow);
+    }
+
+    iframe, video {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      font-size: 4rem;
+      text-shadow: 0 10px 24px rgba(0,0,0,.34);
+    }
+
+    .question-area {
+      position: relative;
+      padding-right: 110px;
+    }
+
+    .corner-logo {
+      position: absolute;
+      right: 0;
+      top: -64px;
+      width: 155px;
+      opacity: .98;
+    }
+
     .progress {
-      height: 10px;
-      background: #e8e9f6;
+      width: min(620px, 100%);
+      height: 12px;
+      background: rgba(255,255,255,.20);
       border-radius: 999px;
       overflow: hidden;
-      margin-bottom: 24px;
+      margin: 0 0 28px;
     }
 
     .progress-bar {
       height: 100%;
       width: 0%;
-      background: var(--primary);
-      transition: width 0.25s ease;
+      background: var(--lime);
+      transition: width .25s ease;
     }
 
-    iframe, video {
+    .question-row {
+      display: grid;
+      grid-template-columns: 70px 70px 1fr;
+      gap: 24px;
+      align-items: start;
+      margin: 28px 0;
+    }
+
+    .yes-no {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 19px;
+      height: 19px;
+      border-radius: 999px;
+      display: inline-block;
+      background: white;
+      box-shadow: 0 2px 7px rgba(0,0,0,.16);
+    }
+
+    .dot.active { background: var(--lime); }
+
+    textarea {
       width: 100%;
-      aspect-ratio: 16 / 9;
-      border: 0;
-      border-radius: 18px;
-      background: #000;
-      margin: 14px 0 22px;
-    }
-
-    label {
-      display: block;
-      margin: 14px 0 8px;
-      font-weight: 700;
-    }
-
-    textarea, input[type="text"] {
-      width: 100%;
-      min-height: 92px;
+      min-height: 128px;
       resize: vertical;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 14px;
+      border: 2px solid rgba(255,255,255,.28);
+      border-radius: 20px;
+      padding: 16px 18px;
       font: inherit;
-      background: #fff;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,.92);
+      color: #10383b;
+      outline: none;
     }
+
+    .feedback {
+      border-left: 7px solid #ffdbd2;
+      background: rgba(0,0,0,.20);
+      padding: 14px 16px;
+      border-radius: 14px;
+      margin-top: 16px;
+      color: white;
+    }
+
+    .feedback.ok { border-left-color: var(--lime); }
 
     .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
       margin-top: 22px;
     }
 
-    button {
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--primary);
-      color: white;
-    }
-
-    button.secondary {
-      background: #edefff;
-      color: var(--primary);
-    }
-
-    button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .feedback {
-      border-left: 5px solid var(--danger);
-      background: #fff3f0;
-      padding: 12px 14px;
-      border-radius: 12px;
-      margin-top: 16px;
-    }
-
-    .ok {
-      border-left-color: var(--ok);
-      background: #ecfdf3;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: 6px 12px;
-      background: #edefff;
-      color: var(--primary);
-      font-weight: 700;
-      margin-bottom: 12px;
+    .result-card {
+      width: min(960px, 100%);
+      margin: 0 auto;
+      background: rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: var(--shadow);
     }
 
     .answer-list {
       display: grid;
       gap: 12px;
+      max-height: 300px;
+      overflow: auto;
+      padding-right: 8px;
     }
 
     .answer-item {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      background: #fbfbff;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    @media (max-width: 900px) {
+      main { padding: 24px 18px 100px; }
+      .intro-layout, .app-layout { grid-template-columns: 1fr; }
+      .intro-copy { padding-left: 0; }
+      .qr-card { margin-left: 0; }
+      .blocks-visual { justify-self: center; max-width: 300px; }
+      .start-button { right: 18px; bottom: 24px; }
+      .brand-row { position: static; margin-top: 28px; }
+      .question-area { padding-right: 0; }
+      .corner-logo { position: static; width: 120px; margin-bottom: 12px; }
+      .question-row { grid-template-columns: 1fr; gap: 10px; }
+      iframe, video { aspect-ratio: 16 / 9; }
     }
   </style>
 </head>
 <body>
+  <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
+
   <main>
-    <section id="intro" class="card">
-      <h1>Reflexión DAFO</h1>
-      <p class="muted">Visualiza cada vídeo, responde a las preguntas y descarga al final un PDF personalizado con recomendaciones.</p>
-      <div class="actions">
-        <button id="startBtn">Comenzar</button>
-      </div>
-    </section>
-
-    <section id="app" class="card hidden">
-      <div class="progress" aria-label="Progreso">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
-
-      <span id="typePill" class="pill"></span>
-      <h2 id="sectionTitle"></h2>
-      <div id="videoContainer"></div>
-
-      <form id="questionForm">
-        <h3 id="questionText"></h3>
-        <label for="answerInput">Tu respuesta</label>
-        <textarea id="answerInput" required placeholder="Escribe aquí tu reflexión..."></textarea>
-        <div id="feedbackBox" class="feedback hidden"></div>
-        <div class="actions">
-          <button type="submit">Guardar respuesta</button>
-          <button id="skipFeedbackBtn" class="secondary hidden" type="button">Continuar</button>
+    <section id="intro" class="screen">
+      <div class="intro-layout">
+        <div class="intro-copy">
+          <h1>Logra tus sueños profesionales</h1>
+          <div class="qr-card" aria-label="Código QR opcional">
+            <div class="qr-placeholder">QR<br>opcional</div>
+          </div>
         </div>
-      </form>
+        <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
+      </div>
+      <button id="startBtn" class="start-button">Comenzar ›</button>
+      <div class="brand-row">
+        <div class="brand-mark">▲</div>
+        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo</small><small>Servicio Andaluz de Empleo</small></div>
+      </div>
     </section>
 
-    <section id="result" class="card hidden">
-      <h2>Resumen final</h2>
-      <p id="resultText" class="muted"></p>
-      <div id="summaryVideoContainer"></div>
-      <h3>Respuestas recogidas</h3>
-      <div id="answersList" class="answer-list"></div>
-      <div class="actions">
-        <button id="downloadPdfBtn">Descargar PDF de recomendaciones</button>
-        <button id="restartBtn" class="secondary">Reiniciar</button>
+    <section id="app" class="screen hidden">
+      <div class="app-layout">
+        <div id="videoContainer" class="video-panel"></div>
+
+        <div class="question-area">
+          <img class="corner-logo" src="logo_DAFO.png" alt="Logotipo DAFO">
+          <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+          <h2 id="sectionTitle"></h2>
+
+          <form id="questionForm">
+            <div class="question-row">
+              <div class="yes-no"><span>Sí</span><span id="yesDot" class="dot"></span></div>
+              <div class="yes-no"><span>No</span><span id="noDot" class="dot"></span></div>
+              <h3 id="questionText"></h3>
+            </div>
+
+            <textarea id="answerInput" required placeholder="Escribe aquí tu reflexión..."></textarea>
+            <div id="feedbackBox" class="feedback hidden"></div>
+            <div class="actions">
+              <button type="submit">Guardar respuesta</button>
+              <button id="skipFeedbackBtn" class="secondary hidden" type="button">Continuar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="brand-row">
+        <div class="brand-mark">▲</div>
+        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo · Servicio Andaluz de Empleo</small></div>
+      </div>
+    </section>
+
+    <section id="result" class="screen hidden">
+      <div class="result-card">
+        <img class="corner-logo" src="logo_DAFO.png" alt="Logotipo DAFO">
+        <h2>Resumen final</h2>
+        <p id="resultText" class="muted"></p>
+        <div id="summaryVideoContainer" class="video-panel"></div>
+        <h3>Respuestas recogidas</h3>
+        <div id="answersList" class="answer-list"></div>
+        <div class="actions">
+          <button id="downloadPdfBtn">Descargar PDF</button>
+          <button id="restartBtn" class="secondary">Reiniciar</button>
+        </div>
       </div>
     </section>
   </main>
@@ -243,7 +463,6 @@
         if (!response.ok) throw new Error("No se pudo cargar preguntas.json");
         questions = await response.json();
         groupedQuestions = groupByType(questions);
-
         intro.classList.add("hidden");
         app.classList.remove("hidden");
         renderCurrentStep();
@@ -266,53 +485,48 @@
       const type = SECTION_ORDER[sectionIndex];
       const sectionQuestions = groupedQuestions[type] || [];
       currentQuestion = sectionQuestions[questionIndex];
+      if (!currentQuestion) { goNext(); return; }
 
-      if (!currentQuestion) {
-        goNext();
-        return;
-      }
-
-      document.querySelector("#typePill").textContent = type;
-      document.querySelector("#sectionTitle").textContent = `Bloque ${sectionIndex + 1}: ${type}`;
+      document.querySelector("#sectionTitle").textContent = pluralTitle(type);
       document.querySelector("#questionText").textContent = currentQuestion.pregunta;
       document.querySelector("#answerInput").value = "";
       document.querySelector("#feedbackBox").classList.add("hidden");
       skipFeedbackBtn.classList.add("hidden");
+      document.querySelector("#yesDot").classList.remove("active");
+      document.querySelector("#noDot").classList.remove("active");
 
       renderVideo("#videoContainer", SECTION_VIDEOS[type]);
       updateProgress();
     }
 
+    function pluralTitle(type) {
+      return {
+        Debilidad: "Debilidades",
+        Amenaza: "Amenazas",
+        Fortaleza: "Fortalezas",
+        Oportunidad: "Oportunidades"
+      }[type] || type;
+    }
+
     function renderVideo(selector, source) {
       const container = document.querySelector(selector);
-      if (!source) {
-        container.innerHTML = "";
-        return;
-      }
-
+      if (!source) { container.innerHTML = ""; return; }
       if (source.includes("youtube.com") || source.includes("youtu.be") || source.includes("vimeo.com")) {
-        container.innerHTML = `<iframe src="${source}" allowfullscreen title="Vídeo"></iframe>`;
+        container.innerHTML = `<iframe src="${source}" allowfullscreen title="Vídeo"></iframe><div class="play-overlay">▶</div>`;
       } else {
         container.innerHTML = `<video controls src="${source}"></video>`;
       }
     }
 
     function normalizeText(text) {
-      return String(text || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9ñ\s]/g, "")
-        .trim();
+      return String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9ñ\s]/g, "").trim();
     }
 
     function isAnswerAdequate(userAnswer, adequateAnswer) {
       const user = normalizeText(userAnswer);
       const expected = normalizeText(adequateAnswer);
-
       if (!expected) return true;
       if (user.includes(expected)) return true;
-
       const expectedWords = expected.split(/\s+/).filter(word => word.length > 3);
       const matchedWords = expectedWords.filter(word => user.includes(word));
       return expectedWords.length > 0 && matchedWords.length / expectedWords.length >= 0.6;
@@ -324,20 +538,21 @@
       if (!answer) return;
 
       const adequate = isAnswerAdequate(answer, currentQuestion.respuesta_adecuada);
-      const savedAnswer = {
+      answers.push({
         tipo: currentQuestion.tipo,
         pregunta: currentQuestion.pregunta,
         respuestaUsuario: answer,
         respuestaAdecuada: currentQuestion.respuesta_adecuada || "",
         correcta: adequate,
         feedback: adequate ? "Respuesta adecuada." : currentQuestion.feedback || "Revisa este apartado con más profundidad."
-      };
+      });
 
-      answers.push(savedAnswer);
+      document.querySelector("#yesDot").classList.toggle("active", adequate);
+      document.querySelector("#noDot").classList.toggle("active", !adequate);
 
       const feedbackBox = document.querySelector("#feedbackBox");
       feedbackBox.className = adequate ? "feedback ok" : "feedback";
-      feedbackBox.textContent = savedAnswer.feedback;
+      feedbackBox.textContent = adequate ? "Respuesta registrada. Puedes continuar." : (currentQuestion.feedback || "Revisa este apartado con más profundidad.");
       feedbackBox.classList.remove("hidden");
       skipFeedbackBtn.classList.remove("hidden");
     }
@@ -346,23 +561,17 @@
       questionIndex++;
       const type = SECTION_ORDER[sectionIndex];
       const sectionQuestions = groupedQuestions[type] || [];
-
       if (questionIndex >= sectionQuestions.length) {
         sectionIndex++;
         questionIndex = 0;
       }
-
-      if (sectionIndex >= SECTION_ORDER.length) {
-        showResult();
-      } else {
-        renderCurrentStep();
-      }
+      if (sectionIndex >= SECTION_ORDER.length) showResult();
+      else renderCurrentStep();
     }
 
     function updateProgress() {
       const totalQuestions = SECTION_ORDER.reduce((sum, type) => sum + (groupedQuestions[type] || []).length, 0);
-      const completed = answers.length;
-      const percent = totalQuestions ? Math.round((completed / totalQuestions) * 100) : 0;
+      const percent = totalQuestions ? Math.round((answers.length / totalQuestions) * 100) : 0;
       document.querySelector("#progressBar").style.width = `${percent}%`;
     }
 
@@ -371,13 +580,9 @@
         acc[type] = answers.filter(answer => answer.tipo === type && !answer.correcta).length;
         return acc;
       }, {});
-
       const maxFailures = Math.max(...Object.values(failuresByType));
       if (maxFailures === 0) return "equilibrado";
-
-      const priority = ["Debilidad", "Amenaza", "Fortaleza", "Oportunidad"];
-      const weakestType = priority.find(type => failuresByType[type] === maxFailures);
-
+      const weakestType = SECTION_ORDER.find(type => failuresByType[type] === maxFailures);
       return {
         Debilidad: "refuerzo_debilidades",
         Amenaza: "refuerzo_amenazas",
@@ -389,33 +594,23 @@
     function showResult() {
       app.classList.add("hidden");
       result.classList.remove("hidden");
-
       const key = chooseSummaryVideoKey();
       renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key]);
-
       const failed = answers.filter(answer => !answer.correcta).length;
       document.querySelector("#resultText").textContent = failed
-        ? `Has completado la reflexión. El resumen se ha seleccionado a partir de los apartados que requieren más atención.`
+        ? "Has completado la reflexión. El resumen se ha seleccionado según los apartados que necesitan más atención."
         : "Has completado la reflexión con un resultado equilibrado.";
-
       document.querySelector("#answersList").innerHTML = answers.map(answer => `
         <article class="answer-item">
           <strong>${answer.tipo}</strong>
           <p><b>Pregunta:</b> ${escapeHtml(answer.pregunta)}</p>
           <p><b>Respuesta:</b> ${escapeHtml(answer.respuestaUsuario)}</p>
           <p><b>Recomendación:</b> ${escapeHtml(answer.feedback)}</p>
-        </article>
-      `).join("");
+        </article>`).join("");
     }
 
     function escapeHtml(text) {
-      return String(text).replace(/[&<>'"]/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
-      }[char]));
+      return String(text).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
     }
 
     function generatePdf() {
@@ -431,32 +626,27 @@
       doc.setFontSize(18);
       doc.text("Informe de reflexión DAFO", margin, y);
       y += 10;
-
       doc.setFont("helvetica", "normal");
       doc.setFontSize(11);
-      addWrappedText(doc, "Este documento recoge tus respuestas y recomendaciones personalizadas para profundizar en Debilidades, Amenazas, Fortalezas y Oportunidades.", margin, y, usableWidth);
-      y += 20;
+      y = addWrappedText(doc, "Este documento recoge tus respuestas y recomendaciones personalizadas para profundizar en Debilidades, Amenazas, Fortalezas y Oportunidades.", margin, y, usableWidth) + 8;
 
       SECTION_ORDER.forEach(type => {
         y = ensureSpace(doc, y, 30, pageHeight, margin);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
-        doc.text(type, margin, y);
+        doc.text(pluralTitle(type), margin, y);
         y += 8;
-
         answers.filter(answer => answer.tipo === type).forEach((answer, index) => {
           y = ensureSpace(doc, y, 48, pageHeight, margin);
           doc.setFont("helvetica", "bold");
           doc.setFontSize(11);
           y = addWrappedText(doc, `${index + 1}. ${answer.pregunta}`, margin, y, usableWidth);
-
           doc.setFont("helvetica", "normal");
           y = addWrappedText(doc, `Tu respuesta: ${answer.respuestaUsuario}`, margin, y + 2, usableWidth);
           y = addWrappedText(doc, `Recomendación: ${answer.feedback}`, margin, y + 2, usableWidth);
           y += 6;
         });
       });
-
       doc.save("informe-dafo.pdf");
     }
 
@@ -467,10 +657,7 @@
     }
 
     function ensureSpace(doc, y, needed, pageHeight, margin) {
-      if (y + needed > pageHeight - margin) {
-        doc.addPage();
-        return margin;
-      }
+      if (y + needed > pageHeight - margin) { doc.addPage(); return margin; }
       return y;
     }
   </script>
