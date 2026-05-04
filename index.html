@@ -470,7 +470,8 @@
         <h3>Respuestas recogidas</h3>
         <div id="answersList" class="answer-list"></div>
         <div class="actions">
-          <button id="downloadPdfBtn">Descargar PDF</button>
+          <button id="downloadPdfBtn">Guardar PDF</button>
+          <button id="sharePdfBtn" class="secondary">Compartir / enviar PDF</button>
           <button id="restartBtn" class="secondary">Reiniciar</button>
         </div>
       </div>
@@ -514,12 +515,14 @@
     const questionForm = document.querySelector("#questionForm");
     const skipFeedbackBtn = document.querySelector("#skipFeedbackBtn");
     const downloadPdfBtn = document.querySelector("#downloadPdfBtn");
+    const sharePdfBtn = document.querySelector("#sharePdfBtn");
 
     startBtn.addEventListener("click", startApp);
     restartBtn.addEventListener("click", () => location.reload());
     questionForm.addEventListener("submit", handleAnswerSubmit);
     skipFeedbackBtn.addEventListener("click", commitAnswerAndGoNext);
-    downloadPdfBtn.addEventListener("click", generatePdf);
+    downloadPdfBtn.addEventListener("click", savePdf);
+    sharePdfBtn.addEventListener("click", sharePdf);
 
     async function startApp() {
       try {
@@ -757,7 +760,7 @@
       return String(text).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
     }
 
-    function generatePdf() {
+    function createPdfDocument() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       const margin = 15;
@@ -791,7 +794,35 @@
           y += 6;
         });
       });
+
+      return doc;
+    }
+
+    function savePdf() {
+      const doc = createPdfDocument();
       doc.save("informe-dafo.pdf");
+    }
+
+    async function sharePdf() {
+      const doc = createPdfDocument();
+      const pdfBlob = doc.output("blob");
+      const pdfFile = new File([pdfBlob], "informe-dafo.pdf", { type: "application/pdf" });
+
+      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        try {
+          await navigator.share({
+            title: "Informe de reflexión DAFO",
+            text: "Te envío mi informe de reflexión DAFO.",
+            files: [pdfFile]
+          });
+          return;
+        } catch (error) {
+          console.warn("No se completó la acción de compartir.", error);
+        }
+      }
+
+      doc.save("informe-dafo.pdf");
+      alert("Tu navegador no permite adjuntar automáticamente el PDF a un email. Se ha descargado el archivo para que puedas adjuntarlo manualmente desde tu correo.");
     }
 
     function addWrappedText(doc, text, x, y, width) {
