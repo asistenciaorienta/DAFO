@@ -133,6 +133,19 @@
       border: 14px solid #000;
     }
 
+    .intro-subtitle {
+      max-width: 760px;
+      margin-top: 28px;
+      padding: 18px 22px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.36);
+      color: white;
+      font-size: clamp(1.15rem, 2vw, 1.9rem);
+      font-weight: 800;
+      line-height: 1.25;
+      box-shadow: var(--shadow);
+    }
+
     .blocks-visual {
       justify-self: end;
       width: min(430px, 86vw);
@@ -422,6 +435,7 @@
           <div class="qr-card" aria-label="Código QR opcional">
             <div class="qr-placeholder">QR<br>opcional</div>
           </div>
+          <p id="introSubtitle" class="intro-subtitle hidden"></p>
         </div>
         <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
       </div>
@@ -517,6 +531,8 @@
     let pendingAnswer = null;
     let introAudio = null;
     let introAudioStarted = false;
+    let introCues = [];
+    let introSubtitleTimer = null;
     let currentVideoType = null;
     let watchedVideoTypes = new Set();
 
@@ -544,13 +560,18 @@
         introAudio.preload = "auto";
         startBtn.textContent = "Entrar ›";
 
+        await loadIntroSubtitles();
+
         try {
           await introAudio.play();
+          startIntroSubtitles();
         } catch (error) {
           console.warn("No se pudo reproducir inicio.mp3 automáticamente.", error);
         }
         return;
       }
+
+      stopIntroSubtitles();
 
       if (introAudio) {
         introAudio.pause();
@@ -558,6 +579,91 @@
       }
 
       startApp();
+    }
+
+    async function loadIntroSubtitles() {
+      try {
+        const response = await fetch("inicio.vtt");
+        if (!response.ok) throw new Error("No se pudo cargar inicio.vtt");
+        const vttText = await response.text();
+        introCues = parseVtt(vttText);
+      } catch (error) {
+        console.warn("No se pudieron cargar los subtítulos de inicio.", error);
+        introCues = [];
+      }
+    }
+
+    function parseVtt(vttText) {
+      return vttText
+        .replace(/
+/g, "")
+        .split("
+
+")
+        .map(block => block.trim())
+        .filter(block => block && !block.startsWith("WEBVTT"))
+        .map(block => {
+          const lines = block.split("
+");
+          const timeLine = lines.find(line => line.includes("-->"));
+          if (!timeLine) return null;
+
+          const times = timeLine.split("-->").map(time => time.trim());
+          const text = lines.slice(lines.indexOf(timeLine) + 1).join(" ");
+
+          return {
+            start: vttTimeToSeconds(times[0]),
+            end: vttTimeToSeconds(times[1]),
+            text
+          };
+        })
+        .filter(Boolean);
+    }
+
+    function vttTimeToSeconds(time) {
+      const cleanTime = String(time).split(" ")[0];
+      const parts = cleanTime.split(":");
+      const secondsParts = parts.pop().split(".");
+      const seconds = Number(secondsParts[0] || 0);
+      const milliseconds = Number(secondsParts[1] || 0);
+      const minutes = Number(parts.pop() || 0);
+      const hours = Number(parts.pop() || 0);
+
+      return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
+    }
+
+    function startIntroSubtitles() {
+      const subtitleBox = document.querySelector("#introSubtitle");
+      if (!subtitleBox || !introAudio) return;
+
+      subtitleBox.classList.remove("hidden");
+
+      introSubtitleTimer = setInterval(() => {
+        const currentTime = introAudio.currentTime;
+        const cue = introCues.find(item => currentTime >= item.start && currentTime <= item.end);
+
+        subtitleBox.textContent = cue ? cue.text : "";
+        subtitleBox.classList.toggle("hidden", !cue);
+      }, 150);
+
+      introAudio.addEventListener("ended", () => {
+        stopIntroSubtitles();
+        startBtn.textContent = "Entrar ›";
+      }, { once: true });
+    }
+
+    function stopIntroSubtitles() {
+      const subtitleBox = document.querySelector("#introSubtitle");
+
+      if (introSubtitleTimer) {
+        clearInterval(introSubtitleTimer);
+        introSubtitleTimer = null;
+      }
+
+      if (subtitleBox) {
+        subtitleBox.textContent = "";
+        subtitleBox.classList.add("hidden");
+      }
     }
 
     async function startApp() {
