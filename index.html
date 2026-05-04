@@ -202,12 +202,14 @@
       padding: 0;
       box-shadow: var(--shadow);
       overflow: hidden;
+      height: 85vh; /* o prueba 80vh */
     }
 
     iframe, video {
       width: 100%;
-      aspect-ratio: 9 / 16;
+      height: 100%;
       object-fit: cover;
+      aspect-ratio: 9 / 14;
       object-position: center 50%; /* desplaza el encuadre hacia abajo para ocultar ~15% superior */
       border: 0;
       display: block;
