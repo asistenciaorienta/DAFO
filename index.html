@@ -530,6 +530,7 @@
         if (!response.ok) throw new Error("No se pudo cargar preguntas.json");
         questions = await response.json();
         groupedQuestions = groupByType(questions);
+        shuffleQuestionsByType(groupedQuestions);
         intro.classList.add("hidden");
         app.classList.remove("hidden");
         renderCurrentStep();
@@ -546,6 +547,21 @@
         acc[type].push(item);
         return acc;
       }, {});
+    }
+
+    function shuffleQuestionsByType(groupedItems) {
+      Object.keys(groupedItems).forEach(type => {
+        groupedItems[type] = shuffleArray(groupedItems[type]);
+      });
+    }
+
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
     }
 
     function renderCurrentStep() {
