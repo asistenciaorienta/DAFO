@@ -497,6 +497,7 @@
     let answers = [];
     let currentQuestion = null;
     let selectedOptionIndex = null;
+    let pendingAnswer = null;
     let currentVideoType = null;
     let watchedVideoTypes = new Set();
 
@@ -512,7 +513,7 @@
     startBtn.addEventListener("click", startApp);
     restartBtn.addEventListener("click", () => location.reload());
     questionForm.addEventListener("submit", handleAnswerSubmit);
-    skipFeedbackBtn.addEventListener("click", goNext);
+    skipFeedbackBtn.addEventListener("click", commitAnswerAndGoNext);
     downloadPdfBtn.addEventListener("click", generatePdf);
 
     async function startApp() {
@@ -546,6 +547,7 @@
       if (!currentQuestion) { goNext(); return; }
 
       selectedOptionIndex = null;
+      pendingAnswer = null;
       document.querySelector("#sectionTitle").textContent = pluralTitle(type);
       document.querySelector("#questionText").textContent = currentQuestion.pregunta;
       document.querySelector("#answerInput").value = "";
@@ -613,7 +615,11 @@
         });
 
         video.addEventListener("play", () => {
-          document.querySelector(".question-area")?.classList.add("waiting-video");
+          if (type && !watchedVideoTypes.has(type)) {
+            document.querySelector(".question-area")?.classList.add("waiting-video");
+          } else {
+            document.querySelector(".question-area")?.classList.remove("waiting-video");
+          }
         });
       }
     }
@@ -639,7 +645,10 @@
 
     function selectOption(index) {
       selectedOptionIndex = index;
+      pendingAnswer = null;
       document.querySelector("#answerInput").value = String(index);
+      document.querySelector("#savedMessage").classList.add("hidden");
+      skipFeedbackBtn.classList.add("hidden");
       document.querySelectorAll(".option-button").forEach((button, buttonIndex) => {
         button.classList.toggle("selected", buttonIndex === index);
       });
@@ -647,6 +656,23 @@
 
     function isAnswerAdequate(selectedIndex, adequateAnswer) {
       return Number(selectedIndex) === Number(adequateAnswer);
+    }
+
+    function buildAnswerFromCurrentSelection() {
+      const selectedText = currentQuestion.opciones?.[selectedOptionIndex] || "";
+      const adequate = isAnswerAdequate(selectedOptionIndex, currentQuestion.respuesta_adecuada);
+      const adequateText = currentQuestion.opciones?.[Number(currentQuestion.respuesta_adecuada)] || "";
+
+      return {
+        tipo: currentQuestion.tipo,
+        pregunta: currentQuestion.pregunta,
+        respuestaUsuario: selectedText,
+        respuestaUsuarioIndice: selectedOptionIndex,
+        respuestaAdecuada: adequateText,
+        respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
+        correcta: adequate,
+        feedback: adequate ? "Respuesta adecuada." : currentQuestion.feedback || "Revisa este apartado con más profundidad."
+      };
     }
 
     function handleAnswerSubmit(event) {
@@ -657,25 +683,21 @@
         return;
       }
 
-      const selectedText = currentQuestion.opciones?.[selectedOptionIndex] || "";
-      const adequate = isAnswerAdequate(selectedOptionIndex, currentQuestion.respuesta_adecuada);
-      const adequateText = currentQuestion.opciones?.[Number(currentQuestion.respuesta_adecuada)] || "";
-
-      answers.push({
-        tipo: currentQuestion.tipo,
-        pregunta: currentQuestion.pregunta,
-        respuestaUsuario: selectedText,
-        respuestaUsuarioIndice: selectedOptionIndex,
-        respuestaAdecuada: adequateText,
-        respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
-        correcta: adequate,
-        feedback: adequate ? "Respuesta adecuada." : currentQuestion.feedback || "Revisa este apartado con más profundidad."
-      });
-
+      pendingAnswer = buildAnswerFromCurrentSelection();
       document.querySelector("#savedMessage").classList.remove("hidden");
       skipFeedbackBtn.classList.remove("hidden");
+    }
 
-      document.querySelectorAll(".option-button").forEach(button => button.disabled = true);
+    function commitAnswerAndGoNext() {
+      if (selectedOptionIndex === null) {
+        alert("Selecciona una respuesta antes de continuar.");
+        return;
+      }
+
+      pendingAnswer = buildAnswerFromCurrentSelection();
+      answers.push(pendingAnswer);
+      pendingAnswer = null;
+      goNext();
     }
 
     function goNext() {
