@@ -504,6 +504,8 @@
     let currentQuestion = null;
     let selectedOptionIndex = null;
     let pendingAnswer = null;
+    let introAudio = null;
+    let introAudioStarted = false;
     let currentVideoType = null;
     let watchedVideoTypes = new Set();
 
@@ -517,12 +519,35 @@
     const downloadPdfBtn = document.querySelector("#downloadPdfBtn");
     const sharePdfBtn = document.querySelector("#sharePdfBtn");
 
-    startBtn.addEventListener("click", startApp);
+    startBtn.addEventListener("click", handleStartButton);
     restartBtn.addEventListener("click", () => location.reload());
     questionForm.addEventListener("submit", handleAnswerSubmit);
     skipFeedbackBtn.addEventListener("click", commitAnswerAndGoNext);
     downloadPdfBtn.addEventListener("click", savePdf);
     sharePdfBtn.addEventListener("click", sharePdf);
+
+    async function handleStartButton() {
+      if (!introAudioStarted) {
+        introAudioStarted = true;
+        introAudio = new Audio("inicio.mp3");
+        introAudio.preload = "auto";
+        startBtn.textContent = "Entrar ›";
+
+        try {
+          await introAudio.play();
+        } catch (error) {
+          console.warn("No se pudo reproducir inicio.mp3 automáticamente.", error);
+        }
+        return;
+      }
+
+      if (introAudio) {
+        introAudio.pause();
+        introAudio.currentTime = 0;
+      }
+
+      startApp();
+    }
 
     async function startApp() {
       try {
