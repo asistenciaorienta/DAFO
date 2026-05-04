@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/png" href="logo_DAFO.png">
   <title>Logra tus sueños profesionales | DAFO</title>
+  <link rel="icon" type="image/png" href="logo_DAFO.png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
@@ -190,7 +190,7 @@
 
     .app-layout {
       display: grid;
-      grid-template-columns: minmax(420px, 52%) 1fr;
+      grid-template-columns: 320px 1fr;
       gap: 44px;
       align-items: center;
       min-height: calc(100vh - 76px);
@@ -206,8 +206,9 @@
 
     iframe, video {
       width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
+      aspect-ratio: 9 / 16;
+      object-fit: cover;
+      object-position: center 30%; /* desplaza el encuadre hacia abajo para ocultar ~15% superior */
       border: 0;
       display: block;
       background: #000;
@@ -347,7 +348,8 @@
       .corner-logo { position: static; width: 120px; margin-bottom: 12px; }
       .question-row { grid-template-columns: 1fr; gap: 10px; margin: 18px 0; }
       .video-panel { width: 100%; max-height: none; }
-      iframe, video { width: 100%; aspect-ratio: 16 / 9; object-fit: contain; }
+      iframe, video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; object-position: center 30%; }
+    }
     }
 
     @media (max-width: 520px) {
@@ -674,4 +676,3 @@
   </script>
 </body>
 </html>
-
