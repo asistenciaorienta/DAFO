@@ -409,6 +409,19 @@
       .option-button { width: 100%; font-size: 1rem; padding: 15px 16px; }
       button { width: 100%; font-size: 1.05rem; }
     }
+.intro-subtitle {
+  max-width: 760px;
+  margin-top: 28px;
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.32);
+  color: white;
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  font-weight: 800;
+  line-height: 1.25;
+  box-shadow: var(--shadow);
+}
+    
   </style>
 </head>
 <body>
@@ -422,6 +435,7 @@
           <div class="qr-card" aria-label="Código QR opcional">
             <div class="qr-placeholder">QR<br>opcional</div>
           </div>
+          <p id="introSubtitle" class="intro-subtitle hidden"></p>
         </div>
         <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
       </div>
@@ -526,29 +540,120 @@
     downloadPdfBtn.addEventListener("click", savePdf);
     sharePdfBtn.addEventListener("click", sharePdf);
 
-    async function handleStartButton() {
-      if (!introAudioStarted) {
-        introAudioStarted = true;
-        introAudio = new Audio("inicio.mp3");
-        introAudio.preload = "auto";
-        startBtn.textContent = "Entrar ›";
+let introCues = [];
+let introSubtitleTimer = null;
 
-        try {
-          await introAudio.play();
-        } catch (error) {
-          console.warn("No se pudo reproducir inicio.mp3 automáticamente.", error);
-        }
-        return;
-      }
+async function handleStartButton() {
+  if (!introAudioStarted) {
+    introAudioStarted = true;
+    introAudio = new Audio("inicio.mp3");
+    introAudio.preload = "auto";
+    startBtn.textContent = "Entrar ›";
 
-      if (introAudio) {
-        introAudio.pause();
-        introAudio.currentTime = 0;
-      }
+    await loadIntroSubtitles();
 
-      startApp();
+    try {
+      await introAudio.play();
+      startIntroSubtitles();
+    } catch (error) {
+      console.warn("No se pudo reproducir inicio.mp3 automáticamente.", error);
     }
 
+    return;
+  }
+
+  stopIntroSubtitles();
+
+  if (introAudio) {
+    introAudio.pause();
+    introAudio.currentTime = 0;
+  }
+
+  startApp();
+}
+
+async function loadIntroSubtitles() {
+  try {
+    const response = await fetch("inicio.vtt");
+    if (!response.ok) throw new Error("No se pudo cargar inicio.vtt");
+
+    const vttText = await response.text();
+    introCues = parseVtt(vttText);
+  } catch (error) {
+    console.warn("No se pudieron cargar los subtítulos de inicio.", error);
+    introCues = [];
+  }
+}
+
+function parseVtt(vttText) {
+  return vttText
+    .replace(/\r/g, "")
+    .split("\n\n")
+    .map(block => block.trim())
+    .filter(block => block && !block.startsWith("WEBVTT"))
+    .map(block => {
+      const lines = block.split("\n");
+      const timeLine = lines.find(line => line.includes("-->"));
+      if (!timeLine) return null;
+
+      const [start, end] = timeLine.split("-->").map(time => time.trim());
+      const text = lines.slice(lines.indexOf(timeLine) + 1).join(" ");
+
+      return {
+        start: vttTimeToSeconds(start),
+        end: vttTimeToSeconds(end),
+        text
+      };
+    })
+    .filter(Boolean);
+}
+
+function vttTimeToSeconds(time) {
+  const parts = time.split(":");
+  const secondsParts = parts.pop().split(".");
+  const seconds = Number(secondsParts[0]);
+  const milliseconds = Number(secondsParts[1] || 0);
+
+  const minutes = Number(parts.pop() || 0);
+  const hours = Number(parts.pop() || 0);
+
+  return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
+}
+
+function startIntroSubtitles() {
+  const subtitleBox = document.querySelector("#introSubtitle");
+  if (!subtitleBox || !introAudio) return;
+
+  subtitleBox.classList.remove("hidden");
+
+  introSubtitleTimer = setInterval(() => {
+    const currentTime = introAudio.currentTime;
+    const cue = introCues.find(item => currentTime >= item.start && currentTime <= item.end);
+
+    subtitleBox.textContent = cue ? cue.text : "";
+    subtitleBox.classList.toggle("hidden", !cue);
+  }, 150);
+
+  introAudio.addEventListener("ended", () => {
+    stopIntroSubtitles();
+    startBtn.textContent = "Entrar ›";
+  }, { once: true });
+}
+
+function stopIntroSubtitles() {
+  const subtitleBox = document.querySelector("#introSubtitle");
+
+  if (introSubtitleTimer) {
+    clearInterval(introSubtitleTimer);
+    introSubtitleTimer = null;
+  }
+
+  if (subtitleBox) {
+    subtitleBox.textContent = "";
+    subtitleBox.classList.add("hidden");
+  }
+}
+    
     async function startApp() {
       try {
         const response = await fetch("preguntas.json");
@@ -876,6 +981,7 @@
       if (y + needed > pageHeight - margin) { doc.addPage(); return margin; }
       return y;
     }
+    
   </script>
 </body>
 </html>
