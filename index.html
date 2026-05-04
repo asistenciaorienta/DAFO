@@ -205,6 +205,12 @@
       height: 85vh; /* o prueba 80vh */
     }
 
+    .result-card .video-panel {
+      width: min(340px, 100%);
+      height: min(70vh, 620px);
+      margin: 22px auto 28px;
+    }
+
     iframe, video {
       width: 100%;
       height: 100%;
@@ -395,11 +401,7 @@
       iframe, video { width: 100%; aspect-ratio: 9 / 14; object-fit: cover; object-position: center 30%; }
     }
 
-    @media (max-width: 520px) {
-      h2 { font-size: 2.3rem; }
-      .app-layout { gap: 24px; align-items: start; }
-      .video-panel { margin-top: 4px; }
-      .option-button { width: 100%; font-size: 1rem; padding: 15px 16px; }
+    dding: 15px 16px; }
       button { width: 100%; font-size: 1.05rem; }
     }
   </style>
@@ -439,19 +441,7 @@
               <h3 id="questionText"></h3>
             </div>
 
-            <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></div>
-            <input id="answerInput" type="hidden" required>
-            <div id="savedMessage" class="saved-message hidden">Respuesta guardada. Puedes continuar.</div>
-            <div class="actions">
-              <button type="submit">Guardar respuesta</button>
-              <button id="skipFeedbackBtn" class="secondary hidden" type="button">Continuar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div class="brand-row">
-        <div class="brand-mark">▲</div>
+            <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></di/div>
         <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo · Servicio Andaluz de Empleo</small></div>
       </div>
     </section>
@@ -518,10 +508,7 @@
 
     async function startApp() {
       try {
-        const response = await fetch("preguntas.json");
-        if (!response.ok) throw new Error("No se pudo cargar preguntas.json");
-        questions = await response.json();
-        groupedQuestions = groupByType(questions);
+    if (!response.ok) throw new Error("No se pudo cargar preguntas.dQuestions = groupByType(questions);
         intro.classList.add("hidden");
         app.classList.remove("hidden");
         renderCurrentStep();
@@ -551,8 +538,7 @@
       document.querySelector("#sectionTitle").textContent = pluralTitle(type);
       document.querySelector("#questionText").textContent = currentQuestion.pregunta;
       document.querySelector("#answerInput").value = "";
-      document.querySelector("#savedMessage").classList.add("hidden");
-      skipFeedbackBtn.classList.add("hidden");
+      skipFeedbackBtn.disabled = true;
       renderOptions(currentQuestion.opciones || []);
 
       if (currentVideoType !== type) {
@@ -561,10 +547,7 @@
       }
 
       if (watchedVideoTypes.has(type)) {
-        document.querySelector(".question-area").classList.remove("waiting-video");
-      } else {
-        document.querySelector(".question-area").classList.add("waiting-video");
-      }
+        document.querySelector(".question-area").classList.remove("waiti   }
       updateProgress();
     }
 
@@ -645,27 +628,16 @@
 
     function selectOption(index) {
       selectedOptionIndex = index;
-      pendingAnswer = null;
+      pendingAnswer = buildAnswerFromCurrentSelection();
       document.querySelector("#answerInput").value = String(index);
-      document.querySelector("#savedMessage").classList.add("hidden");
-      skipFeedbackBtn.classList.add("hidden");
+      skipFeedbackBtn.disabled = false;
       document.querySelectorAll(".option-button").forEach((button, buttonIndex) => {
         button.classList.toggle("selected", buttonIndex === index);
       });
     }
 
     function isAnswerAdequate(selectedIndex, adequateAnswer) {
-      return Number(selectedIndex) === Number(adequateAnswer);
-    }
-
-    function buildAnswerFromCurrentSelection() {
-      const selectedText = currentQuestion.opciones?.[selectedOptionIndex] || "";
-      const adequate = isAnswerAdequate(selectedOptionIndex, currentQuestion.respuesta_adecuada);
-      const adequateText = currentQuestion.opciones?.[Number(currentQuestion.respuesta_adecuada)] || "";
-
-      return {
-        tipo: currentQuestion.tipo,
-        pregunta: currentQuestion.pregunta,
+      ret       pregunta: currentQuestion.pregunta,
         respuestaUsuario: selectedText,
         respuestaUsuarioIndice: selectedOptionIndex,
         respuestaAdecuada: adequateText,
@@ -677,15 +649,7 @@
 
     function handleAnswerSubmit(event) {
       event.preventDefault();
-
-      if (selectedOptionIndex === null) {
-        alert("Selecciona una respuesta antes de continuar.");
-        return;
-      }
-
-      pendingAnswer = buildAnswerFromCurrentSelection();
-      document.querySelector("#savedMessage").classList.remove("hidden");
-      skipFeedbackBtn.classList.remove("hidden");
+      commitAnswerAndGoNext();
     }
 
     function commitAnswerAndGoNext() {
@@ -696,34 +660,24 @@
 
       pendingAnswer = buildAnswerFromCurrentSelection();
       answers.push(pendingAnswer);
+      pendingAnswer = nufunction commitAnswerAndGoNext() {
+      if (selectedOptionIndex === null) {
+        alert("Selecciona una respuesta antes de continuar.");
+        return;
+      }
+
+      answers.push(buildAnswerFromCurrentSelection());
       pendingAnswer = null;
       goNext();
     }
 
-    function goNext() {
-      questionIndex++;
-      const type = SECTION_ORDER[sectionIndex];
-      const sectionQuestions = groupedQuestions[type] || [];
-      if (questionIndex >= sectionQuestions.length) {
-        sectionIndex++;
-        questionIndex = 0;
-      }
-      if (sectionIndex >= SECTION_ORDER.length) showResult();
+    function goNext()_ORDER.length) showResult();
       else renderCurrentStep();
     }
 
     function updateProgress() {
       const totalQuestions = SECTION_ORDER.reduce((sum, type) => sum + (groupedQuestions[type] || []).length, 0);
-      const percent = totalQuestions ? Math.round((answers.length / totalQuestions) * 100) : 0;
-      document.querySelector("#progressBar").style.width = `${percent}%`;
-    }
-
-    function chooseSummaryVideoKey() {
-      const failuresByType = SECTION_ORDER.reduce((acc, type) => {
-        acc[type] = answers.filter(answer => answer.tipo === type && !answer.correcta).length;
-        return acc;
-      }, {});
-      const maxFailures = Math.max(...Object.values(failuresByType));
+      const percent = totx(...Object.values(failuresByType));
       if (maxFailures === 0) return "equilibrado";
       const weakestType = SECTION_ORDER.find(type => failuresByType[type] === maxFailures);
       return {
@@ -732,15 +686,7 @@
         Fortaleza: "potenciar_fortalezas",
         Oportunidad: "aprovechar_oportunidades"
       }[weakestType];
-    }
-
-    function showResult() {
-      app.classList.add("hidden");
-      result.classList.remove("hidden");
-      const key = chooseSummaryVideoKey();
-      renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen", null);
-      document.querySelector(".question-area")?.classList.remove("waiting-video");
-      const failed = answers.filter(answer => !answer.correcta).length;
+ const failed = answers.filter(answer => !answer.correcta).length;
       document.querySelector("#resultText").textContent = failed
         ? "Has completado la reflexión. El resumen se ha seleccionado según los apartados que necesitan más atención."
         : "Has completado la reflexión con un resultado equilibrado.";
