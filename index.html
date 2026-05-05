@@ -144,14 +144,8 @@
     .qr-placeholder {
       width: 100%;
       height: 100%;
-      color: #000;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      font-weight: 900;
-      font-size: .72rem;
-      border: 5px solid #000;
-      line-height: 1;
+      object-fit: contain;
+      display: block;
     }
 
     .qr-modal {
@@ -174,9 +168,10 @@
     }
 
     .qr-modal .qr-placeholder {
+      width: 100%;
       aspect-ratio: 1;
-      font-size: 2rem;
-      border-width: 14px;
+      object-fit: contain;
+      display: block;
     }
 
     .qr-close-button {
@@ -210,24 +205,22 @@
 
     .blocks-visual {
       justify-self: end;
-      width: min(430px, 86vw);
-      filter: drop-shadow(0 20px 30px rgba(0,0,0,.24));
+      align-self: end;
+      width: min(210px, 42vw);
+      opacity: .88;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.16));
     }
 
-      .brand-row {
-        position: absolute;
-        left: 28px;
-        bottom: 28px;
-        display: flex;
-        align-items: center;
-      }
-      
-      .brand-logo {
-        width: min(240px, 42vw);
-        height: auto;
-        display: block;
-        filter: drop-shadow(0 8px 18px rgba(0,0,0,.18));
-      }
+    .brand-row {
+      position: absolute;
+      left: 28px;
+      bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-weight: 800;
+      color: white;
+    }
 
     .brand-mark {
       width: 66px;
@@ -470,17 +463,9 @@
       .intro-layout, .app-layout { grid-template-columns: 1fr; }
       .intro-copy { padding-left: 0; }
       .qr-card { right: 18px; top: 18px; width: 64px; }
-      .blocks-visual { justify-self: center; max-width: 300px; }
+      .blocks-visual { justify-self: end; max-width: 150px; opacity: .85; }
       .start-button { right: 18px; bottom: 24px; }
-      .brand-row {
-          position: static;
-          margin-top: 28px;
-          justify-content: flex-start;
-        }
-        
-        .brand-logo {
-          width: min(190px, 60vw);
-        }
+      .brand-row { position: static; margin-top: 28px; }
       .question-area { padding-right: 0; }
       .corner-logo { position: static; width: 120px; margin-bottom: 12px; }
       .question-row { grid-template-columns: 1fr; gap: 10px; margin: 18px 0; }
@@ -501,15 +486,6 @@
 <body>
   <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
 
-  <!-- Diseño e idea original de la Dirección Provincial de Granada, en concreto de:
-  Jefe de Servicio: Francisco Escabias García.
-  Diseñador: Valentín Jiménez Extremera.
-  Animación Videos: José María Delgado Pareja.
-  Contenido: Elisabeth Huertas García y José Manuel Robles Chaves.
-  Testeo y verificación: 
-  Aporte de información: Todas las oficinas SAE de la provincia de Granada y sus direcciones de ATE.
-  -->  
-  
   <main>
     <section id="intro" class="screen">
       <div class="intro-layout">
@@ -520,18 +496,19 @@
         <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
       </div>
       <button id="qrSmallBtn" class="qr-card" type="button" aria-label="Ampliar código QR">
-        <span class="qr-placeholder">QR</span>
+        <img class="qr-placeholder" src="QR.png" alt="Código QR de acceso a la aplicación DAFO">
       </button>
       <button id="startBtn" class="start-button">Comenzar ›</button>
       <div id="qrModal" class="qr-modal hidden" role="dialog" aria-modal="true" aria-label="Código QR ampliado">
         <div class="qr-modal-content">
           <button id="qrCloseBtn" class="qr-close-button" type="button" aria-label="Cerrar código QR">×</button>
-          <div class="qr-placeholder">QR<br>opcional</div>
+          <img class="qr-placeholder" src="QR.png" alt="Código QR de acceso a la aplicación DAFO">
         </div>
       </div>
-        <div class="brand-row">
-          <img class="brand-logo" src="logo_junta.png" alt="Junta de Andalucía">
-        </div>
+      <div class="brand-row">
+        <div class="brand-mark">▲</div>
+        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo</small><small>Servicio Andaluz de Empleo</small></div>
+      </div>
     </section>
 
     <section id="app" class="screen hidden">
@@ -558,7 +535,8 @@
       </div>
 
       <div class="brand-row">
-        <img class="brand-logo" src="logo_junta.png" alt="Junta de Andalucía">
+        <div class="brand-mark">▲</div>
+        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo · Servicio Andaluz de Empleo</small></div>
       </div>
     </section>
 
