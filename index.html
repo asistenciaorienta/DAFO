@@ -222,16 +222,19 @@
       color: white;
     }
 
-    .brand-mark {
-      width: 66px;
+    .brand-logo {
+      width: min(260px, 44vw);
       height: auto;
+      display: block;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.18));
     }
 
-    .brand-text small {
+    .result-sae-logo {
+      width: min(190px, 48vw);
+      height: auto;
       display: block;
-      font-size: .72rem;
-      font-weight: 600;
-      opacity: .85;
+      margin: 0 0 22px auto;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.18));
     }
 
     .start-button, button {
@@ -466,6 +469,8 @@
       .blocks-visual { justify-self: end; max-width: 150px; opacity: .85; }
       .start-button { right: 18px; bottom: 24px; }
       .brand-row { position: static; margin-top: 28px; }
+      .brand-logo { width: min(220px, 60vw); }
+      .result-sae-logo { width: min(160px, 52vw); margin-left: 0; }
       .question-area { padding-right: 0; }
       .corner-logo { position: static; width: 120px; margin-bottom: 12px; }
       .question-row { grid-template-columns: 1fr; gap: 10px; margin: 18px 0; }
@@ -506,8 +511,7 @@
         </div>
       </div>
       <div class="brand-row">
-        <div class="brand-mark">▲</div>
-        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo</small><small>Servicio Andaluz de Empleo</small></div>
+        <img class="brand-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
       </div>
     </section>
 
@@ -535,13 +539,13 @@
       </div>
 
       <div class="brand-row">
-        <div class="brand-mark">▲</div>
-        <div class="brand-text">Junta de Andalucía<small>Consejería de Empleo, Empresa y Trabajo Autónomo · Servicio Andaluz de Empleo</small></div>
+        <img class="brand-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
       </div>
     </section>
 
     <section id="result" class="screen hidden">
       <div class="result-card">
+        <img class="result-sae-logo" src="logo_Vertical_SAE_blanco_transparente.png" alt="Servicio Andaluz de Empleo">
         <img class="corner-logo" src="logo_DAFO.png" alt="Logotipo DAFO">
         <h2>Resumen final</h2>
         <p id="resultText" class="muted"></p>
