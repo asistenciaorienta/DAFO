@@ -1,4 +1,4 @@
-<!doctype html>
+continúo con problemas en la visualización de los vídeos. Se ve en la parte superior e inferior una franja gris y me gustaría eliminarla. ¿cual es la mejor opción? Te dejo el código actual: <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -40,8 +40,14 @@
       pointer-events: none;
       background-image:
         linear-gradient(rgba(255,255,255,.10), rgba(255,255,255,.10)),
-        linear-gradient(rgba(255,255,255,.07), rgba(255,255,255,.07));
-      background-size: 90px 90px, 180px 180px;
+        linear-gradient(rgba(255,255,255,.08), rgba(255,255,255,.08)),
+        linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)),
+        linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04));
+      background-size:
+        50px 50px,
+        90px 90px,
+        160px 160px,
+        260px 260px;
       mask-image: radial-gradient(circle, #000 0 55%, transparent 80%);
       opacity: .55;
     }
@@ -58,6 +64,9 @@
     .bubble:nth-child(3) { width: 68px; height: 68px; right: 8%; top: 36%; }
     .bubble:nth-child(4) { width: 54px; height: 54px; left: 78%; top: 8%; }
     .bubble:nth-child(5) { width: 84px; height: 84px; left: 16%; bottom: 12%; }
+    .bubble:nth-child(6) { width: 38px; height: 38px; right: 20%; bottom: 18%; }
+    .bubble:nth-child(7) { width: 120px; height: 120px; left: 42%; bottom: 10%; }
+    .bubble:nth-child(8) { width: 46px; height: 46px; left: 30%; top: 12%; }
 
     main {
       position: relative;
@@ -279,10 +288,8 @@
       padding: 0;
       box-shadow: var(--shadow);
       overflow: hidden;
-      width: min(420px, 100%);
+      height: 90vh;
       aspect-ratio: 9 / 14;
-      height: auto;
-      max-height: 85vh;
     }
 
     .result-card .video-panel {
@@ -296,7 +303,7 @@
       height: 100%;
       object-fit: cover;
       object-position: center center;
-      transform: scale(1.26);
+      transform: scale(1.25);
       transform-origin: center center;
       border: 0;
       display: block;
@@ -481,7 +488,7 @@
       .corner-logo { position: static; width: 120px; margin-bottom: 12px; }
       .question-row { grid-template-columns: 1fr; gap: 10px; margin: 18px 0; }
       .video-panel { width: 100%; max-height: none; }
-      iframe, video { width: 100%; height: 100%; object-fit: cover; object-position: center center; transform: scale(1.26); }
+      iframe, video { width: 100%; height: 100%; object-fit: cover; object-position: center center; transform: scale(1.25); }
     }
 
     @media (max-width: 520px) {
@@ -496,12 +503,13 @@
 </head>
 <body>
   <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
+  <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
 
   <main>
     <section id="intro" class="screen">
       <div class="intro-layout">
         <div class="intro-copy">
-          <h1>Logra tus sueños profesionales</h1>
+          <h1>Ruta DAFO:<br>conócete y avanza</h1>
           <p id="introSubtitle" class="intro-subtitle hidden"></p>
         </div>
         <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
