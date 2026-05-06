@@ -40,8 +40,14 @@
       pointer-events: none;
       background-image:
         linear-gradient(rgba(255,255,255,.10), rgba(255,255,255,.10)),
-        linear-gradient(rgba(255,255,255,.07), rgba(255,255,255,.07));
-      background-size: 90px 90px, 180px 180px;
+        linear-gradient(rgba(255,255,255,.08), rgba(255,255,255,.08)),
+        linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)),
+        linear-gradient(rgba(255,255,255,.04), rgba(255,255,255,.04));
+      background-size:
+        50px 50px,
+        90px 90px,
+        160px 160px,
+        260px 260px;
       mask-image: radial-gradient(circle, #000 0 55%, transparent 80%);
       opacity: .55;
     }
@@ -58,6 +64,9 @@
     .bubble:nth-child(3) { width: 68px; height: 68px; right: 8%; top: 36%; }
     .bubble:nth-child(4) { width: 54px; height: 54px; left: 78%; top: 8%; }
     .bubble:nth-child(5) { width: 84px; height: 84px; left: 16%; bottom: 12%; }
+    .bubble:nth-child(6) { width: 38px; height: 38px; right: 20%; bottom: 18%; }
+    .bubble:nth-child(7) { width: 120px; height: 120px; left: 42%; bottom: 10%; }
+    .bubble:nth-child(8) { width: 46px; height: 46px; left: 30%; top: 12%; }
 
     main {
       position: relative;
@@ -491,6 +500,7 @@
   </style>
 </head>
 <body>
+  <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
   <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
 
   <main>
