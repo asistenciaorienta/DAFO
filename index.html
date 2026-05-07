@@ -164,6 +164,26 @@
       cursor: pointer;
     }
 
+    .exit-button {
+      position: fixed;
+      right: clamp(18px, 3vw, 32px);
+      top: 132px;
+      z-index: 12;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.88);
+      box-shadow: none;
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      backdrop-filter: blur(4px);
+    }
+
+    .exit-button:hover {
+      background: rgba(0,0,0,.30);
+    }
+
     .qr-card::after {
       content: "QR";
       position: absolute;
@@ -544,6 +564,7 @@
       .intro-grid { padding-top: 86px; }
       .intro-dafo-logo { justify-self: start; width: min(150px, 38vw); }
       .qr-card { width: 64px; }
+      .exit-button { top: 112px; right: 18px; }
       .brand-footer { width: 52vw; min-width: 230px; bottom: 18px; }
       .start-button { right: 18px; bottom: 22px; }
       .video-panel { width: min(330px, 100%); max-height: 58vh; }
@@ -559,6 +580,7 @@
       h2 { font-size: 2.35rem; }
       button { width: 100%; font-size: 1rem; }
       .qr-card { width: 58px; }
+      .exit-button { top: 104px; font-size: .82rem; padding: 8px 11px; }
       .start-button { width: auto; }
       .brand-footer { width: 70vw; min-width: 210px; }
       .video-panel { width: min(300px, 100%); max-height: 56vh; border-radius: 22px; }
@@ -574,6 +596,7 @@
   <button id="qrSmallBtn" class="qr-card" type="button" aria-label="Ampliar código QR">
     <img class="qr-image" src="QR.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
   </button>
+  <button id="exitBtn" class="exit-button hidden" type="button">Salir</button>
 
   <div class="brand-footer">
     <img class="brand-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
@@ -670,6 +693,17 @@
     </form>
   </div>
 
+  <div id="exitModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Salir de la actividad">
+    <div class="modal-card">
+      <h3>Te esperamos cuando quieras volver</h3>
+      <p class="lead">Puedes dejar la actividad ahora. Cuando te apetezca seguir reflexionando sobre tu camino profesional, estaremos aquí.</p>
+      <div class="actions">
+        <button id="exitToStartBtn" type="button">Volver a la portada</button>
+        <button id="exitCancelBtn" class="secondary" type="button">Seguir en la actividad</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SECTION_ORDER = ["Debilidad", "Amenaza", "Fortaleza", "Oportunidad"];
 
@@ -721,6 +755,10 @@
     const qrSmallBtn = document.querySelector("#qrSmallBtn");
     const qrModal = document.querySelector("#qrModal");
     const qrCloseBtn = document.querySelector("#qrCloseBtn");
+    const exitBtn = document.querySelector("#exitBtn");
+    const exitModal = document.querySelector("#exitModal");
+    const exitToStartBtn = document.querySelector("#exitToStartBtn");
+    const exitCancelBtn = document.querySelector("#exitCancelBtn");
     const nameModal = document.querySelector("#nameModal");
     const nameForm = document.querySelector("#nameForm");
     const userNameInput = document.querySelector("#userNameInput");
@@ -738,6 +776,10 @@
     questionForm.addEventListener("submit", event => { event.preventDefault(); commitAnswerAndGoNext(); });
     continueBtn.addEventListener("click", commitAnswerAndGoNext);
     restartBtn.addEventListener("click", () => location.reload());
+    exitBtn.addEventListener("click", () => exitModal.classList.remove("hidden"));
+    exitCancelBtn.addEventListener("click", () => exitModal.classList.add("hidden"));
+    exitModal.addEventListener("click", event => { if (event.target === exitModal) exitModal.classList.add("hidden"); });
+    exitToStartBtn.addEventListener("click", () => location.reload());
     downloadPdfBtn.addEventListener("click", savePdf);
     sharePdfBtn.addEventListener("click", sharePdf);
 
@@ -865,6 +907,7 @@
         shuffleQuestionsByType(groupedQuestions);
         intro.classList.add("hidden");
         app.classList.remove("hidden");
+        exitBtn.classList.remove("hidden");
         renderCurrentStep();
       } catch (error) {
         alert("Error cargando preguntas.json. Revisa que esté en la misma carpeta que index.html.");
@@ -1077,6 +1120,7 @@
     function showResult() {
       app.classList.add("hidden");
       result.classList.remove("hidden");
+      exitBtn.classList.remove("hidden");
 
       const key = chooseSummaryVideoKey();
       const number = Number(String(key).split("feedback_").join(""));
