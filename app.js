@@ -1,4 +1,4 @@
-const SECTION_ORDER = ["Debilidad", "Amenaza", "Fortaleza", "Oportunidad"];
+const SECTION_ORDER = ["Fortaleza", "Amenaza", "Debilidad", "Oportunidad"];
 
 const SECTION_VIDEOS = {
   Debilidad: "videos/debilidades.mp4",
