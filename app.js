@@ -201,8 +201,7 @@
         intro.classList.add("hidden");
         app.classList.remove("hidden");
         
-        qrSmallBtn.classList.add("hidden");
-        exitBtn.classList.remove("hidden");
+        setScreenMode("app");
           
         renderCurrentStep();
       } catch (error) {
@@ -417,8 +416,7 @@
         app.classList.add("hidden");
         result.classList.remove("hidden");
         
-        qrSmallBtn.classList.add("hidden");
-        exitBtn.classList.remove("hidden");
+        setScreenMode("result");
 
       const key = chooseSummaryVideoKey();
       const number = Number(String(key).split("feedback_").join(""));
@@ -571,3 +569,15 @@ exitModal.addEventListener("click", event => {
 exitToStartBtn.addEventListener("click", () => {
   location.reload();
 });
+
+function setScreenMode(mode) {
+  if (mode === "intro") {
+    qrSmallBtn.classList.remove("hidden");
+    exitBtn.classList.add("hidden");
+    return;
+  }
+
+  qrSmallBtn.classList.add("hidden");
+  qrModal.classList.add("hidden");
+  exitBtn.classList.remove("hidden");
+}
