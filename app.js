@@ -200,7 +200,10 @@
         shuffleQuestionsByType(groupedQuestions);
         intro.classList.add("hidden");
         app.classList.remove("hidden");
+        
+        qrSmallBtn.classList.add("hidden");
         exitBtn.classList.remove("hidden");
+          
         renderCurrentStep();
       } catch (error) {
         alert("Error cargando preguntas.json. Revisa que esté en la misma carpeta que index.html.");
@@ -411,9 +414,11 @@
     }
 
     function showResult() {
-      app.classList.add("hidden");
-      result.classList.remove("hidden");
-      exitBtn.classList.remove("hidden");
+        app.classList.add("hidden");
+        result.classList.remove("hidden");
+        
+        qrSmallBtn.classList.add("hidden");
+        exitBtn.classList.remove("hidden");
 
       const key = chooseSummaryVideoKey();
       const number = Number(String(key).split("feedback_").join(""));
@@ -535,3 +540,34 @@
       }
       return y;
     }
+qrSmallBtn.addEventListener("click", () => {
+  qrModal.classList.remove("hidden");
+});
+
+qrCloseBtn.addEventListener("click", () => {
+  qrModal.classList.add("hidden");
+});
+
+qrModal.addEventListener("click", event => {
+  if (event.target === qrModal) {
+    qrModal.classList.add("hidden");
+  }
+});
+
+exitBtn.addEventListener("click", () => {
+  exitModal.classList.remove("hidden");
+});
+
+exitCancelBtn.addEventListener("click", () => {
+  exitModal.classList.add("hidden");
+});
+
+exitModal.addEventListener("click", event => {
+  if (event.target === exitModal) {
+    exitModal.classList.add("hidden");
+  }
+});
+
+exitToStartBtn.addEventListener("click", () => {
+  location.reload();
+});
