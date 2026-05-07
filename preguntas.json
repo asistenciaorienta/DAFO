@@ -23,6 +23,28 @@
   },
   {
     "tipo": "Debilidad",
+    "pregunta": "{nombre}, ¿Qué aspecto interno limita más tu avance?4",
+    "opciones": [
+      "Me debilita esto",
+      "Me debilita aquello",
+      "Me debilita esto otro"
+    ],
+    "respuesta_adecuada": 0,
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos, {nombre}."
+  },
+  {
+    "tipo": "Debilidad",
+    "pregunta": "¿Qué aspecto interno limita más tu avance2, {nombre}?5",
+    "opciones": [
+      "Me debilita esto",
+      "Me debilita aquello",
+      "Me debilita esto otro"
+    ],
+    "respuesta_adecuada": 1,
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos2."
+  },
+  {
+    "tipo": "Debilidad",
     "pregunta": "¿Qué aspecto interno limita más tu avance3?",
     "opciones": [
       "Me debilita esto",
@@ -57,6 +79,28 @@
   {
     "tipo": "Fortaleza",
     "pregunta": "¿Fortaleza3?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 2,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Fortaleza",
+    "pregunta": "¿Fortaleza4?",
+    "opciones": [
+      "Esta es una fortaleza clave",
+      "Otra fortaleza importante",
+      "Una fortaleza menos relevante"
+    ],
+    "respuesta_adecuada": 1,
+    "feedback": "Profundiza describiendo una fortaleza concreta y cómo puedes aprovecharla."
+  },
+  {
+    "tipo": "Fortaleza",
+    "pregunta": "¿Fortaleza5?",
     "opciones": [
       "Esta es una fortaleza clave",
       "Otra fortaleza importante",
