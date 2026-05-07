@@ -8,7 +8,7 @@
       "Me debilita esto otro"
     ],
     "respuesta_adecuada": 0,
-    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos."
+    "feedback": "Profundiza describiendo una debilidad concreta, sus causas y cómo afecta a tus objetivos, {nombre}."
   },
   {
     "tipo": "Debilidad",
