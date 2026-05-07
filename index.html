@@ -287,16 +287,24 @@
     }
 
     .intro-subtitle {
-      max-width: 780px;
-      margin-top: 26px;
-      padding: 18px 22px;
-      border-radius: 20px;
-      background: rgba(0,0,0,.34);
+      width: min(420px, 100%);
+      margin: 18px auto 0;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.28);
       color: white;
-      font-size: clamp(1.15rem, 2vw, 1.9rem);
-      font-weight: 820;
-      line-height: 1.28;
-      box-shadow: var(--shadow);
+      font-size: clamp(1rem, 1.5vw, 1.25rem);
+      font-weight: 500;
+      line-height: 1.35;
+      text-align: center;
+      box-shadow: 0 14px 34px rgba(0,0,0,.18);
+    }
+
+    .intro-side {
+      display: grid;
+      justify-items: center;
+      align-self: start;
+      gap: 10px;
     }
 
     .intro-dafo-logo {
@@ -562,7 +570,8 @@
       main { padding: 20px 16px var(--footer-space); }
       .intro-grid, .activity-grid { grid-template-columns: 1fr; }
       .intro-grid { padding-top: 86px; }
-      .intro-dafo-logo { justify-self: start; width: min(150px, 38vw); }
+      .intro-dafo-logo { justify-self: center; width: min(150px, 38vw); }
+      .intro-subtitle { width: min(520px, 100%); margin-inline: 0; }
       .qr-card { width: 64px; }
       .exit-button { right: 18px; bottom: 86px; }
       .brand-footer { width: 52vw; min-width: 230px; bottom: 18px; }
@@ -609,9 +618,11 @@
           <span class="intro-kicker">Herramienta de reflexión profesional</span>
           <h1>Ruta DAFO:<br>conócete y avanza</h1>
           <p class="lead">Piensa en tu meta profesional, mira qué te ayuda y qué te puede frenar, y recibe un informe para seguir avanzando.</p>
+        </div>
+        <div class="intro-side">
+          <img class="intro-dafo-logo" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
           <p id="introSubtitle" class="intro-subtitle hidden"></p>
         </div>
-        <img class="intro-dafo-logo" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
       </div>
       <button id="startBtn" class="start-button" type="button">Comenzar ›</button>
     </section>
@@ -793,8 +804,8 @@
         await loadIntroSubtitles();
 
         try {
-          introAudio.addEventListener("playing", startIntroSubtitles, { once: true });
           await introAudio.play();
+          startIntroSubtitles();
         } catch (error) {
           console.warn("No se pudo reproducir inicio.mp3.", error);
         }
