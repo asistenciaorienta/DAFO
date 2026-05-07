@@ -284,7 +284,8 @@ async function startApp() {
 
     questions = await response.json();
     groupedQuestions = groupByType(questions);
-    shuffleQuestionsByType(groupedQuestions);
+    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 2, 3);
+    ensureMinimumTotalQuestions(groupedQuestions, questions, 10);
 
     intro.classList.add("hidden");
     app.classList.remove("hidden");
@@ -311,10 +312,29 @@ function groupByType(items) {
   }, {});
 }
 
-function shuffleQuestionsByType(groupedItems) {
-  Object.keys(groupedItems).forEach(type => {
-    groupedItems[type] = shuffleArray(groupedItems[type]);
+function selectRandomQuestionsByType(groupedItems, minQuestions, maxQuestions) {
+  const selectedGroups = {};
+
+  SECTION_ORDER.forEach(type => {
+    const questionsOfType = groupedItems[type] || [];
+    const shuffledQuestions = shuffleArray(questionsOfType);
+
+    if (shuffledQuestions.length <= minQuestions) {
+      selectedGroups[type] = shuffledQuestions;
+      return;
+    }
+
+    const maxAvailable = Math.min(maxQuestions, shuffledQuestions.length);
+    const numberToTake = getRandomInt(minQuestions, maxAvailable);
+
+    selectedGroups[type] = shuffledQuestions.slice(0, numberToTake);
   });
+
+  return selectedGroups;
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function shuffleArray(array) {
@@ -728,4 +748,43 @@ function ensureSpace(doc, y, needed, pageHeight, margin) {
   }
 
   return y;
+}
+function ensureMinimumTotalQuestions(groupedItems, allQuestions, minimumTotal) {
+  let total = getTotalSelectedQuestions(groupedItems);
+
+  if (total >= minimumTotal) {
+    return;
+  }
+
+  const allGrouped = groupByType(allQuestions);
+
+  while (total < minimumTotal) {
+    const expandableTypes = SECTION_ORDER.filter(type => {
+      const selected = groupedItems[type] || [];
+      const available = allGrouped[type] || [];
+      return selected.length < 3 && selected.length < available.length;
+    });
+
+    if (expandableTypes.length === 0) {
+      break;
+    }
+
+    const randomType = expandableTypes[Math.floor(Math.random() * expandableTypes.length)];
+    const selected = groupedItems[randomType] || [];
+    const available = allGrouped[randomType] || [];
+
+    const remainingQuestions = available.filter(question => !selected.includes(question));
+    const randomQuestion = remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
+
+    groupedItems[randomType].push(randomQuestion);
+    groupedItems[randomType] = shuffleArray(groupedItems[randomType]);
+
+    total = getTotalSelectedQuestions(groupedItems);
+  }
+}
+
+function getTotalSelectedQuestions(groupedItems) {
+  return SECTION_ORDER.reduce((sum, type) => {
+    return sum + (groupedItems[type] || []).length;
+  }, 0);
 }
