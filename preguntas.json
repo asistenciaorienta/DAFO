@@ -1,7 +1,7 @@
 [
   {
     "tipo": "Debilidad",
-    "pregunta": "¿Qué aspecto interno limita más tu avance?",
+    "pregunta": "{nombre}, ¿Qué aspecto interno limita más tu avance?",
     "opciones": [
       "Me debilita esto",
       "Me debilita aquello",
@@ -12,7 +12,7 @@
   },
   {
     "tipo": "Debilidad",
-    "pregunta": "¿Qué aspecto interno limita más tu avance2?",
+    "pregunta": "¿Qué aspecto interno limita más tu avance2, {nombre}?",
     "opciones": [
       "Me debilita esto",
       "Me debilita aquello",
