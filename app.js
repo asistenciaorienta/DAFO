@@ -535,8 +535,16 @@ function buildAnswerFromCurrentSelection() {
     respuestaAdecuada: personalizeText(options[Number(currentQuestion.respuesta_adecuada)] || ""),
     respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
     correcta: adequate,
-    feedback: adequate ? "Respuesta adecuada." : personalizeText(currentQuestion.feedback || "Revisa este apartado con más profundidad.")
+    feedback: getFeedbackForSelectedOption(currentQuestion, selectedOptionIndex)
   };
+}
+
+function getFeedbackForSelectedOption(question, selectedIndex) {
+  if (Array.isArray(question.feedback)) {
+    return personalizeText(question.feedback[selectedIndex] || "Revisa este apartado con más profundidad.");
+  }
+
+  return personalizeText(question.feedback || "Revisa este apartado con más profundidad.");
 }
 
 function goNext() {
