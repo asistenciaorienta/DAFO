@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Logra tus sueños profesionales | DAFO</title>
+  <title>Ruta DAFO: conócete y avanza</title>
   <link rel="icon" type="image/png" href="logo_DAFO.png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -197,6 +197,44 @@
       line-height: 1;
       background: var(--grey);
       color: white;
+    }
+
+    .name-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 25;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(0,0,0,.58);
+    }
+
+    .name-modal-content {
+      width: min(540px, 92vw);
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      color: white;
+    }
+
+    .name-modal-content h3 {
+      margin-bottom: 10px;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+    }
+
+    .name-input {
+      width: 100%;
+      margin-top: 18px;
+      border: 2px solid rgba(255,255,255,.28);
+      border-radius: 18px;
+      padding: 16px 18px;
+      font: inherit;
+      font-size: 1.2rem;
+      background: rgba(255,255,255,.94);
+      color: #10383b;
+      outline: none;
     }
 
     .intro-subtitle {
@@ -509,7 +547,7 @@
     <section id="intro" class="screen">
       <div class="intro-layout">
         <div class="intro-copy">
-          <h1>Ruta DAFO:<br>conócete y avanza</h1>
+          <h2>Ruta DAFO:<br>conócete y avanza</h2>
           <p id="introSubtitle" class="intro-subtitle hidden"></p>
         </div>
         <img class="blocks-visual" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
@@ -523,6 +561,16 @@
           <button id="qrCloseBtn" class="qr-close-button" type="button" aria-label="Cerrar código QR">×</button>
           <img class="qr-placeholder" src="QR.png" alt="Código QR de acceso a la aplicación DAFO">
         </div>
+      </div>
+      <div id="nameModal" class="name-modal hidden" role="dialog" aria-modal="true" aria-label="Introduce tu nombre">
+        <form id="nameForm" class="name-modal-content">
+          <h3>Antes de empezar</h3>
+          <p class="muted">Escribe tu nombre para personalizar la experiencia y el informe final.</p>
+          <input id="userNameInput" class="name-input" type="text" autocomplete="given-name" maxlength="40" placeholder="Tu nombre" required>
+          <div class="actions">
+            <button type="submit">Empezar actividad</button>
+          </div>
+        </form>
       </div>
       <div class="brand-row">
         <img class="brand-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
@@ -562,6 +610,7 @@
         <img class="result-sae-logo" src="logo_Vertical_SAE_blanco_transparente.png" alt="Servicio Andaluz de Empleo">
         <img class="corner-logo" src="logo_DAFO.png" alt="Logotipo DAFO">
         <h2>Resumen final</h2>
+        <p id="resultUserName" class="muted"></p>
         <p id="resultText" class="muted"></p>
         <div id="summaryVideoContainer" class="video-panel"></div>
         <h3>Respuestas recogidas</h3>
@@ -618,6 +667,7 @@
     let introSubtitleTimer = null;
     let currentVideoType = null;
     let watchedVideoTypes = new Set();
+    let userName = "";
 
     const intro = document.querySelector("#intro");
     const app = document.querySelector("#app");
@@ -626,6 +676,9 @@
     const qrSmallBtn = document.querySelector("#qrSmallBtn");
     const qrModal = document.querySelector("#qrModal");
     const qrCloseBtn = document.querySelector("#qrCloseBtn");
+    const nameModal = document.querySelector("#nameModal");
+    const nameForm = document.querySelector("#nameForm");
+    const userNameInput = document.querySelector("#userNameInput");
     const restartBtn = document.querySelector("#restartBtn");
     const questionForm = document.querySelector("#questionForm");
     const skipFeedbackBtn = document.querySelector("#skipFeedbackBtn");
@@ -643,6 +696,7 @@
     skipFeedbackBtn.addEventListener("click", commitAnswerAndGoNext);
     downloadPdfBtn.addEventListener("click", savePdf);
     sharePdfBtn.addEventListener("click", sharePdf);
+    nameForm.addEventListener("submit", handleNameSubmit);
 
     async function handleStartButton() {
       if (!introAudioStarted) {
@@ -669,6 +723,20 @@
         introAudio.currentTime = 0;
       }
 
+      nameModal.classList.remove("hidden");
+      setTimeout(() => userNameInput.focus(), 50);
+    }
+
+    function handleNameSubmit(event) {
+      event.preventDefault();
+      userName = userNameInput.value.trim();
+
+      if (!userName) {
+        alert("Escribe tu nombre para continuar.");
+        return;
+      }
+
+      nameModal.classList.add("hidden");
       startApp();
     }
 
@@ -805,7 +873,7 @@
       selectedOptionIndex = null;
       pendingAnswer = null;
       document.querySelector("#sectionTitle").textContent = pluralTitle(type);
-      document.querySelector("#questionText").textContent = currentQuestion.pregunta;
+      document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
       document.querySelector("#answerInput").value = "";
       skipFeedbackBtn.disabled = true;
       renderOptions(currentQuestion.opciones || []);
@@ -896,7 +964,7 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "option-button";
-        button.innerHTML = `<span class="option-number">${index + 1}</span>${escapeHtml(optionText)}`;
+        button.innerHTML = `<span class="option-number">${index + 1}</span>${escapeHtml(personalizeText(optionText))}`;
         button.addEventListener("click", () => selectOption(index));
         optionsList.appendChild(button);
       });
@@ -918,19 +986,19 @@
 
     function buildAnswerFromCurrentSelection() {
       const opciones = Array.isArray(currentQuestion.opciones) ? currentQuestion.opciones : [];
-      const selectedText = opciones[selectedOptionIndex] || "";
+      const selectedText = personalizeText(opciones[selectedOptionIndex] || "");
       const adequate = isAnswerAdequate(selectedOptionIndex, currentQuestion.respuesta_adecuada);
-      const adequateText = opciones[Number(currentQuestion.respuesta_adecuada)] || "";
+      const adequateText = personalizeText(opciones[Number(currentQuestion.respuesta_adecuada)] || "");
 
       return {
         tipo: currentQuestion.tipo,
-        pregunta: currentQuestion.pregunta,
+        pregunta: personalizeText(currentQuestion.pregunta),
         respuestaUsuario: selectedText,
         respuestaUsuarioIndice: selectedOptionIndex,
         respuestaAdecuada: adequateText,
         respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
         correcta: adequate,
-        feedback: adequate ? "Respuesta adecuada." : currentQuestion.feedback || "Revisa este apartado con más profundidad."
+        feedback: adequate ? "Respuesta adecuada." : personalizeText(currentQuestion.feedback || "Revisa este apartado con más profundidad.")
       };
     }
 
@@ -1004,6 +1072,7 @@
       const questionArea = document.querySelector(".question-area");
           if (questionArea) questionArea.classList.remove("waiting-video");
       const feedbackNumber = getFeedbackNumberFromKey(key);
+      document.querySelector("#resultUserName").textContent = userName ? `Informe de ${userName}` : "";
       document.querySelector("#resultText").textContent = `Has completado la reflexión. Se mostrará el vídeo de feedback ${feedbackNumber}, seleccionado según el resultado global de cada bloque DAFO.`;
       document.querySelector("#answersList").innerHTML = answers.map(answer => `
         <article class="answer-item">
@@ -1012,6 +1081,14 @@
           <p><b>Respuesta:</b> ${escapeHtml(answer.respuestaUsuario)}</p>
           <p><b>Recomendación:</b> ${escapeHtml(answer.feedback)}</p>
         </article>`).join("");
+    }
+
+    function personalizeText(text) {
+      return String(text || "")
+        .replaceAll("{{nombre}}", userName)
+        .replaceAll("{nombre}", userName)
+        .replaceAll("[nombre]", userName)
+        .replaceAll("NOMBRE", userName);
     }
 
     function escapeHtml(text) {
@@ -1031,9 +1108,16 @@
       doc.setFontSize(18);
       doc.text("Informe de reflexión DAFO", margin, y);
       y += 10;
+
+      if (userName) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.text(`Nombre: ${userName}`, margin, y);
+        y += 9;
+      }
       doc.setFont("helvetica", "normal");
       doc.setFontSize(11);
-      y = addWrappedText(doc, "Este documento recoge tus respuestas y recomendaciones personalizadas para profundizar en Debilidades, Amenazas, Fortalezas y Oportunidades.", margin, y, usableWidth) + 8;
+      y = addWrappedText(doc, personalizeText("Este documento recoge tus respuestas y recomendaciones personalizadas para profundizar en Debilidades, Amenazas, Fortalezas y Oportunidades."), margin, y, usableWidth) + 8;
 
       SECTION_ORDER.forEach(type => {
         y = ensureSpace(doc, y, 30, pageHeight, margin);
