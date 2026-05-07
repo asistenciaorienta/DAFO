@@ -10,6 +10,88 @@
 </head>
 
 <body>
+  <span class="shape"></span>
+  <span class="shape"></span>
+  <span class="shape"></span>
+  <span class="shape"></span>
+  <span class="shape"></span>
+
+  <!-- QR: solo debe verse en portada -->
+  <button id="qrSmallBtn" class="qr-card" type="button" aria-label="Ampliar código QR">
+    <img class="qr-image" src="QR.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
+  </button>
+
+  <!-- Salir: oculto en portada, visible en preguntas/resumen -->
+  <button id="exitBtn" class="exit-button hidden" type="button">Salir</button>
+
+  <!-- Logo institucional fijo -->
+  <div class="brand-footer">
+    <img class="brand-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
+  </div>
+
+  <main>
+    <!-- PORTADA -->
+    <section id="intro" class="page">
+      <div class="intro-grid">
+        <div class="intro-panel">
+          <span class="intro-kicker">Herramienta de reflexión profesional</span>
+          <h1>Ruta DAFO:<br>conócete y avanza</h1>
+          <p class="lead">
+            Piensa en tu meta profesional, mira qué te ayuda y qué te puede frenar,
+            y recibe un informe para seguir avanzando.
+          </p>
+        </div>
+
+        <div class="intro-side">
+          <img class="intro-dafo-logo" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
+          <p id="introSubtitle" class="intro-subtitle hidden"></p>
+        </div>
+      </div>
+
+      <button id="startBtn" class="start-button" type="button">Comenzar ›</button>
+    </section>
+
+    <!-- ACTIVIDAD -->
+    <section id="app" class="page hidden">
+      <div class="activity-grid">
+        <div id="videoContainer" class="video-panel"></div>
+
+        <article id="questionCard" class="question-card waiting-video">
+          <img class="corner-logo" src="logo_DAFO.png" alt="Logotipo DAFO">
+
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span id="progressText">Pregunta 1</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress">
+              <div id="progressBar" class="progress-bar"></div>
+            </div>
+          </div>
+
+          <span id="sectionPill" class="section-pill"></span>
+          <h2 id="sectionTitle"></h2>
+          <p class="help-text">
+            Elige la opción que mejor encaje contigo. No hay que escribir:
+            solo pensar, elegir y continuar.
+          </p>
+
+          <form id="questionForm">
+            <h3 id="questionText"></h3>
+            <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></div>
+            <input id="answerInput" type="hidden" required>
+
+            <div class="actions">
+              <button id="continueBtn" class="primary" type="button" disabled>Continuar</button>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+
+    <!-- RESUMEN FINAL -->
+    <section id="result" class="page hidden">
+      <article class="result-card">
         <div class="result-header">
           <div>
             <h2>Tu resumen final</h2>
@@ -24,7 +106,9 @@
         </div>
 
         <h3>Respuestas recogidas</h3>
-        <p class="help-text">El feedback detallado aparecerá en el PDF. Puedes guardarlo o compartirlo.</p>
+        <p class="help-text">
+          El feedback detallado aparecerá en el PDF. Puedes guardarlo o compartirlo.
+        </p>
         <div id="answersList" class="answer-list"></div>
 
         <div class="actions">
@@ -36,6 +120,7 @@
     </section>
   </main>
 
+  <!-- MODAL QR -->
   <div id="qrModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Código QR ampliado">
     <div class="modal-card white">
       <button id="qrCloseBtn" class="close-button" type="button" aria-label="Cerrar código QR">×</button>
@@ -43,10 +128,13 @@
     </div>
   </div>
 
+  <!-- MODAL NOMBRE -->
   <div id="nameModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Introduce tu nombre">
     <form id="nameForm" class="modal-card">
       <h3>Antes de empezar</h3>
-      <p class="lead">Escribe tu nombre para que las preguntas y el informe sean más cercanos.</p>
+      <p class="lead">
+        Escribe tu nombre para que las preguntas y el informe sean más cercanos.
+      </p>
       <input id="userNameInput" class="name-input" type="text" autocomplete="given-name" maxlength="40" placeholder="Tu nombre" required>
       <div class="actions">
         <button type="submit">Empezar actividad</button>
@@ -54,17 +142,21 @@
     </form>
   </div>
 
+  <!-- MODAL SALIR -->
   <div id="exitModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Salir de la actividad">
     <div class="modal-card">
       <h3>Te esperamos cuando quieras volver</h3>
-      <p class="lead">Puedes dejar la actividad ahora. Cuando te apetezca seguir reflexionando sobre tu camino profesional, estaremos aquí.</p>
+      <p class="lead">
+        Puedes dejar la actividad ahora. Cuando te apetezca seguir reflexionando
+        sobre tu camino profesional, estaremos aquí.
+      </p>
       <div class="actions">
         <button id="exitToStartBtn" type="button">Volver a la portada</button>
         <button id="exitCancelBtn" class="secondary" type="button">Seguir en la actividad</button>
       </div>
     </div>
   </div>
-  <script src="app.js"></script>
 
+  <script src="app.js"></script>
 </body>
 </html>
