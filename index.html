@@ -10,66 +10,6 @@
 </head>
 
 <body>
-  <span class="shape"></span><span class="shape"></span><span class="shape"></span><span class="shape"></span><span class="shape"></span>
-
-  <button id="qrSmallBtn" class="qr-card" type="button" aria-label="Ampliar código QR">
-    <img class="qr-image" src="QR.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
-  </button>
-  <button id="exitBtn" class="exit-button hidden" type="button">Salir</button>  
-
-  <div class="brand-footer">
-    <img class="brand-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
-  </div>
-
-  <main>
-    <section id="intro" class="page">
-      <div class="intro-grid">
-        <div class="intro-panel">
-          <span class="intro-kicker">Herramienta de reflexión profesional</span>
-          <h1>Ruta DAFO:<br>conócete y avanza</h1>
-          <p class="lead">Piensa en tu meta profesional, mira qué te ayuda y qué te puede frenar, y recibe un informe para seguir avanzando.</p>
-        </div>
-        <div class="intro-side">
-          <img class="intro-dafo-logo" src="logo_DAFO.png" alt="DAFO: Debilidades, Amenazas, Fortalezas y Oportunidades">
-          <p id="introSubtitle" class="intro-subtitle hidden"></p>
-        </div>
-      </div>
-      <button id="startBtn" class="start-button" type="button">Comenzar ›</button>
-    </section>
-
-    <section id="app" class="page hidden">
-      <div class="activity-grid">
-        <div id="videoContainer" class="video-panel"></div>
-
-        <article id="questionCard" class="question-card waiting-video">
-          <img class="corner-logo" src="logo_DAFO.png" alt="Logotipo DAFO">
-
-          <div class="progress-wrap">
-            <div class="progress-label">
-              <span id="progressText">Pregunta 1</span>
-              <span id="progressPercent">0%</span>
-            </div>
-            <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
-          </div>
-
-          <span id="sectionPill" class="section-pill"></span>
-          <h2 id="sectionTitle"></h2>
-          <p class="help-text">Elige la opción que mejor encaje contigo. No hay que escribir: solo pensar, elegir y continuar.</p>
-
-          <form id="questionForm">
-            <h3 id="questionText"></h3>
-            <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></div>
-            <input id="answerInput" type="hidden" required>
-            <div class="actions">
-              <button id="continueBtn" class="primary" type="button" disabled>Continuar</button>
-            </div>
-          </form>
-        </article>
-      </div>
-    </section>
-
-    <section id="result" class="page hidden">
-      <article class="result-card">
         <div class="result-header">
           <div>
             <h2>Tu resumen final</h2>
