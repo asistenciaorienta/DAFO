@@ -354,7 +354,7 @@ function renderCurrentStep() {
 
   if (currentVideoType !== type) {
     currentVideoType = type;
-    renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo", type);
+    renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo para contituar", type);
   }
 
   const card = document.querySelector("#questionCard");
