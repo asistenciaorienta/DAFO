@@ -32,6 +32,7 @@
         linear-gradient(135deg, var(--turquoise-light), var(--turquoise-dark));
       overflow-x: hidden;
     }
+
     body::before {
       content: "";
       position: fixed;
@@ -1083,11 +1084,12 @@
     }
 
     function personalizeText(text) {
-      return String(text || "")
-        .replaceAll("{{nombre}}", userName)
-        .replaceAll("{nombre}", userName)
-        .replaceAll("[nombre]", userName)
-        .replaceAll("NOMBRE", userName);
+      let result = String(text || "");
+      result = result.split("{{nombre}}").join(userName);
+      result = result.split("{nombre}").join(userName);
+      result = result.split("[nombre]").join(userName);
+      result = result.split("NOMBRE").join(userName);
+      return result;
     }
 
     function escapeHtml(text) {
