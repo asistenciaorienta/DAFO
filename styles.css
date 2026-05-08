@@ -372,22 +372,21 @@ button.primary {
 .video-panel {
   position: relative;
   justify-self: center;
-  width: min(360px, 100%);
+  width: min(360px, calc((100dvh - var(--footer-space) - 90px) * 9 / 16), 100%);
   aspect-ratio: 9 / 16;
-  max-height: calc(100dvh - var(--footer-space) - 90px);
+  height: auto;
   overflow: hidden;
   background: #000;
   border-radius: 26px;
   box-shadow: var(--shadow);
 }
-
 .video-panel video,
 .video-panel iframe {
   width: 100%;
   height: 100%;
   border: 0;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center center;
   background: #000;
 }
@@ -659,10 +658,6 @@ button.primary {
     bottom: 22px;
   }
 
-  .video-panel {
-    width: min(330px, 100%);
-    max-height: 58vh;
-  }
 
   .question-card {
     padding-top: 22px;
@@ -685,6 +680,15 @@ button.primary {
   .result-sae-logo {
     justify-self: start;
   }
+  .video-panel {
+  width: min(330px, calc((100dvh - var(--footer-space) - 80px) * 9 / 16), 100%);
+  aspect-ratio: 9 / 16;
+  height: auto;
+}
+
+.result-video-panel {
+  width: min(300px, calc((100dvh - 130px) * 9 / 16), 100%);
+}
 }
 
 @media (max-width: 520px) {
@@ -720,12 +724,6 @@ button.primary {
     min-width: 210px;
   }
 
-  .video-panel {
-    width: min(300px, 100%);
-    max-height: 56vh;
-    border-radius: 22px;
-  }
-
   .option-button {
     grid-template-columns: 32px 1fr;
     padding: 14px;
@@ -736,6 +734,16 @@ button.primary {
     width: 30px;
     height: 30px;
   }
+  .video-panel {
+  width: min(300px, calc((100dvh - var(--footer-space) - 70px) * 9 / 16), 100%);
+  aspect-ratio: 9 / 16;
+  height: auto;
+  border-radius: 22px;
+}
+
+.result-video-panel {
+  width: min(280px, calc((100dvh - 120px) * 9 / 16), 100%);
+}
 }
 
 .video-summary-box {
@@ -881,11 +889,11 @@ button.primary {
 }
 
 .result-video-panel {
-  width: min(300px, 100%);
+  width: min(320px, calc((100dvh - 150px) * 9 / 16), 100%);
   aspect-ratio: 9 / 16;
   height: auto;
-  min-height: 520px;
-  max-height: 620px;
+  min-height: 0;
+  max-height: none;
   margin: 0 auto;
 }
 
@@ -1005,6 +1013,7 @@ button.primary {
     grid-template-columns: 1fr;
     gap: 26px;
   }
+  
 
   .result-main-title {
     max-width: none;
@@ -1029,15 +1038,18 @@ button.primary {
     order: -1;
   }
 
-  .result-video-panel {
-    width: min(280px, 100%);
-    min-height: 460px;
-    max-height: none;
-  }
-
   .dafo-grid {
     grid-template-columns: 1fr;
   }
+  .video-panel {
+  width: min(330px, calc((100dvh - var(--footer-space) - 80px) * 9 / 16), 100%);
+  aspect-ratio: 9 / 16;
+  height: auto;
+}
+
+.result-video-panel {
+  width: min(300px, calc((100dvh - 130px) * 9 / 16), 100%);
+}
 }
 
 @media (max-width: 640px) {
