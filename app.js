@@ -476,15 +476,25 @@ function renderVideo(selector, source, buttonText, type) {
 
   const video = container.querySelector("video");
   const layer = container.querySelector(".video-start-layer");
-
-  layer.addEventListener("click", async () => {
-    layer.remove();
+  
+  async function startVideo() {
+    if (layer) {
+      layer.remove();
+    }
+  
     video.setAttribute("controls", "controls");
-
+  
     try {
       await video.play();
     } catch (error) {
       console.warn("El navegador no permitió reproducir el vídeo.", error);
+    }
+  }
+  
+  layer.addEventListener("click", startVideo);
+  video.addEventListener("click", () => {
+    if (!video.controls) {
+      startVideo();
     }
   });
 
