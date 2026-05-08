@@ -91,35 +91,67 @@
 
     <!-- RESUMEN FINAL -->
     <section id="result" class="page hidden">
-      <article class="result-card">
-       <div class="result-layout">
-          <div class="result-main-content">
-            <div class="result-header">
-              <div>
-                <h3 id="resultTitle">Tu valoración DAFO</h3>
-                <p id="resultUserName" class="lead"></p>
-                <p id="resultText" class="lead"></p>
-              </div>
-              <img class="result-sae-logo" src="logo_Vertical_SAE_blanco_transparente.png" alt="Servicio Andaluz de Empleo">
-            </div>
-        
-            <h4>Una reflexión para seguir avanzando</h4>
-            <div id="videoSummaryBox" class="video-summary-box"></div>
+      <article class="result-screen">
+        <div class="result-hero">
+          <div class="result-hero-text">
+            <h3 id="resultHeading" class="result-main-title">Esta es tu valoración DAFO</h3>
+    
+            <div class="result-title-box"></div>
+    
+            <p id="resultText" class="result-lead">
+              Has completado la ruta. A continuación verás una reflexión adaptada a tus respuestas para ayudarte a seguir avanzando.
+            </p>
           </div>
-        
-          <aside class="result-video-side">
-            <div id="summaryVideoContainer" class="video-panel"></div>
-          </aside>
-        </div> 
-        
-        <h3>Tu matriz DAFO</h3>
-        <p class="help-text">
-          Al final podrás guardar o compartir tu informe con tus respuestas y reflexiones.
-        </p>
-        
-        <div id="dafoMatrix" class="dafo-matrix"></div>
-
-        <div class="actions">
+    
+          <div class="result-hero-video-area">
+            <div id="summaryVideoContainer" class="video-panel result-video-panel"></div>
+            <img class="result-top-logo" src="logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
+          </div>
+        </div>
+    
+        <section class="result-reflection-section">
+          <h3 class="result-section-title">Una reflexión para seguir avanzando</h3>
+    
+          <div class="result-reflection-card">
+            <h4 id="feedbackTitle"></h4>
+            <p id="feedbackSummary"></p>
+            <p class="reflection-line">
+              <strong>Reflexión:</strong>
+              <span id="feedbackReflection"></span>
+            </p>
+          </div>
+        </section>
+    
+        <section class="result-matrix-section">
+          <h3 class="result-section-title">Tu matriz DAFO</h3>
+          <p class="help-text">
+            Al final podrás guardar o compartir tu informe con tus respuestas y reflexiones.
+          </p>
+    
+          <div class="dafo-grid">
+            <article class="dafo-box dafo-box-debilidades">
+              <h4>DEBILIDADES</h4>
+              <ul id="dafoDebilidades"></ul>
+            </article>
+    
+            <article class="dafo-box dafo-box-amenazas">
+              <h4>AMENAZAS</h4>
+              <ul id="dafoAmenazas"></ul>
+            </article>
+    
+            <article class="dafo-box dafo-box-fortalezas">
+              <h4>FORTALEZAS</h4>
+              <ul id="dafoFortalezas"></ul>
+            </article>
+    
+            <article class="dafo-box dafo-box-oportunidades">
+              <h4>OPORTUNIDADES</h4>
+              <ul id="dafoOportunidades"></ul>
+            </article>
+          </div>
+        </section>
+    
+        <div class="actions result-actions">
           <button id="downloadPdfBtn" type="button">Guardar PDF</button>
           <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
           <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
