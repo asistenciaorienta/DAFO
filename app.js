@@ -303,24 +303,31 @@ function stopIntroSubtitles() {
 
 async function startApp() {
   try {
-    const [questionsResponse, feedbacksResponse] = await Promise.all([
-      fetch("preguntas.json"),
-      fetch("feedbacks.json")
-    ]);
+    const questionsResponse = await fetch("preguntas.json");
 
     if (!questionsResponse.ok) {
       throw new Error("No se pudo cargar preguntas.json");
     }
 
-    if (!feedbacksResponse.ok) {
-      throw new Error("No se pudo cargar feedbacks.json");
+    questions = await questionsResponse.json();
+
+    try {
+      const feedbacksResponse = await fetch("feedbacks.json");
+
+      if (feedbacksResponse.ok) {
+        feedbacksData = await feedbacksResponse.json();
+      } else {
+        console.warn("No se encontró feedbacks.json. La app continuará sin textos de reflexión final.");
+        feedbacksData = {};
+      }
+    } catch (feedbackError) {
+      console.warn("feedbacks.json tiene algún problema o no se pudo cargar.", feedbackError);
+      feedbacksData = {};
     }
 
-    questions = await questionsResponse.json();
-    feedbacksData = await feedbacksResponse.json();
-
     groupedQuestions = groupByType(questions);
-    shuffleQuestionsByType(groupedQuestions);
+    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 2, 3);
+    ensureMinimumTotalQuestions(groupedQuestions, questions, 10);
 
     intro.classList.add("hidden");
     app.classList.remove("hidden");
@@ -329,7 +336,7 @@ async function startApp() {
     setScreenMode("app");
     renderCurrentStep();
   } catch (error) {
-    alert("Error cargando los archivos JSON. Revisa preguntas.json y feedbacks.json.");
+    alert("Error cargando preguntas.json. Revisa que esté en la misma carpeta que index.html y que el JSON sea válido.");
     console.error(error);
   }
 }
@@ -706,59 +713,6 @@ function renderDafoMatrix() {
       .map(answer => `<li>${escapeHtml(answer.respuestaUsuario)}</li>`)
       .join("");
   });
-}
-
-function renderVideoSummary(feedbackKey) {
-  const box = document.querySelector("#videoSummaryBox");
-  if (!box) return;
-
-  const summary = feedbackSummaries[feedbackKey];
-
-  if (!summary) {
-    box.innerHTML = `
-      <p>No hay resumen escrito para este vídeo final. Puedes añadirlo en <b>feedbacks.json</b> usando la clave <b>${escapeHtml(feedbackKey)}</b>.</p>
-    `;
-    return;
-  }
-
-  box.innerHTML = `
-    <h4>${escapeHtml(personalizeText(summary.titulo || "Resumen personalizado"))}</h4>
-    <p>${escapeHtml(personalizeText(summary.resumen || ""))}</p>
-    <p><b>Reflexión:</b> ${escapeHtml(personalizeText(summary.reflexion || ""))}</p>
-  `;
-}
-
-function renderDafoMatrix() {
-  const matrix = document.querySelector("#dafoMatrix");
-  if (!matrix) return;
-
-  const matrixOrder = ["Debilidad", "Amenaza", "Fortaleza", "Oportunidad"];
-
-  matrix.innerHTML = matrixOrder.map(type => {
-    const items = answers.filter(answer => answer.tipo === type);
-
-    return `
-      <section class="dafo-box ${getDafoBoxClass(type)}">
-        <h4>${escapeHtml(pluralTitle(type))}</h4>
-        <ul>
-          ${
-            items.length
-              ? items.map(answer => `<li>${escapeHtml(answer.respuestaUsuario)}</li>`).join("")
-              : "<li>No hay respuestas en este bloque.</li>"
-          }
-        </ul>
-      </section>
-    `;
-  }).join("");
-}
-
-function getDafoBoxClass(type) {
-  return {
-    Debilidad: "debilidad",
-    Amenaza: "amenaza",
-    Fortaleza: "fortaleza",
-    Oportunidad: "oportunidad"
-  }[type] || "";
 }
 
 function personalizeText(text) {
