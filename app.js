@@ -657,9 +657,14 @@ function showResult() {
 
   renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen", null);
 
-  document.querySelector("#resultUserName").textContent = userName ? `Informe de ${userName}` : "";
+  document.querySelector("#resultTitle").textContent = userName
+    ? `${userName}, esta es tu valoración DAFO`
+    : "Esta es tu valoración DAFO";
+  
+  document.querySelector("#resultUserName").textContent = "";
+  
   document.querySelector("#resultText").textContent =
-    `Has terminado la ruta. Ahora verás un vídeo de resumen adaptado a tus respuestas. Vídeo de feedback ${number}.`;
+    "Has completado la ruta. A continuación verás una reflexión adaptada a tus respuestas para ayudarte a seguir avanzando.";
 
   renderVideoSummary(key);
   renderDafoMatrix();
