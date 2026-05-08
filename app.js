@@ -681,7 +681,7 @@ function renderVideoSummary(feedbackKey) {
   box.innerHTML = `
     <h4>${escapeHtml(personalizeText(summary.titulo || "Resumen personalizado"))}</h4>
     <p>${escapeHtml(personalizeText(summary.resumen || ""))}</p>
-    <p><b>Recomendación:</b> ${escapeHtml(personalizeText(summary.recomendacion || ""))}</p>
+    <p><b>Reflexión:</b> ${escapeHtml(personalizeText(summary.reflexion || ""))}</p>
   `;
 }
 
