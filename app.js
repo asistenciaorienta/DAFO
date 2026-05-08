@@ -41,6 +41,7 @@ let introAudioStarted = false;
 let introCues = [];
 let introSubtitleTimer = null;
 let feedbackSummaries = {};
+let feedbacksData = {};
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -302,26 +303,24 @@ function stopIntroSubtitles() {
 
 async function startApp() {
   try {
-  const questionsResponse = await fetch("preguntas.json");
-  
-  if (!questionsResponse.ok) {
-    throw new Error("No se pudo cargar preguntas.json");
-  }
-  
-  questions = await questionsResponse.json();
-  
-  try {
-    const feedbackResponse = await fetch("feedbacks.json");
-    if (feedbackResponse.ok) {
-      feedbackSummaries = await feedbackResponse.json();
+    const [questionsResponse, feedbacksResponse] = await Promise.all([
+      fetch("preguntas.json"),
+      fetch("feedbacks.json")
+    ]);
+
+    if (!questionsResponse.ok) {
+      throw new Error("No se pudo cargar preguntas.json");
     }
-  } catch (error) {
-    console.warn("No se pudo cargar feedbacks.json.", error);
-    feedbackSummaries = {};
-  }
+
+    if (!feedbacksResponse.ok) {
+      throw new Error("No se pudo cargar feedbacks.json");
+    }
+
+    questions = await questionsResponse.json();
+    feedbacksData = await feedbacksResponse.json();
+
     groupedQuestions = groupByType(questions);
-    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 2, 3);
-    ensureMinimumTotalQuestions(groupedQuestions, questions, 10);
+    shuffleQuestionsByType(groupedQuestions);
 
     intro.classList.add("hidden");
     app.classList.remove("hidden");
@@ -330,7 +329,7 @@ async function startApp() {
     setScreenMode("app");
     renderCurrentStep();
   } catch (error) {
-    alert("Error cargando preguntas.json. Revisa que esté en la misma carpeta que index.html.");
+    alert("Error cargando los archivos JSON. Revisa preguntas.json y feedbacks.json.");
     console.error(error);
   }
 }
@@ -663,21 +662,50 @@ function showResult() {
   setScreenMode("result");
 
   const key = chooseSummaryVideoKey();
-  const number = Number(String(key).split("feedback_").join(""));
+  const feedbackInfo = feedbacksData[key] || {};
+  const userLabel = userName ? `${userName}, esta es tu valoración DAFO` : "Esta es tu valoración DAFO";
 
   renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen", null);
 
-  document.querySelector("#resultTitle").textContent = userName
-    ? `${userName}, esta es tu valoración DAFO`
-    : "Esta es tu valoración DAFO";
-  
-  document.querySelector("#resultUserName").textContent = "";
-  
+  document.querySelector("#resultHeading").innerHTML = userLabel.replace(", ", ",<br>");
   document.querySelector("#resultText").textContent =
     "Has completado la ruta. A continuación verás una reflexión adaptada a tus respuestas para ayudarte a seguir avanzando.";
 
-  renderVideoSummary(key);
+  document.querySelector("#feedbackTitle").textContent =
+    feedbackInfo.titulo || "Tu reflexión final";
+
+  document.querySelector("#feedbackSummary").textContent =
+    feedbackInfo.resumen || "Aquí aparecerá el resumen asociado a tu vídeo final.";
+
+  document.querySelector("#feedbackReflection").textContent =
+    feedbackInfo.reflexion || feedbackInfo.recomendacion || "";
+
   renderDafoMatrix();
+}
+
+function renderDafoMatrix() {
+  const map = {
+    Debilidad: "#dafoDebilidades",
+    Amenaza: "#dafoAmenazas",
+    Fortaleza: "#dafoFortalezas",
+    Oportunidad: "#dafoOportunidades"
+  };
+
+  Object.entries(map).forEach(([tipo, selector]) => {
+    const container = document.querySelector(selector);
+    if (!container) return;
+
+    const blockAnswers = answers.filter(answer => answer.tipo === tipo);
+
+    if (blockAnswers.length === 0) {
+      container.innerHTML = "<li>Sin respuestas registradas.</li>";
+      return;
+    }
+
+    container.innerHTML = blockAnswers
+      .map(answer => `<li>${escapeHtml(answer.respuestaUsuario)}</li>`)
+      .join("");
+  });
 }
 
 function renderVideoSummary(feedbackKey) {
