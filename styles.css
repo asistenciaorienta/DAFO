@@ -820,4 +820,6 @@ button.primary {
   }
 }
 
-
+.video-start-layer {
+  cursor: pointer;
+}
