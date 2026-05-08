@@ -168,7 +168,8 @@ async function handleStartButton() {
 function handleNameSubmit(event) {
   event.preventDefault();
 
-  userName = userNameInput.value.trim();
+  userName = formatPersonName(userNameInput.value);
+  userNameInput.value = userName;
 
   if (!userName) {
     alert("Escribe tu nombre para continuar.");
@@ -177,6 +178,30 @@ function handleNameSubmit(event) {
 
   nameModal.classList.add("hidden");
   startApp();
+}
+
+function formatPersonName(name) {
+  const lowercaseWords = ["de", "del", "la", "las", "los", "y", "e"];
+
+  return String(name || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase("es-ES")
+    .split(" ")
+    .map((word, index) => {
+      if (!word) return "";
+
+      if (lowercaseWords.includes(word) && index !== 0) {
+        return word;
+      }
+
+      if (word === "mª" || word === "m.") {
+        return "Mª";
+      }
+
+      return word.charAt(0).toLocaleUpperCase("es-ES") + word.slice(1);
+    })
+    .join(" ");
 }
 
 async function loadIntroSubtitles() {
