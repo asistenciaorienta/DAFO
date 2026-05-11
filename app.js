@@ -777,8 +777,8 @@ function escapeHtml(text) {
 async function createPdfDocument() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF("p", "mm", "a4");
-  const projectLogo = await loadImageAsDataUrl("logo_DAFO.png");
-  const saeLogo = await loadImageAsDataUrl("SAE_Junta_de_Andalucia_Documentacion.png");
+  const projectLogo = await loadImageAsDataUrl("/imagenes/logo_DAFO.png");
+  const saeLogo = await loadImageAsDataUrl("/imagenes/SAE_Junta_de_Andalucia_Documentacion.png");
   
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
