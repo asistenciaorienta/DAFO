@@ -434,10 +434,10 @@ function renderCurrentStep() {
 
 function pluralTitle(type) {
   return {
-    Debilidad: "Debilidades",
-    Amenaza: "Amenazas",
-    Fortaleza: "Fortalezas",
-    Oportunidad: "Oportunidades"
+    Fortaleza: "Lo que hoy te impulsa",
+    Debilidad: "Lo que puedes reforzar",
+    Amenaza: "Lo que puede frenarte",
+    Oportunidad: "Lo que podrías aprovechar"
   }[type] || type;
 }
 
@@ -1038,28 +1038,28 @@ function drawDafoMatrixPdf(doc, x, y, width) {
   const boxes = [
     {
       type: "Debilidad",
-      title: "DEBILIDADES",
+      title: "LO QUE PUEDES REFORZAR",
       x,
       y,
       color: [87, 211, 0]
     },
     {
       type: "Amenaza",
-      title: "AMENAZAS",
+      title: "LO QUE PUEDE FRENARTE",
       x: x + boxWidth + gap,
       y,
       color: [66, 161, 242]
     },
     {
       type: "Fortaleza",
-      title: "FORTALEZAS",
+      title: "LO QUE HOY TE IMPULSA",
       x,
       y: y + boxHeight + gap,
       color: [244, 196, 0]
     },
     {
       type: "Oportunidad",
-      title: "OPORTUNIDADES",
+      title: "LO QUE PODRÍAS APROVECHAR",
       x: x + boxWidth + gap,
       y: y + boxHeight + gap,
       color: [176, 122, 230]
@@ -1091,7 +1091,7 @@ function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
   doc.roundedRect(x, y, width, height, 5, 5, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
+  doc.setFontSize(9.5);
   doc.setTextColor(255, 255, 255);
   doc.text(title, x + 5, y + 9);
 
