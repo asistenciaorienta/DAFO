@@ -26,6 +26,21 @@ const SUMMARY_VIDEOS = {
   feedback_16: "videos/feedback-16.mp4"
 };
 
+const BLOCK_TRANSITION_MESSAGES = {
+  Fortaleza: {
+    titulo: "Has empezado mirando lo que te impulsa",
+    texto: "Reconocer tus fortalezas es importante. Ahora vamos a mirar el entorno y aquello que podría frenarte."
+  },
+  Amenaza: {
+    titulo: "Ya has revisado posibles obstáculos",
+    texto: "Anticipar lo que puede frenarte te ayuda a prepararte mejor. Ahora vamos a ver qué aspectos puedes reforzar."
+  },
+  Debilidad: {
+    titulo: "Has identificado aspectos que puedes reforzar",
+    texto: "Mirar lo que puedes mejorar no te debilita: te ayuda a crecer. Ahora vamos a explorar qué oportunidades podrías aprovechar."
+  }
+};
+
 let questions = [];
 let groupedQuestions = {};
 let sectionIndex = 0;
@@ -330,7 +345,7 @@ async function startApp() {
     }
 
     groupedQuestions = groupByType(questions);
-    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 3);
+    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 3, 3);
     ensureMinimumTotalQuestions(groupedQuestions, questions, 12);
 
     intro.classList.add("hidden");
@@ -946,15 +961,16 @@ async function createPdfDocument() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.setTextColor(45, 62, 66);
+      
       y = addWrappedText(
         doc,
-        `A tener en cuenta: ${answer.feedback}`
+        `Tu respuesta: ${answer.respuestaUsuario}`,
         margin + 5,
         y + 1,
         usableWidth - 10,
         5
       );
-
+      
       y = addWrappedText(
         doc,
         `A tener en cuenta: ${answer.feedback}`,
@@ -963,7 +979,7 @@ async function createPdfDocument() {
         usableWidth - 10,
         5
       );
-
+      
       y += 8;
     });
   });
