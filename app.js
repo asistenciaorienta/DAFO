@@ -86,6 +86,13 @@ const restartBtn = document.querySelector("#restartBtn");
 const downloadPdfBtn = document.querySelector("#downloadPdfBtn");
 const sharePdfBtn = document.querySelector("#sharePdfBtn");
 
+const blockTransitionModal = document.querySelector("#blockTransitionModal");
+const blockTransitionTitle = document.querySelector("#blockTransitionTitle");
+const blockTransitionText = document.querySelector("#blockTransitionText");
+const blockTransitionContinueBtn = document.querySelector("#blockTransitionContinueBtn");
+
+let pendingNextStep = null;
+
 bindEvents();
 setScreenMode("intro");
 
@@ -132,7 +139,7 @@ function bindEvents() {
   });
 
   continueBtn.addEventListener("click", commitAnswerAndGoNext);
-
+  blockTransitionContinueBtn.addEventListener("click", continueAfterBlockTransition);
   restartBtn.addEventListener("click", () => {
     location.reload();
   });
@@ -653,19 +660,57 @@ function getFeedbackForSelectedOption(question, selectedIndex) {
 function goNext() {
   questionIndex++;
 
-  const type = SECTION_ORDER[sectionIndex];
-  const sectionQuestions = groupedQuestions[type] || [];
+  const currentType = SECTION_ORDER[sectionIndex];
+  const currentSectionQuestions = groupedQuestions[currentType] || [];
+  const hasFinishedCurrentBlock = questionIndex >= currentSectionQuestions.length;
 
-  if (questionIndex >= sectionQuestions.length) {
-    sectionIndex++;
-    questionIndex = 0;
-  }
-
-  if (sectionIndex >= SECTION_ORDER.length) {
-    showResult();
-  } else {
+  if (!hasFinishedCurrentBlock) {
     renderCurrentStep();
+    return;
   }
+
+  const nextSectionIndex = sectionIndex + 1;
+
+  if (nextSectionIndex >= SECTION_ORDER.length) {
+    showResult();
+    return;
+  }
+
+  const transitionMessage = BLOCK_TRANSITION_MESSAGES[currentType];
+
+  if (transitionMessage) {
+    pendingNextStep = {
+      sectionIndex: nextSectionIndex,
+      questionIndex: 0
+    };
+
+    showBlockTransitionModal(transitionMessage);
+    return;
+  }
+
+  sectionIndex = nextSectionIndex;
+  questionIndex = 0;
+  renderCurrentStep();
+}
+
+function showBlockTransitionModal(message) {
+  blockTransitionTitle.textContent = personalizeText(message.titulo || "");
+  blockTransitionText.textContent = personalizeText(message.texto || "");
+  blockTransitionModal.classList.remove("hidden");
+}
+
+function continueAfterBlockTransition() {
+  blockTransitionModal.classList.add("hidden");
+
+  if (!pendingNextStep) {
+    return;
+  }
+
+  sectionIndex = pendingNextStep.sectionIndex;
+  questionIndex = pendingNextStep.questionIndex;
+  pendingNextStep = null;
+
+  renderCurrentStep();
 }
 
 function updateProgress() {
