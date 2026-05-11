@@ -307,7 +307,7 @@ function stopIntroSubtitles() {
 
 async function startApp() {
   try {
-    const questionsResponse = await fetch("preguntas.json");
+    const questionsResponse = await fetch("/json/preguntas.json");
 
     if (!questionsResponse.ok) {
       throw new Error("No se pudo cargar preguntas.json");
@@ -316,7 +316,7 @@ async function startApp() {
     questions = await questionsResponse.json();
 
     try {
-      const feedbacksResponse = await fetch("feedbacks.json");
+      const feedbacksResponse = await fetch("/json/feedbacks.json");
 
       if (feedbacksResponse.ok) {
         feedbacksData = await feedbacksResponse.json();
