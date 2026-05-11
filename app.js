@@ -887,7 +887,7 @@ async function createPdfDocument() {
 
     doc.setFont("helvetica", "bold");
     doc.setTextColor(20, 56, 61);
-    doc.text("Reflexión:", margin + 6, innerY);
+    doc.text("A tener en cuenta:", margin + 6, innerY);
     innerY += 5;
 
     doc.setFont("helvetica", "normal");
@@ -965,7 +965,7 @@ async function createPdfDocument() {
 
       y = addWrappedText(
         doc,
-        `Reflexión: ${answer.feedback}`,
+        `A tener en cuenta: ${answer.feedback}`,
         margin + 5,
         y + 1,
         usableWidth - 10,
