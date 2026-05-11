@@ -774,10 +774,12 @@ function escapeHtml(text) {
   return result;
 }
 
-function createPdfDocument() {
+async function createPdfDocument() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF("p", "mm", "a4");
-
+  const projectLogo = await loadImageAsDataUrl("logo_DAFO.png");
+  const saeLogo = await loadImageAsDataUrl("SAE_Junta_de_Andalucia_Documentacion.png");
+  
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -794,14 +796,44 @@ function createPdfDocument() {
   let y = 16;
 
   // Fondo suave superior
+  // Cabecera
   doc.setFillColor(7, 131, 138);
-  doc.rect(0, 0, pageWidth, 44, "F");
-
+  doc.rect(0, 0, pageWidth, 48, "F");
+  
+  // Logo proyecto
+  if (projectLogo) {
+    doc.addImage(projectLogo, "PNG", margin, 8, 22, 22);
+  }
+  
+  // Logo SAE / Junta
+  if (saeLogo) {
+    doc.addImage(saeLogo, "PNG", pageWidth - margin - 50, 9, 50, 18);
+  }
+  
   // Título principal
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(21);
-  y = addWrappedText(doc, title, margin, y, usableWidth, 9);
+  doc.setFontSize(18);
+  
+  const titleX = margin + 28;
+  const titleWidth = pageWidth - titleX - margin - 54;
+  
+  y = addWrappedText(doc, title, titleX, 15, titleWidth, 8);
+  
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(255, 255, 255);
+  
+  y = addWrappedText(
+    doc,
+    "Valoración personalizada de la Ruta DAFO para seguir avanzando profesionalmente.",
+    titleX,
+    y + 1,
+    titleWidth,
+    5
+  );
+  
+  y = 60;
   y += 6;
 
   doc.setFont("helvetica", "normal");
@@ -950,6 +982,36 @@ function createPdfDocument() {
   return doc;
 }
 
+function loadImageAsDataUrl(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      try {
+        resolve(canvas.toDataURL("image/png"));
+      } catch (error) {
+        console.warn(`No se pudo convertir la imagen ${src}.`, error);
+        resolve(null);
+      }
+    };
+
+    img.onerror = () => {
+      console.warn(`No se pudo cargar la imagen ${src}.`);
+      resolve(null);
+    };
+
+    img.src = src;
+  });
+}
+
 function drawSectionTitle(doc, title, x, y) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(15);
@@ -1077,18 +1139,18 @@ function addPdfFooter(doc) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(90, 105, 108);
-    doc.text("Ruta DAFO: conócete y avanza", 14, pageHeight - 8);
+    doc.text("Ruta DAFO: conócete y avanza · Servicio Andaluz de Empleo", 14, pageHeight - 8);
     doc.text(`Página ${page} de ${pageCount}`, pageWidth - 38, pageHeight - 8);
   }
 }
 
-function savePdf() {
-  const doc = createPdfDocument();
+async function savePdf() {
+  const doc = await createPdfDocument();
   doc.save("informe-ruta-dafo.pdf");
 }
 
 async function sharePdf() {
-  const doc = createPdfDocument();
+  const doc = await createPdfDocument();
   const blob = doc.output("blob");
   const file = new File([blob], "informe-ruta-dafo.pdf", { type: "application/pdf" });
 
