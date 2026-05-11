@@ -42,6 +42,9 @@ let introCues = [];
 let introSubtitleTimer = null;
 let feedbackSummaries = {};
 let feedbacksData = {};
+let activeVideo = null;
+let activeVideoLayer = null;
+let waitingForVideoStart = false;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -121,6 +124,7 @@ function bindEvents() {
 
   downloadPdfBtn.addEventListener("click", savePdf);
   sharePdfBtn.addEventListener("click", sharePdf);
+  document.addEventListener("click", handleGlobalVideoStartClick);
 }
 
 function setScreenMode(mode) {
@@ -483,52 +487,63 @@ function renderVideo(selector, source, buttonText, type) {
   const video = container.querySelector("video");
   const layer = container.querySelector(".video-start-layer");
   
-  async function startVideo() {
-    if (layer) {
-      layer.remove();
-    }
+  activeVideo = video;
+  activeVideoLayer = layer;
+  waitingForVideoStart = true;
   
-    video.setAttribute("controls", "controls");
-  
-    try {
-      await video.play();
-    } catch (error) {
-      console.warn("El navegador no permitió reproducir el vídeo.", error);
-    }
-  }
-  
-  layer.addEventListener("click", startVideo);
-  video.addEventListener("click", () => {
-    if (!video.controls) {
-      startVideo();
-    }
+  layer.addEventListener("click", event => {
+    event.stopPropagation();
+    startActiveVideo();
   });
 
   video.addEventListener("ended", () => {
+    waitingForVideoStart = false;
+  
     if (type) {
       watchedVideoTypes.add(type);
     }
-
+  
     const card = document.querySelector("#questionCard");
-
+  
     if (card) {
       card.classList.remove("waiting-video");
     }
   });
 
   video.addEventListener("play", () => {
+    waitingForVideoStart = false;
+  
     const card = document.querySelector("#questionCard");
-
+  
     if (!card) {
       return;
     }
-
+  
     if (type && !watchedVideoTypes.has(type)) {
       card.classList.add("waiting-video");
     } else {
       card.classList.remove("waiting-video");
     }
   });
+}
+
+async function handleGlobalVideoStartClick(event) {
+  if (!waitingForVideoStart || !activeVideo) {
+    return;
+  }
+
+  if (
+    event.target.closest("button") ||
+    event.target.closest("a") ||
+    event.target.closest("input") ||
+    event.target.closest("select") ||
+    event.target.closest("textarea") ||
+    event.target.closest(".modal")
+  ) {
+    return;
+  }
+
+  await startActiveVideo();
 }
 
 function renderOptions(options) {
@@ -553,6 +568,27 @@ function renderOptions(options) {
     button.addEventListener("click", () => selectOption(index));
     optionsList.appendChild(button);
   });
+}
+
+async function startActiveVideo() {
+  if (!activeVideo) {
+    return;
+  }
+
+  waitingForVideoStart = false;
+
+  if (activeVideoLayer) {
+    activeVideoLayer.remove();
+    activeVideoLayer = null;
+  }
+
+  activeVideo.setAttribute("controls", "controls");
+
+  try {
+    await activeVideo.play();
+  } catch (error) {
+    console.warn("El navegador no permitió reproducir el vídeo.", error);
+  }
 }
 
 function selectOption(index) {
