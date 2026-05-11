@@ -776,61 +776,310 @@ function escapeHtml(text) {
 
 function createPdfDocument() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  const doc = new jsPDF("p", "mm", "a4");
 
-  const margin = 15;
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+
+  const margin = 14;
   const usableWidth = pageWidth - margin * 2;
 
-  let y = 18;
+  const key = chooseSummaryVideoKey();
+  const feedbackInfo = feedbacksData[key] || {};
 
+  const title = userName
+    ? `${userName}, esta es tu valoración DAFO`
+    : "Esta es tu valoración DAFO";
+
+  let y = 16;
+
+  // Fondo suave superior
+  doc.setFillColor(7, 131, 138);
+  doc.rect(0, 0, pageWidth, 44, "F");
+
+  // Título principal
+  doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("Informe Ruta DAFO", margin, y);
-  y += 10;
-
-  if (userName) {
-    doc.setFontSize(13);
-    doc.text(`Nombre: ${userName}`, margin, y);
-    y += 9;
-  }
+  doc.setFontSize(21);
+  y = addWrappedText(doc, title, margin, y, usableWidth, 9);
+  y += 6;
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+  doc.setFontSize(10.5);
+  doc.setTextColor(255, 255, 255);
   y = addWrappedText(
     doc,
-    "Este informe recoge tus respuestas y recomendaciones para seguir trabajando tu objetivo profesional.",
+    "Has completado la ruta. Esta valoración recoge tu reflexión DAFO y te ofrece una orientación para seguir avanzando.",
     margin,
     y,
-    usableWidth
-  ) + 8;
+    usableWidth,
+    5
+  );
 
-  SECTION_ORDER.forEach(type => {
-    y = ensureSpace(doc, y, 30, pageHeight, margin);
+  y = 56;
+
+  // Bloque reflexión
+  y = drawSectionTitle(doc, "Una reflexión para seguir avanzando", margin, y);
+  y += 2;
+
+  y = drawSoftBox(doc, margin, y, usableWidth, () => {
+    let innerY = y + 8;
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text(pluralTitle(type), margin, y);
-    y += 8;
+    doc.setFontSize(13);
+    doc.setTextColor(20, 56, 61);
+    innerY = addWrappedText(
+      doc,
+      personalizeText(feedbackInfo.titulo || "Tu reflexión final"),
+      margin + 6,
+      innerY,
+      usableWidth - 12,
+      6
+    );
 
-    answers
-      .filter(answer => answer.tipo === type)
-      .forEach((answer, index) => {
-        y = ensureSpace(doc, y, 50, pageHeight, margin);
+    innerY += 3;
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        y = addWrappedText(doc, `${index + 1}. ${answer.pregunta}`, margin, y, usableWidth);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10.5);
+    doc.setTextColor(45, 62, 66);
+    innerY = addWrappedText(
+      doc,
+      personalizeText(feedbackInfo.resumen || "Aquí aparecerá la valoración asociada a tu resultado final."),
+      margin + 6,
+      innerY,
+      usableWidth - 12,
+      5
+    );
 
-        doc.setFont("helvetica", "normal");
-        y = addWrappedText(doc, `Tu respuesta: ${answer.respuestaUsuario}`, margin, y + 2, usableWidth);
-        y = addWrappedText(doc, `Recomendación: ${answer.feedback}`, margin, y + 2, usableWidth);
-        y += 6;
-      });
+    innerY += 3;
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(20, 56, 61);
+    doc.text("Reflexión:", margin + 6, innerY);
+    innerY += 5;
+
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(45, 62, 66);
+    innerY = addWrappedText(
+      doc,
+      personalizeText(feedbackInfo.reflexion || feedbackInfo.recomendacion || ""),
+      margin + 6,
+      innerY,
+      usableWidth - 12,
+      5
+    );
+
+    return innerY + 5;
   });
 
+  y += 8;
+
+  // Matriz DAFO
+  y = ensureSpace(doc, y, 120, pageHeight, margin);
+  y = drawSectionTitle(doc, "Tu matriz DAFO", margin, y);
+  y += 4;
+
+  y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
+
+  y += 8;
+
+  // Detalle de respuestas
+  y = ensureSpace(doc, y, 50, pageHeight, margin);
+  y = drawSectionTitle(doc, "Tus respuestas y reflexiones", margin, y);
+  y += 4;
+
+  SECTION_ORDER.forEach(type => {
+    const typeAnswers = answers.filter(answer => answer.tipo === type);
+
+    if (!typeAnswers.length) return;
+
+    y = ensureSpace(doc, y, 22, pageHeight, margin);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.setTextColor(7, 108, 116);
+    doc.text(pluralTitle(type), margin, y);
+    y += 7;
+
+    typeAnswers.forEach((answer, index) => {
+      y = ensureSpace(doc, y, 46, pageHeight, margin);
+
+      doc.setFillColor(245, 248, 248);
+      doc.roundedRect(margin, y - 4, usableWidth, 38, 3, 3, "F");
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10.5);
+      doc.setTextColor(20, 56, 61);
+      y = addWrappedText(
+        doc,
+        `${index + 1}. ${answer.pregunta}`,
+        margin + 5,
+        y + 2,
+        usableWidth - 10,
+        5
+      );
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(45, 62, 66);
+      y = addWrappedText(
+        doc,
+        `Tu respuesta: ${answer.respuestaUsuario}`,
+        margin + 5,
+        y + 1,
+        usableWidth - 10,
+        5
+      );
+
+      y = addWrappedText(
+        doc,
+        `Reflexión: ${answer.feedback}`,
+        margin + 5,
+        y + 1,
+        usableWidth - 10,
+        5
+      );
+
+      y += 8;
+    });
+  });
+
+  // Pie
+  addPdfFooter(doc);
+
   return doc;
+}
+
+function drawSectionTitle(doc, title, x, y) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(15);
+  doc.setTextColor(7, 108, 116);
+  doc.text(title, x, y);
+
+  doc.setDrawColor(183, 216, 61);
+  doc.setLineWidth(1.2);
+  doc.line(x, y + 3, x + 48, y + 3);
+
+  return y + 8;
+}
+
+function drawSoftBox(doc, x, y, width, contentCallback) {
+  const startY = y;
+  const finalY = contentCallback();
+
+  const height = finalY - startY;
+
+  doc.setFillColor(238, 248, 248);
+  doc.setDrawColor(210, 232, 232);
+  doc.roundedRect(x, startY, width, height, 4, 4, "FD");
+
+  // Reescribe el contenido por encima de la caja
+  contentCallback();
+
+  return finalY + 2;
+}
+
+function drawDafoMatrixPdf(doc, x, y, width) {
+  const gap = 6;
+  const boxWidth = (width - gap) / 2;
+  const boxHeight = 58;
+
+  const boxes = [
+    {
+      type: "Debilidad",
+      title: "DEBILIDADES",
+      x,
+      y,
+      color: [87, 211, 0]
+    },
+    {
+      type: "Amenaza",
+      title: "AMENAZAS",
+      x: x + boxWidth + gap,
+      y,
+      color: [66, 161, 242]
+    },
+    {
+      type: "Fortaleza",
+      title: "FORTALEZAS",
+      x,
+      y: y + boxHeight + gap,
+      color: [244, 196, 0]
+    },
+    {
+      type: "Oportunidad",
+      title: "OPORTUNIDADES",
+      x: x + boxWidth + gap,
+      y: y + boxHeight + gap,
+      color: [176, 122, 230]
+    }
+  ];
+
+  boxes.forEach(box => {
+    const items = answers
+      .filter(answer => answer.tipo === box.type)
+      .map(answer => answer.respuestaUsuario);
+
+    drawDafoBoxPdf(
+      doc,
+      box.x,
+      box.y,
+      boxWidth,
+      boxHeight,
+      box.title,
+      items,
+      box.color
+    );
+  });
+
+  return y + boxHeight * 2 + gap;
+}
+
+function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
+  doc.setFillColor(color[0], color[1], color[2]);
+  doc.roundedRect(x, y, width, height, 5, 5, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(255, 255, 255);
+  doc.text(title, x + 5, y + 9);
+
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.8);
+  doc.line(x + 5, y + 12, x + width - 5, y + 12);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(20, 35, 38);
+
+  const visibleItems = items.length ? items : ["Sin respuestas registradas."];
+  let itemY = y + 20;
+
+  visibleItems.slice(0, 4).forEach(item => {
+    const lines = doc.splitTextToSize(`• ${item}`, width - 10);
+    doc.text(lines, x + 5, itemY);
+    itemY += lines.length * 4.2 + 2;
+  });
+}
+
+function addPdfFooter(doc) {
+  const pageCount = doc.internal.getNumberOfPages();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  for (let page = 1; page <= pageCount; page++) {
+    doc.setPage(page);
+
+    doc.setDrawColor(7, 131, 138);
+    doc.setLineWidth(0.5);
+    doc.line(14, pageHeight - 14, pageWidth - 14, pageHeight - 14);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(90, 105, 108);
+    doc.text("Ruta DAFO: conócete y avanza", 14, pageHeight - 8);
+    doc.text(`Página ${page} de ${pageCount}`, pageWidth - 38, pageHeight - 8);
+  }
 }
 
 function savePdf() {
@@ -860,10 +1109,10 @@ async function sharePdf() {
   alert("Tu navegador no permite compartir el PDF directamente. Se ha descargado para que puedas enviarlo manualmente.");
 }
 
-function addWrappedText(doc, text, x, y, width) {
-  const lines = doc.splitTextToSize(text, width);
+function addWrappedText(doc, text, x, y, width, lineHeight = 6) {
+  const lines = doc.splitTextToSize(String(text || ""), width);
   doc.text(lines, x, y);
-  return y + lines.length * 6;
+  return y + lines.length * lineHeight;
 }
 
 function ensureSpace(doc, y, needed, pageHeight, margin) {
