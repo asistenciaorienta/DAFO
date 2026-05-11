@@ -328,8 +328,8 @@ async function startApp() {
     }
 
     groupedQuestions = groupByType(questions);
-    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 2, 3);
-    ensureMinimumTotalQuestions(groupedQuestions, questions, 10);
+    groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 3);
+    ensureMinimumTotalQuestions(groupedQuestions, questions, 12);
 
     intro.classList.add("hidden");
     app.classList.remove("hidden");
@@ -775,8 +775,8 @@ function escapeHtml(text) {
 async function createPdfDocument() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF("p", "mm", "a4");
-  const projectLogo = await loadImageAsDataUrl("/imagenes/logo_DAFO.png");
-  const saeLogo = await loadImageAsDataUrl("/imagenes/SAE_Junta_de_Andalucia_Documentacion.png");
+  const projectLogo = await loadImageAsDataUrl("imagenes/logo_DAFO.png");
+  const saeLogo = await loadImageAsDataUrl("imagenes/SAE_Junta_de_Andalucia_Documentacion.png");
   
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -830,23 +830,8 @@ async function createPdfDocument() {
     titleWidth,
     5
   );
-  
+
   y = 60;
-  y += 6;
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10.5);
-  doc.setTextColor(255, 255, 255);
-  y = addWrappedText(
-    doc,
-    "Has completado la ruta. Esta valoración recoge tu reflexión DAFO y te ofrece una orientación para seguir avanzando.",
-    margin,
-    y,
-    usableWidth,
-    5
-  );
-
-  y = 56;
 
   // Bloque reflexión
   y = drawSectionTitle(doc, "Una reflexión para seguir avanzando", margin, y);
@@ -910,8 +895,15 @@ async function createPdfDocument() {
   y += 4;
 
   y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
-
-  y += 8;
+  
+  y = ensureSpace(doc, y, 18, pageHeight, margin);
+  
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(7, 108, 116);
+  doc.text("Servicio Andaluz de Empleo. Contigo, creciendo profesionalmente.", margin, y);
+  
+  y += 14;
 
   // Detalle de respuestas
   y = ensureSpace(doc, y, 50, pageHeight, margin);
@@ -954,7 +946,7 @@ async function createPdfDocument() {
       doc.setTextColor(45, 62, 66);
       y = addWrappedText(
         doc,
-        `Tu respuesta: ${answer.respuestaUsuario}`,
+        `A tener en cuenta: ${answer.feedback}`
         margin + 5,
         y + 1,
         usableWidth - 10,
@@ -983,17 +975,16 @@ async function createPdfDocument() {
 function loadImageAsDataUrl(src) {
   return new Promise(resolve => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
 
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-
       try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+
         resolve(canvas.toDataURL("image/png"));
       } catch (error) {
         console.warn(`No se pudo convertir la imagen ${src}.`, error);
@@ -1002,7 +993,7 @@ function loadImageAsDataUrl(src) {
     };
 
     img.onerror = () => {
-      console.warn(`No se pudo cargar la imagen ${src}.`);
+      console.warn(`No se pudo cargar la imagen ${src}. Revisa la ruta.`);
       resolve(null);
     };
 
@@ -1042,7 +1033,7 @@ function drawSoftBox(doc, x, y, width, contentCallback) {
 function drawDafoMatrixPdf(doc, x, y, width) {
   const gap = 6;
   const boxWidth = (width - gap) / 2;
-  const boxHeight = 58;
+  const boxHeight = 76;
 
   const boxes = [
     {
@@ -1078,8 +1069,8 @@ function drawDafoMatrixPdf(doc, x, y, width) {
   boxes.forEach(box => {
     const items = answers
       .filter(answer => answer.tipo === box.type)
-      .map(answer => answer.respuestaUsuario);
-
+      .map(answer => answer.feedback);
+  
     drawDafoBoxPdf(
       doc,
       box.x,
@@ -1092,7 +1083,7 @@ function drawDafoMatrixPdf(doc, x, y, width) {
     );
   });
 
-  return y + boxHeight * 2 + gap;
+  return y + boxHeight * 2 + gap + 10;;
 }
 
 function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
@@ -1109,16 +1100,21 @@ function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
   doc.line(x + 5, y + 12, x + width - 5, y + 12);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
+  doc.setFontSize(7.6);
   doc.setTextColor(20, 35, 38);
 
-  const visibleItems = items.length ? items : ["Sin respuestas registradas."];
-  let itemY = y + 20;
+  const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
+  let itemY = y + 19;
+  const maxY = y + height - 5;
 
-  visibleItems.slice(0, 4).forEach(item => {
+  visibleItems.slice(0, 3).forEach(item => {
+    if (itemY >= maxY) return;
+
     const lines = doc.splitTextToSize(`• ${item}`, width - 10);
-    doc.text(lines, x + 5, itemY);
-    itemY += lines.length * 4.2 + 2;
+    const availableLines = lines.slice(0, 4);
+
+    doc.text(availableLines, x + 5, itemY);
+    itemY += availableLines.length * 3.7 + 2;
   });
 }
 
