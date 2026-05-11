@@ -1069,3 +1069,21 @@ button.primary {
     font-size: 1rem;
   }
 }
+.block-transition-card {
+  text-align: center;
+  max-width: 640px;
+}
+
+.block-transition-card h3 {
+  margin-bottom: 14px;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.05;
+}
+
+.block-transition-card .lead {
+  margin-inline: auto;
+}
+
+.block-transition-card .actions {
+  justify-content: center;
+}
