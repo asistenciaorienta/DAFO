@@ -28,16 +28,16 @@ const SUMMARY_VIDEOS = {
 
 const BLOCK_TRANSITION_MESSAGES = {
   Fortaleza: {
-    titulo: "Has empezado mirando lo que te impulsa",
-    texto: "Reconocer tus fortalezas es importante. Ahora vamos a mirar el entorno y aquello que podría frenarte."
+    titulo: "Reconocer lo que haces bien, también forma parte de prepararte mejor,",
+    texto: "Ayuda a legitimar el autorreconocimiento sin arrogancia. Ahora vamos a mirar el entorno y aquello que podría frenarte."
   },
   Amenaza: {
     titulo: "Ya has revisado posibles obstáculos",
     texto: "Anticipar lo que puede frenarte te ayuda a prepararte mejor. Ahora vamos a ver qué aspectos puedes reforzar."
   },
   Debilidad: {
-    titulo: "Has identificado aspectos que puedes reforzar",
-    texto: "Mirar lo que puedes mejorar no te debilita: te ayuda a crecer. Ahora vamos a explorar qué oportunidades podrías aprovechar."
+    titulo: "Detectar un área de mejora es el primer paso para poder cambiarla.",
+    texto: "Muy importante porque evita sensación de juicio. Ahora vamos a explorar qué oportunidades podrías aprovechar."
   }
 };
 
@@ -801,12 +801,12 @@ function renderDafoMatrix() {
     const blockAnswers = answers.filter(answer => answer.tipo === tipo);
 
     if (blockAnswers.length === 0) {
-      container.innerHTML = "<li>Sin respuestas registradas.</li>";
+      container.innerHTML = "<li>Sin reflexiones registradas.</li>";
       return;
     }
 
     container.innerHTML = blockAnswers
-      .map(answer => `<li>${escapeHtml(answer.respuestaUsuario)}</li>`)
+      .map(answer => `<li>${escapeHtml(answer.feedback)}</li>`)
       .join("");
   });
 }
