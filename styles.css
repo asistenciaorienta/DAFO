@@ -1135,7 +1135,7 @@ button.primary {
 
 /* Modal de transición entre bloques */
 .block-transition-card {
-  background: rgba(255, 255, 255, .96);
+  background: rgba(255, 255, 255, .76);
   color: #14383d;
   border: 1px solid rgba(255, 255, 255, .75);
   box-shadow: 0 28px 80px rgba(0, 0, 0, .35);
@@ -1154,4 +1154,26 @@ button.primary {
 
 .block-transition-card .actions {
   justify-content: center;
+}
+
+.reflection-intro {
+  display: block;
+  margin-bottom: 16px;
+  color: rgba(255,255,255,.9);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.reflection-question {
+  display: block;
+  padding: 20px 22px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.22);
+  color: #ffffff;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.25;
+  font-weight: 850;
+  box-shadow: 0 14px 34px rgba(0,0,0,.16);
 }
