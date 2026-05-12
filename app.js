@@ -1151,14 +1151,14 @@ async function createPdfDocument() {
     5
   );
 
-  y = 60;
+  y = 55; /*60*/
 
   // Bloque reflexión
   y = drawSectionTitle(doc, "Una reflexión para seguir avanzando", margin, y);
   y += 2;
 
   y = drawSoftBox(doc, margin, y, usableWidth, () => {
-    let innerY = y + 8;
+    let innerY = y + 6;
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(13);
@@ -1204,14 +1204,14 @@ async function createPdfDocument() {
       5
     );
 
-    return innerY + 5;
+    return innerY + 4;
   });
 
-  y += 8;
+  y += 7;
 
   // Matriz DAFO
   y = ensureSpace(doc, y, 90, pageHeight, margin);
-  y = drawSectionTitle(doc, "Tu matriz DAFO", margin, y);
+  y = drawSectionTitle(doc, "Sobre tu matriz DAFO", margin, y);
   y += 4;
 
   y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
@@ -1227,7 +1227,7 @@ async function createPdfDocument() {
 
   // Detalle de respuestas
   y = ensureSpace(doc, y, 50, pageHeight, margin);
-  y = drawSectionTitle(doc, "Tus respuestas y reflexiones", margin, y);
+  y = drawSectionTitle(doc, "Tus respuestas", margin, y);
   y += 4;
 
   SECTION_ORDER.forEach(type => {
@@ -1274,7 +1274,7 @@ async function createPdfDocument() {
         5
       );
       
-      y = addWrappedText(
+ /*     y = addWrappedText(
         doc,
         `A tener en cuenta: ${answer.feedback}`,
         margin + 5,
@@ -1282,7 +1282,7 @@ async function createPdfDocument() {
         usableWidth - 10,
         5
       );
-      
+  */    
       y += 8;
     });
   });
