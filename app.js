@@ -84,6 +84,7 @@ const userNameInput = document.querySelector("#userNameInput");
 
 const questionForm = document.querySelector("#questionForm");
 const continueBtn = document.querySelector("#continueBtn");
+const questionHelpText = document.querySelector("#questionHelpText");
 
 const restartBtn = document.querySelector("#restartBtn");
 const downloadPdfBtn = document.querySelector("#downloadPdfBtn");
@@ -506,8 +507,17 @@ function renderCurrentStep() {
   document.querySelector("#answerInput").value = "";
   
   if (currentQuestion.esReflexion) {
+    if (questionHelpText) {
+      questionHelpText.classList.add("hidden");
+    }
+  
     renderReflectionQuestion(currentQuestion);
   } else {
+    if (questionHelpText) {
+      questionHelpText.classList.remove("hidden");
+      questionHelpText.textContent = "Elige la opción que mejor encaje contigo. No hay que escribir: solo pensar, elegir y continuar.";
+    }
+  
     document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
     continueBtn.textContent = "Continuar";
     continueBtn.disabled = true;
