@@ -1,5 +1,4 @@
 const SECTION_ORDER = ["Fortaleza", "Amenaza", "Debilidad", "Oportunidad"];
-
 const SECTION_VIDEOS = {
   Debilidad: "videos/debilidades.mp4",
   Amenaza: "videos/amenazas.mp4",
