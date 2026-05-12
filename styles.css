@@ -1177,3 +1177,70 @@ button.primary {
   font-weight: 850;
   box-shadow: 0 14px 34px rgba(0,0,0,.16);
 }
+
+#blockTransitionModal {
+  background: rgba(0, 0, 0, .62);
+}
+
+.block-transition-card {
+  width: min(760px, 92vw);
+  padding: clamp(24px, 4vw, 38px);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .20);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  color: white;
+}
+
+.block-transition-card h3 {
+  margin: 18px 0 18px;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: .98;
+  font-weight: 900;
+  color: white;
+}
+
+.block-transition-textbox {
+  min-height: 150px;
+  display: grid;
+  align-items: center;
+  padding: 22px 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .92);
+  color: #14383d;
+  box-shadow: 0 14px 34px rgba(0,0,0,.18);
+}
+
+.block-transition-textbox .lead {
+  margin: 0;
+  color: #14383d;
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.block-transition-card .actions {
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .block-transition-card {
+    padding: 22px;
+  }
+
+  .block-transition-card h3 {
+    font-size: 2rem;
+  }
+
+  .block-transition-textbox {
+    min-height: 170px;
+    padding: 18px;
+  }
+
+  .block-transition-card .actions {
+    justify-content: stretch;
+  }
+}
+
