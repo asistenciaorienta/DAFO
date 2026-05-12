@@ -1,0 +1,22 @@
+{
+  "bloques_permitidos": ["Amenaza", "Debilidad"],
+  "introducciones": [
+    "Esta pregunta no tiene opciones de respuesta. Te pedimos que pares el tiempo que necesites, reflexiones y te respondas:",
+    "No estás rellenando un cuestionario. Por eso te pedimos que pares un momento y pienses. Esta pregunta no tiene opciones de respuesta:",
+    "Párate un momento. Esta respuesta es solo para ti:",
+    "Si hablaras contigo con total sinceridad, ¿qué te responderías a esta pregunta?"
+  ],
+  "preguntas": [
+    "¿Qué tendría que cambiar en ti para acercarte de verdad al trabajo y a la vida profesional que deseas?",
+    "Si siguieras haciendo exactamente lo mismo que hasta ahora en tu búsqueda de empleo, ¿dónde crees que estarías dentro de un año?",
+    "¿Qué parte de tu realidad profesional llevas demasiado tiempo justificando en lugar de afrontar?",
+    "¿Cuánto de lo que hoy te frena depende realmente de las circunstancias y cuánto de lo que has dejado de hacer?",
+    "¿Qué estás dejando para más adelante que podría acercarte hoy a la vida profesional que quieres?",
+    "¿La vida que tienes hoy se parece a la que realmente querías construir para ti?",
+    "¿Cuánto tiempo llevas posponiendo cambios que sabes que necesitas hacer?",
+    "¿Qué parte de tu vida estás viviendo por costumbre y no porque realmente te haga bien?",
+    "Si dentro de unos años miraras tu vida actual desde fuera, ¿qué crees que te pedirías cambiar hoy?"
+  ],
+  "texto_boton": "Continuar",
+  "guardar_en_informe": false
+}
