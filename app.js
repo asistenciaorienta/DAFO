@@ -60,6 +60,9 @@ let feedbacksData = {};
 let activeVideo = null;
 let activeVideoLayer = null;
 let waitingForVideoStart = false;
+let reflectionQuestionsData = null;
+let reflectionQuestionInserted = false;
+let currentShuffledOptions = [];
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -339,7 +342,7 @@ async function startApp() {
 
     try {
       const feedbacksResponse = await fetch("feedbacks.json");
-
+    
       if (feedbacksResponse.ok) {
         feedbacksData = await feedbacksResponse.json();
       } else {
@@ -350,10 +353,24 @@ async function startApp() {
       console.warn("feedbacks.json tiene algún problema o no se pudo cargar.", feedbackError);
       feedbacksData = {};
     }
-
+    
+    try {
+      const reflectionResponse = await fetch("preguntas_reflexion.json");
+    
+      if (reflectionResponse.ok) {
+        reflectionQuestionsData = await reflectionResponse.json();
+      } else {
+        console.warn("No se encontró preguntas_reflexion.json. La app continuará sin pregunta de reflexión.");
+        reflectionQuestionsData = null;
+      }
+    } catch (reflectionError) {
+      console.warn("preguntas_reflexion.json tiene algún problema o no se pudo cargar.", reflectionError);
+      reflectionQuestionsData = null;
+    }
+    
     groupedQuestions = groupByType(questions);
     groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 3, 3);
-    ensureMinimumTotalQuestions(groupedQuestions, questions, 12);
+    insertReflectionQuestionIfAvailable(groupedQuestions, reflectionQuestionsData);
 
     intro.classList.add("hidden");
     app.classList.remove("hidden");
@@ -401,6 +418,59 @@ function selectRandomQuestionsByType(groupedItems, minQuestions, maxQuestions) {
   return selectedGroups;
 }
 
+function insertReflectionQuestionIfAvailable(groupedItems, reflectionData) {
+  if (!reflectionData || reflectionQuestionInserted) return;
+
+  const allowedBlocks = Array.isArray(reflectionData.bloques_permitidos)
+    ? reflectionData.bloques_permitidos.filter(type => SECTION_ORDER.includes(type))
+    : [];
+
+  const availableBlocks = allowedBlocks.filter(type => {
+    const questionsOfType = groupedItems[type] || [];
+    return questionsOfType.length > 0;
+  });
+
+  if (!availableBlocks.length) return;
+
+  const selectedBlock = availableBlocks[Math.floor(Math.random() * availableBlocks.length)];
+
+  const introduction = getRandomArrayItem(reflectionData.introducciones);
+  const question = getRandomArrayItem(reflectionData.preguntas);
+
+  if (!introduction || !question) return;
+
+  const reflectionQuestion = {
+    tipo: selectedBlock,
+    esReflexion: true,
+    introduccion: introduction,
+    pregunta: question,
+    texto_boton: reflectionData.texto_boton || "Continuar",
+    guardar_en_informe: reflectionData.guardar_en_informe === true
+  };
+
+  const currentBlockQuestions = groupedItems[selectedBlock] || [];
+
+  /*
+    Queremos que sigan siendo 3 elementos en el bloque:
+    - Quitamos una pregunta normal.
+    - Añadimos la reflexión.
+    - Mezclamos el orden.
+  */
+  const normalQuestions = currentBlockQuestions.filter(item => !item.esReflexion);
+
+  if (normalQuestions.length >= 3) {
+    normalQuestions.pop();
+  }
+
+  groupedItems[selectedBlock] = shuffleArray([...normalQuestions, reflectionQuestion]);
+  reflectionQuestionInserted = true;
+}
+
+function getRandomArrayItem(items) {
+  if (!Array.isArray(items) || items.length === 0) return "";
+  return items[Math.floor(Math.random() * items.length)];
+}
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -433,12 +503,16 @@ function renderCurrentStep() {
 
   document.querySelector("#sectionPill").textContent = `Bloque ${sectionIndex + 1} de 4`;
   document.querySelector("#sectionTitle").textContent = pluralTitle(type);
-  document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
   document.querySelector("#answerInput").value = "";
-
-  continueBtn.disabled = true;
-
-  renderOptions(currentQuestion.opciones || []);
+  
+  if (currentQuestion.esReflexion) {
+    renderReflectionQuestion(currentQuestion);
+  } else {
+    document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
+    continueBtn.textContent = "Continuar";
+    continueBtn.disabled = true;
+    renderOptions(currentQuestion);
+  }
 
   if (currentVideoType !== type) {
     currentVideoType = type;
@@ -568,28 +642,56 @@ async function handleGlobalVideoStartClick(event) {
   await startActiveVideo();
 }
 
-function renderOptions(options) {
+function renderOptions(question) {
   const optionsList = document.querySelector("#optionsList");
   optionsList.innerHTML = "";
 
-  if (!Array.isArray(options) || options.length === 0) {
+  const options = Array.isArray(question.opciones) ? question.opciones : [];
+
+  if (options.length === 0) {
+    currentShuffledOptions = [];
     optionsList.innerHTML = `<p class="help-text">No hay opciones definidas para esta pregunta.</p>`;
     return;
   }
 
-  options.forEach((optionText, index) => {
+  currentShuffledOptions = shuffleArray(
+    options.map((optionText, originalIndex) => ({
+      text: optionText,
+      originalIndex
+    }))
+  );
+
+  currentShuffledOptions.forEach((option, displayedIndex) => {
     const button = document.createElement("button");
 
     button.type = "button";
     button.className = "option-button";
     button.innerHTML = `
-      <span class="option-number">${index + 1}</span>
-      <span>${escapeHtml(personalizeText(optionText))}</span>
+      <span class="option-number">${displayedIndex + 1}</span>
+      <span>${escapeHtml(personalizeText(option.text))}</span>
     `;
 
-    button.addEventListener("click", () => selectOption(index));
+    button.addEventListener("click", () => selectOption(displayedIndex));
     optionsList.appendChild(button);
   });
+}
+
+function renderReflectionQuestion(question) {
+  const optionsList = document.querySelector("#optionsList");
+  const questionText = document.querySelector("#questionText");
+
+  selectedOptionIndex = null;
+  currentShuffledOptions = [];
+
+  questionText.innerHTML = `
+    <span class="reflection-intro">${escapeHtml(personalizeText(question.introduccion || ""))}</span>
+    <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
+  `;
+
+  optionsList.innerHTML = "";
+
+  continueBtn.textContent = question.texto_boton || "Continuar";
+  continueBtn.disabled = false;
 }
 
 async function startActiveVideo() {
@@ -624,6 +726,25 @@ function selectOption(index) {
 }
 
 function commitAnswerAndGoNext() {
+  if (currentQuestion && currentQuestion.esReflexion) {
+    if (currentQuestion.guardar_en_informe === true) {
+      answers.push({
+        tipo: currentQuestion.tipo,
+        esReflexion: true,
+        pregunta: personalizeText(currentQuestion.pregunta),
+        respuestaUsuario: "",
+        respuestaUsuarioIndice: null,
+        respuestaAdecuada: "",
+        respuestaAdecuadaIndice: null,
+        correcta: true,
+        feedback: personalizeText(currentQuestion.pregunta)
+      });
+    }
+
+    goNext();
+    return;
+  }
+
   if (selectedOptionIndex === null) {
     alert("Elige una opción para continuar.");
     return;
@@ -635,17 +756,33 @@ function commitAnswerAndGoNext() {
 
 function buildAnswerFromCurrentSelection() {
   const options = Array.isArray(currentQuestion.opciones) ? currentQuestion.opciones : [];
-  const adequate = Number(selectedOptionIndex) === Number(currentQuestion.respuesta_adecuada);
+  const selectedOption = currentShuffledOptions[selectedOptionIndex];
+
+  if (!selectedOption) {
+    return {
+      tipo: currentQuestion.tipo,
+      pregunta: personalizeText(currentQuestion.pregunta),
+      respuestaUsuario: "",
+      respuestaUsuarioIndice: null,
+      respuestaAdecuada: personalizeText(options[Number(currentQuestion.respuesta_adecuada)] || ""),
+      respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
+      correcta: false,
+      feedback: "No se ha podido registrar correctamente la respuesta."
+    };
+  }
+
+  const originalIndex = selectedOption.originalIndex;
+  const adequate = Number(originalIndex) === Number(currentQuestion.respuesta_adecuada);
 
   return {
     tipo: currentQuestion.tipo,
     pregunta: personalizeText(currentQuestion.pregunta),
-    respuestaUsuario: personalizeText(options[selectedOptionIndex] || ""),
-    respuestaUsuarioIndice: selectedOptionIndex,
+    respuestaUsuario: personalizeText(selectedOption.text),
+    respuestaUsuarioIndice: originalIndex,
     respuestaAdecuada: personalizeText(options[Number(currentQuestion.respuesta_adecuada)] || ""),
     respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
     correcta: adequate,
-    feedback: getFeedbackForSelectedOption(currentQuestion, selectedOptionIndex)
+    feedback: getFeedbackForSelectedOption(currentQuestion, originalIndex)
   };
 }
 
