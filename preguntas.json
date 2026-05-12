@@ -1,242 +1,206 @@
 [
   {
-    "tipo": "Debilidad",
-    "pregunta": "{nombre}, ¿qué aspecto interno limita más tu avance?",
+    "tipo": "Fortaleza",
+    "pregunta": "Tengo claras mis capacidades que más valor aportan al puesto que quiero conseguir.",
     "opciones": [
-      "Me debilita esto",
-      "Me debilita aquello",
-      "Me debilita esto otro"
+      "Sí",
+      "No siempre"
     ],
     "respuesta_adecuada": 0,
     "feedback": [
-      "{nombre}, has identificado una debilidad concreta. El siguiente paso es pensar qué la provoca y qué puedes hacer para reducir su impacto.",
-      "{nombre}, esta respuesta también señala una posible dificultad. Revisa si es la que más te frena ahora mismo o si hay otra más urgente.",
-      "{nombre}, esta opción puede ayudarte a reflexionar, pero conviene concretar mejor cómo te limita y en qué situaciones aparece."
+      "{nombre}, cuando reconoces lo que aportas puedes transmitir más seguridad y confianza.",
+      "{nombre}, dedicar tiempo a reconocer lo que aportas ayuda a enfocar mejor el camino que quieres seguir."
     ]
   },
   {
-    "tipo": "Debilidad",
-    "pregunta": "¿Qué aspecto interno limita más tu avance2, {nombre}?",
+    "tipo": "Fortaleza",
+    "pregunta": "¿Cómo adapto mi currículum al puesto cuando encuentro una oferta?",
     "opciones": [
-      "Me debilita esto",
-      "Me debilita aquello",
-      "Me debilita esto otro"
+      "Ajusto algunos apartados según la oferta.",
+      "Personalizo mi candidatura para cada oportunidad.",
+      "Suelo utilizar el mismo currículum en la mayoría de procesos."
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "{nombre}, esta opción puede ser una dificultad, pero quizá no es la más importante para este caso. Piensa si realmente es lo que más te bloquea.",
-      "{nombre}, has elegido una debilidad relevante. Ahora puedes pensar qué pequeño paso te ayudaría a trabajarla.",
-      "{nombre}, esta respuesta muestra una posible limitación. Intenta concretar si depende de ti y qué apoyo podrías necesitar."
+      "Adaptar algunos aspectos ya es un avance. Personalizar más tu candidatura puede ayudarte a conectar mejor con cada oportunidad.",
+      "Tu respuesta indica que preparas cada candidatura de forma personalizada, con interés, implicación y estrategia.",
+      "Revisar tu currículum según cada oferta puede ayudarte a mostrar mejor lo que puedes aportar."
     ]
   },
   {
-    "tipo": "Debilidad",
-    "pregunta": "{nombre}, ¿qué aspecto interno limita más tu avance?4",
+    "tipo": "Fortaleza",
+    "pregunta": "¿Qué experiencia profesional echas en falta?",
     "opciones": [
-      "Me debilita esto",
-      "Me debilita aquello",
-      "Me debilita esto otro"
-    ],
-    "respuesta_adecuada": 0,
-    "feedback": [
-      "{nombre}, has detectado una debilidad importante. Conviene analizar cuándo aparece y cómo afecta a tu objetivo profesional.",
-      "{nombre}, esta opción puede influir en tu avance. Valora si es una causa principal o una consecuencia de otra dificultad.",
-      "{nombre}, esta respuesta puede darte pistas, pero intenta transformarla en algo concreto que puedas mejorar."
-    ]
-  },
-  {
-    "tipo": "Debilidad",
-    "pregunta": "¿Qué aspecto interno limita más tu avance2, {nombre}?5",
-    "opciones": [
-      "Me debilita esto",
-      "Me debilita aquello",
-      "Me debilita esto otro"
+      "Tengo experiencia, aunque aún necesito seguir creciendo.",
+      "Mi experiencia me aporta seguridad para optar a los puestos que me interesan.",
+      "No lo había pensado."
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "{nombre}, esta opción puede ser una debilidad, pero revisa si es la que más condiciona tus decisiones ahora mismo.",
-      "{nombre}, buena elección. Reconocer esta debilidad te permite pensar en soluciones realistas y no quedarte solo en el problema.",
-      "{nombre}, esta respuesta puede ser útil si la conectas con una situación concreta de tu vida profesional."
+      "{nombre}, lo que hoy percibes como una carencia puede convertirse en un futuro objetivo claro y realista.",
+      "{nombre}, poseer una experiencia sólida puede darte confianza, pero mantenerte actualizado seguirá marcando la diferencia.",
+      "{nombre}, enfocarte en conseguir una oportunidad puede ser el punto clave para avanzar en tus objetivos."
     ]
   },
   {
-    "tipo": "Debilidad",
-    "pregunta": "¿Qué aspecto interno limita más tu avance3?",
+    "tipo": "Fortaleza",
+    "pregunta": "¿Sabes utilizar tu red de contactos para acceder a nuevas oportunidades profesionales?",
     "opciones": [
-      "Me debilita esto",
-      "Me debilita aquello",
-      "Me debilita esto otro"
+      "Lo hago solo en determinadas ocasiones.",
+      "Me cuesta recurrir a mis contactos profesionales.",
+      "Suelo apoyarme en mis contactos de forma habitual."
     ],
     "respuesta_adecuada": 2,
     "feedback": [
-      "Esta opción puede señalar una dificultad, pero quizá no recoge la parte más importante de lo que necesitas trabajar.",
-      "Esta respuesta puede ser una pista. Piensa si realmente te limita o si puedes compensarla con alguna fortaleza.",
-      "Has identificado una debilidad relevante. El siguiente paso es pensar cómo puedes afrontarla de forma gradual."
+      "Utilizar tus contactos de forma más constante puede ayudarte a ampliar tus opciones laborales.",
+      "Muchas oportunidades laborales aparecen gracias a relaciones profesionales bien cuidadas.",
+      "Mantener una red de contactos activa puede facilitar el acceso a nuevas oportunidades y ampliar tu visibilidad profesional."
     ]
   },
   {
-    "tipo": "Fortaleza",
-    "pregunta": "¿Fortaleza1?",
+    "tipo": "Debilidad",
+    "pregunta": "Actualmente, hay aspectos que pueden estar frenando mi desarrollo profesional.",
     "opciones": [
-      "Esta es una fortaleza clave",
-      "Otra fortaleza importante",
-      "Una fortaleza menos relevante"
-    ],
-    "respuesta_adecuada": 0,
-    "feedback": [
-      "Has reconocido una fortaleza clave. Piensa cómo puedes usarla de forma práctica para acercarte a tu meta.",
-      "Esta fortaleza puede ayudarte, aunque quizá no sea la más decisiva. Revisa en qué situaciones te aporta más valor.",
-      "Esta opción puede servirte, pero intenta distinguir si es una fortaleza central o solo un apoyo secundario."
-    ]
-  },
-  {
-    "tipo": "Fortaleza",
-    "pregunta": "¿Fortaleza2?",
-    "opciones": [
-      "Esta es una fortaleza clave",
-      "Otra fortaleza importante",
-      "Una fortaleza menos relevante"
+      "Me cuesta identificar qué necesito mejorar en mi búsqueda de empleo.",
+      "Algunas circunstancias personales afectan a mi avance profesional.",
+      "En este momento no identifico ninguna limitación importante."
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "Esta fortaleza puede ser útil, pero tal vez no sea la que mejor te impulsa en este momento.",
-      "Has elegido una fortaleza importante. Intenta pensar cómo ponerla en acción en tu búsqueda o mejora profesional.",
-      "Esta opción puede tener valor, aunque conviene revisar si realmente te diferencia o te ayuda a avanzar."
+      "A veces, identificar qué te frena ayuda más de lo que parece para avanzar con más claridad.",
+      "Reconocer las dificultades que te rodean también te permite buscar alternativas y prepararte mejor.",
+      "Mantener una mirada crítica y realista sobre tu perfil puede ayudarte a seguir evolucionando profesionalmente."
     ]
   },
   {
-    "tipo": "Fortaleza",
-    "pregunta": "¿Fortaleza3?",
+    "tipo": "Debilidad",
+    "pregunta": "¿Cómo actuarás cuando aparezca un conflicto en el trabajo?",
     "opciones": [
-      "Esta es una fortaleza clave",
-      "Otra fortaleza importante",
-      "Una fortaleza menos relevante"
+      "Prefiero mantenerme al margen para evitar problemas.",
+      "Busco apoyo o lo comunico a una persona responsable.",
+      "Intento hablarlo directamente para encontrar una solución."
     ],
     "respuesta_adecuada": 2,
     "feedback": [
-      "Esta fortaleza puede ayudarte, pero quizá estás dejando fuera otra cualidad más ajustada a tu objetivo.",
-      "Es una fortaleza válida. Aun así, revisa si tiene suficiente peso para apoyarte en este reto profesional.",
-      "Has identificado una fortaleza que puede ser útil. Ahora piensa cómo convertirla en una acción concreta."
+      "Evitar el conflicto puede darte tranquilidad momentánea, {nombre}, aunque aprender a gestionarlo refuerza tus habilidades profesionales.",
+      "Saber cuándo pedir apoyo también forma parte de una gestión profesional adecuada, {nombre}.",
+      "Afrontar los conflictos desde el diálogo, {nombre}, refleja iniciativa y capacidad de colaboración."
     ]
   },
   {
-    "tipo": "Fortaleza",
-    "pregunta": "¿Fortaleza4?",
+    "tipo": "Debilidad",
+    "pregunta": "¿Qué no está funcionando en tu búsqueda de empleo?",
     "opciones": [
-      "Esta es una fortaleza clave",
-      "Otra fortaleza importan te",
-      "Una fortaleza menos relevante"
+      "Es imposible trabajar sin enchufe.",
+      "No sé dónde o cómo hacerlo.",
+      "Mi edad no es la adecuada."
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "Esta opción muestra una cualidad positiva, aunque quizá no sea la más relacionada con la pregunta.",
-      "Buena elección. Esta fortaleza puede ayudarte a avanzar si la conectas con una meta concreta.",
-      "Esta respuesta puede ser útil como apoyo, pero intenta valorar si es una fortaleza principal o secundaria."
-    ]
-  },
-  {
-    "tipo": "Fortaleza",
-    "pregunta": "¿Fortaleza5?",
-    "opciones": [
-      "Esta es una fortaleza clave",
-      "Otra fortaleza importante",
-      "Una fortaleza menos relevante"
-    ],
-    "respuesta_adecuada": 2,
-    "feedback": [
-      "Esta fortaleza puede tener valor, pero revisa si responde exactamente a lo que se plantea.",
-      "Es una buena cualidad, aunque quizá necesites concretar mejor cómo usarla en tu camino profesional.",
-      "Has elegido una fortaleza adecuada para este caso. Piensa cómo puedes apoyarte en ella desde hoy."
+      "{nombre}, seguro que conoces a personas que trabajan sin enchufe. Quizás avances más enfocándote en los factores que dependen de ti.",
+      "{nombre}, saber que necesitas orientación y estructura es un punto de partida claro.",
+      "{nombre}, ¿has pensado en los factores positivos que tu edad puede aportar?"
     ]
   },
   {
     "tipo": "Amenaza",
-    "pregunta": "¿Amenaza1?",
+    "pregunta": "¿Qué haces para detectar los cambios que podrían afectar a tus oportunidades laborales?",
     "opciones": [
-      "Esta amenaza puede frenarme bastante",
-      "Esta amenaza puede afectarme en parte",
-      "Esta amenaza es menos importante ahora"
+      "Observo qué perfiles y competencias son los más solicitados para seguir mejorando.",
+      "No hago nada en especial. Mi campo profesional varía poco.",
+      "Intento anticiparme a los cambios, actualizándome continuamente."
     ],
-    "respuesta_adecuada": 0,
+    "respuesta_adecuada": 2,
     "feedback": [
-      "Has detectado una amenaza importante. Ahora conviene pensar qué puedes hacer para anticiparte o reducir su impacto.",
-      "Esta amenaza puede influir, aunque quizá no sea la principal. Revisa si hay un factor externo que te afecte más.",
-      "Puede ser una amenaza menor, pero no la ignores. A veces los obstáculos pequeños también necesitan un plan."
+      "El reto de mantener tus conocimientos actualizados seguirá ayudándote a adaptarte a nuevos desafíos profesionales.",
+      "Si tu sector no cambiara, ¿por qué crees que hay personas que encuentran oportunidades y otras no?",
+      "Tener la capacidad de anticiparte a los cambios ayuda a tomar decisiones más estratégicas y prepararte con mayor seguridad."
     ]
   },
   {
     "tipo": "Amenaza",
-    "pregunta": "¿Amenaza2?",
+    "pregunta": "Si otra persona consigue el puesto y tú no, ¿qué crees que podría estar aportando más que tú?",
     "opciones": [
-      "Esta amenaza puede frenarme bastante",
-      "Esta amenaza puede afectarme en parte",
-      "Esta amenaza es menos importante ahora"
+      "Puede haber desarrollado competencias o habilidades que todavía necesito trabajar.",
+      "Creo que normalmente depende más de la suerte o de factores externos.",
+      "Considero que tengo el mismo nivel que otras personas candidatas y no necesito mejorar nada en especial."
     ],
-    "respuesta_adecuada": 1,
+    "respuesta_adecuada": 0,
     "feedback": [
-      "Esta amenaza puede ser relevante, pero quizá estás valorando su impacto por encima de lo necesario.",
-      "Has elegido una amenaza adecuada. Piensa qué información, apoyo o recurso te ayudaría a gestionarla.",
-      "Aunque parezca menos importante, revisa si podría crecer con el tiempo o afectar a tus decisiones."
+      "{nombre}, comparar competencias de forma constructiva puede darte información muy útil.",
+      "{nombre}, a veces mirar lo que otras personas aportan puede ser incómodo, pero también muy revelador.",
+      "{nombre}, si esta pregunta incomoda, quizá haya aspectos de tu perfil que necesitan más desarrollo y visibilidad."
     ]
   },
   {
     "tipo": "Amenaza",
-    "pregunta": "¿Amenaza3?",
+    "pregunta": "¿Qué cambios tecnológicos podrían dejar tu perfil obsoleto para el puesto al que optas?",
     "opciones": [
-      "Esta amenaza puede frenarme bastante",
-      "Esta amenaza puede afectarme en parte",
-      "Esta amenaza es menos importante ahora"
-    ],
-    "respuesta_adecuada": 2,
-    "feedback": [
-      "Esta amenaza puede preocupar, pero quizá no es la que más condiciona tu objetivo en este momento.",
-      "Esta respuesta muestra un posible obstáculo. Intenta valorar si depende del entorno o de algo que puedas trabajar.",
-      "Has identificado una amenaza menos prioritaria. Aun así, tenla presente para que no te sorprenda más adelante."
-    ]
-  },
-  {
-    "tipo": "Oportunidad",
-    "pregunta": "¿Oportunidad1?",
-    "opciones": [
-      "Esta oportunidad puede ayudarme mucho",
-      "Esta oportunidad puede ayudarme en parte",
-      "Esta oportunidad no es tan clara ahora"
-    ],
-    "respuesta_adecuada": 0,
-    "feedback": [
-      "Has reconocido una oportunidad clara. Piensa qué primer paso puedes dar para aprovecharla.",
-      "Esta oportunidad puede ayudarte, aunque quizá necesitas concretar mejor cómo acceder a ella.",
-      "Puede que esta oportunidad no sea tan visible ahora. Revisa si hay recursos, personas o cambios del entorno que puedas aprovechar."
-    ]
-  },
-  {
-    "tipo": "Oportunidad",
-    "pregunta": "¿Oportunidad2?",
-    "opciones": [
-      "Esta oportunidad puede ayudarme mucho",
-      "Esta oportunidad puede ayudarme en parte",
-      "Esta oportunidad no es tan clara ahora"
+      "Necesito actualizar o mejorar algunas herramientas digitales.",
+      "Mis conocimientos son adecuados para este tipo de trabajo.",
+      "En algunas tareas todavía necesito ayuda o asesoramiento."
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "Esta oportunidad puede ser útil, pero quizá no es la más realista o cercana en este momento.",
-      "Has elegido una oportunidad adecuada. Ahora intenta convertirla en una acción concreta y alcanzable.",
-      "Si no ves clara esta oportunidad, puede ayudarte buscar información o apoyo antes de descartarla."
+      "Mejorar tus competencias digitales puede abrirte nuevas oportunidades profesionales, {nombre}.",
+      "{nombre}, tal vez no necesites saberlo todo, pero seguir actualizando tus conocimientos puede ayudarte a mantenerte preparado ante nuevos cambios.",
+      "{nombre}, detectar dónde necesitas apoyo o asesoramiento puede ayudarte a ganar seguridad y autonomía."
     ]
   },
   {
     "tipo": "Oportunidad",
-    "pregunta": "¿Oportunidad3?",
+    "pregunta": "Tengo identificadas otras áreas o sectores donde mi perfil también puede aportar valor.",
     "opciones": [
-      "Esta oportunidad puede ayudarme mucho",
-      "Esta oportunidad puede ayudarme en parte",
-      "Esta oportunidad no es tan clara ahora"
+      "Sí",
+      "No"
+    ],
+    "respuesta_adecuada": 0,
+    "feedback": [
+      "{nombre}, explorar nuevas posibilidades puede abrirte caminos profesionales que quizá aún no habías considerado.",
+      "{nombre}, quizá tu perfil tenga más posibilidades que las que estás contemplando ahora mismo."
+    ]
+  },
+  {
+    "tipo": "Oportunidad",
+    "pregunta": "¿Qué podrías aprender que aumente tu valor profesional?",
+    "opciones": [
+      "Busco con frecuencia aprendizajes que aportan valor a mi perfil.",
+      "No he necesitado planteármelo hasta ahora.",
+      "Me cuesta detectar las áreas de mejora en mi perfil profesional."
+    ],
+    "respuesta_adecuada": 0,
+    "feedback": [
+      "Mantener una actitud de aprendizaje continuo es una competencia muy valorada actualmente.",
+      "Dedicar pequeños espacios para seguir aprendiendo puede marcar una diferencia importante a largo plazo.",
+      "Si logras detectar áreas de mejora, podrías conseguir un perfil más competitivo ante nuevas oportunidades laborales."
+    ]
+  },
+  {
+    "tipo": "Oportunidad",
+    "pregunta": "¿Tienes en cuenta nichos laborales que están poco explorados?",
+    "opciones": [
+      "Sí",
+      "No siempre"
+    ],
+    "respuesta_adecuada": 0,
+    "feedback": [
+      "{nombre}, detectar oportunidades alineadas con tu perfil refleja una búsqueda activa y enfocada.",
+      "{nombre}, revisar cómo y dónde buscas empleo puede ayudarte a encontrar opciones más ajustadas a ti."
+    ]
+  },
+  {
+    "tipo": "Oportunidad",
+    "pregunta": "¿Te cuesta seguir una planificación cuando buscas empleo?",
+    "opciones": [
+      "Planificar mi búsqueda no me da buenos resultados.",
+      "Hay momentos en los que soy constante y otros en los que no.",
+      "Tengo una rutina clara y constante."
     ],
     "respuesta_adecuada": 2,
     "feedback": [
-      "Esta oportunidad puede parecer atractiva, pero quizá no encaja del todo con tu situación actual.",
-      "Puede ser una oportunidad interesante. Revisa si tienes los recursos necesarios para aprovecharla.",
-      "Has identificado una oportunidad menos clara. Puede ser útil observarla, buscar más información y decidir más adelante."
+      "Pequeños hábitos constantes pueden generar más oportunidades de las que imaginas.",
+      "Encontrar una rutina más estable puede ayudarte a mantener el foco y aprovechar mejor las oportunidades.",
+      "Mantener una búsqueda organizada puede ayudarte a avanzar con mayor constancia y claridad en tus objetivos."
     ]
   }
 ]
