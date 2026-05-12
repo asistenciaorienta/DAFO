@@ -862,12 +862,12 @@ async function createPdfDocument() {
   
   // Logo proyecto
   if (projectLogo) {
-    doc.addImage(projectLogo, "PNG", margin, 8, 22, 22);
+    addImageKeepingRatio(doc, projectLogo, margin, 8, 22, 22);
   }
   
   // Logo SAE / Junta
   if (saeLogo) {
-    doc.addImage(saeLogo, "PNG", pageWidth - margin - 50, 9, 50, 18);
+    addImageKeepingRatio(doc, saeLogo, pageWidth - margin - 52, 10, 52, 22);
   }
   
   // Título principal
@@ -952,7 +952,7 @@ async function createPdfDocument() {
   y += 8;
 
   // Matriz DAFO
-  y = ensureSpace(doc, y, 120, pageHeight, margin);
+  y = ensureSpace(doc, y, 90, pageHeight, margin);
   y = drawSectionTitle(doc, "Tu matriz DAFO", margin, y);
   y += 4;
 
@@ -1064,6 +1064,21 @@ function loadImageAsDataUrl(src) {
   });
 }
 
+function addImageKeepingRatio(doc, imageDataUrl, x, y, maxWidth, maxHeight) {
+  const properties = doc.getImageProperties(imageDataUrl);
+  const ratio = properties.width / properties.height;
+
+  let width = maxWidth;
+  let height = width / ratio;
+
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height * ratio;
+  }
+
+  doc.addImage(imageDataUrl, "PNG", x, y, width, height);
+}
+
 function drawSectionTitle(doc, title, x, y) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(15);
@@ -1096,57 +1111,113 @@ function drawSoftBox(doc, x, y, width, contentCallback) {
 function drawDafoMatrixPdf(doc, x, y, width) {
   const gap = 6;
   const boxWidth = (width - gap) / 2;
-  const boxHeight = 76;
 
   const boxes = [
     {
       type: "Debilidad",
       title: "LO QUE PUEDES REFORZAR",
-      x,
-      y,
       color: [87, 211, 0]
     },
     {
       type: "Amenaza",
       title: "LO QUE PUEDE FRENARTE",
-      x: x + boxWidth + gap,
-      y,
       color: [66, 161, 242]
     },
     {
       type: "Fortaleza",
       title: "LO QUE HOY TE IMPULSA",
-      x,
-      y: y + boxHeight + gap,
       color: [244, 196, 0]
     },
     {
       type: "Oportunidad",
       title: "LO QUE PODRÍAS APROVECHAR",
-      x: x + boxWidth + gap,
-      y: y + boxHeight + gap,
       color: [176, 122, 230]
     }
   ];
 
-  boxes.forEach(box => {
+  const boxData = boxes.map(box => {
     const items = answers
       .filter(answer => answer.tipo === box.type)
       .map(answer => answer.feedback);
-  
-    drawDafoBoxPdf(
-      doc,
-      box.x,
-      box.y,
-      boxWidth,
-      boxHeight,
-      box.title,
+
+    const height = calculateDafoBoxHeightPdf(doc, boxWidth, items);
+
+    return {
+      ...box,
       items,
-      box.color
-    );
+      height
+    };
   });
 
-  return y + boxHeight * 2 + gap + 10;;
+  const row1Height = Math.max(boxData[0].height, boxData[1].height);
+  const row2Height = Math.max(boxData[2].height, boxData[3].height);
+
+  drawDafoBoxPdf(
+    doc,
+    x,
+    y,
+    boxWidth,
+    row1Height,
+    boxData[0].title,
+    boxData[0].items,
+    boxData[0].color
+  );
+
+  drawDafoBoxPdf(
+    doc,
+    x + boxWidth + gap,
+    y,
+    boxWidth,
+    row1Height,
+    boxData[1].title,
+    boxData[1].items,
+    boxData[1].color
+  );
+
+  drawDafoBoxPdf(
+    doc,
+    x,
+    y + row1Height + gap,
+    boxWidth,
+    row2Height,
+    boxData[2].title,
+    boxData[2].items,
+    boxData[2].color
+  );
+
+  drawDafoBoxPdf(
+    doc,
+    x + boxWidth + gap,
+    y + row1Height + gap,
+    boxWidth,
+    row2Height,
+    boxData[3].title,
+    boxData[3].items,
+    boxData[3].color
+  );
+
+  return y + row1Height + row2Height + gap + 8;
+}
+
+function calculateDafoBoxHeightPdf(doc, width, items) {
+  const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.6);
+
+  let textHeight = 0;
+
+  visibleItems.slice(0, 3).forEach(item => {
+    const lines = doc.splitTextToSize(`• ${item}`, width - 10);
+    const availableLines = lines.slice(0, 4);
+    textHeight += availableLines.length * 3.7 + 2;
+  });
+
+  const titleArea = 19;
+  const bottomPadding = 6;
+  const minHeight = 44;
+
+  return Math.max(minHeight, titleArea + textHeight + bottomPadding);
 }
 
 function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
@@ -1154,20 +1225,20 @@ function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
   doc.roundedRect(x, y, width, height, 5, 5, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.5);
+  doc.setFontSize(9.2);
   doc.setTextColor(255, 255, 255);
-  doc.text(title, x + 5, y + 9);
+  doc.text(title, x + 5, y + 8.5);
 
   doc.setDrawColor(255, 255, 255);
   doc.setLineWidth(0.8);
-  doc.line(x + 5, y + 12, x + width - 5, y + 12);
+  doc.line(x + 5, y + 11.5, x + width - 5, y + 11.5);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.6);
   doc.setTextColor(20, 35, 38);
 
   const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
-  let itemY = y + 19;
+  let itemY = y + 18;
   const maxY = y + height - 5;
 
   visibleItems.slice(0, 3).forEach(item => {
