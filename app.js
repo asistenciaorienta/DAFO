@@ -99,6 +99,7 @@ const sharePdfBtn = document.querySelector("#sharePdfBtn");
 const blockTransitionModal = document.querySelector("#blockTransitionModal");
 const blockTransitionTitle = document.querySelector("#blockTransitionTitle");
 const blockTransitionText = document.querySelector("#blockTransitionText");
+const blockTransitionContinueBtn = document.querySelector("#blockTransitionContinueBtn");
 const blockTransitionReplayBtn = document.querySelector("#blockTransitionReplayBtn");
 
 let blockTransitionAudio = null;
@@ -154,8 +155,13 @@ function bindEvents() {
   });
 
   continueBtn.addEventListener("click", commitAnswerAndGoNext);
-  blockTransitionContinueBtn.addEventListener("click", continueAfterBlockTransition);
-  blockTransitionReplayBtn.addEventListener("click", replayBlockTransitionAudio);
+  if (blockTransitionContinueBtn) {
+    blockTransitionContinueBtn.addEventListener("click", continueAfterBlockTransition);
+  }
+  
+  if (blockTransitionReplayBtn) {
+    blockTransitionReplayBtn.addEventListener("click", replayBlockTransitionAudio);
+  }
   restartBtn.addEventListener("click", () => {
     location.reload();
   });
