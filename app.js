@@ -28,16 +28,22 @@ const SUMMARY_VIDEOS = {
 
 const BLOCK_TRANSITION_MESSAGES = {
   Fortaleza: {
-    titulo: "Reconocer lo que haces bien, también forma parte de prepararte mejor,",
-    texto: "Ayuda a legitimar el autorreconocimiento sin arrogancia. Ahora vamos a mirar el entorno y aquello que podría frenarte."
+    titulo: "Reconocer lo que haces bien también forma parte de prepararte mejor",
+    texto: "Reconocer lo que haces bien también forma parte de prepararte mejor. Ayuda a legitimar el autorreconocimiento sin arrogancia. Ahora vamos a mirar el entorno y aquello que podría frenarte.",
+    audio: "transiciones/fortaleza.mp3",
+    subtitulos: "transiciones/fortaleza.vtt"
   },
   Amenaza: {
     titulo: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional.",
-    texto: "Anticipar lo que puede frenarte te ayuda a prepararte mejor. Ahora vamos a ver qué aspectos puedes reforzar."
+    texto: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional. Anticipar lo que puede frenarte te ayuda a prepararte mejor. Ahora vamos a ver qué aspectos puedes reforzar.",
+    audio: "transiciones/amenaza.mp3",
+    subtitulos: "transiciones/amenaza.vtt"
   },
   Debilidad: {
     titulo: "Detectar un área de mejora es el primer paso para poder cambiarla.",
-    texto: "Muy importante porque evita sensación de juicio. Ahora vamos a explorar qué oportunidades podrías aprovechar."
+    texto: "Detectar un área de mejora es el primer paso para poder cambiarla. Muy importante porque evita sensación de juicio. Ahora vamos a explorar qué oportunidades podrías aprovechar.",
+    audio: "transiciones/debilidad.mp3",
+    subtitulos: "transiciones/debilidad.vtt"
   }
 };
 
@@ -93,7 +99,12 @@ const sharePdfBtn = document.querySelector("#sharePdfBtn");
 const blockTransitionModal = document.querySelector("#blockTransitionModal");
 const blockTransitionTitle = document.querySelector("#blockTransitionTitle");
 const blockTransitionText = document.querySelector("#blockTransitionText");
-const blockTransitionContinueBtn = document.querySelector("#blockTransitionContinueBtn");
+const blockTransitionReplayBtn = document.querySelector("#blockTransitionReplayBtn");
+
+let blockTransitionAudio = null;
+let blockTransitionCues = [];
+let blockTransitionSubtitleTimer = null;
+let currentTransitionMessage = null;
 
 let pendingNextStep = null;
 
@@ -144,6 +155,7 @@ function bindEvents() {
 
   continueBtn.addEventListener("click", commitAnswerAndGoNext);
   blockTransitionContinueBtn.addEventListener("click", continueAfterBlockTransition);
+  blockTransitionReplayBtn.addEventListener("click", replayBlockTransitionAudio);
   restartBtn.addEventListener("click", () => {
     location.reload();
   });
@@ -840,13 +852,112 @@ function goNext() {
   renderCurrentStep();
 }
 
-function showBlockTransitionModal(message) {
+async function showBlockTransitionModal(message) {
+  currentTransitionMessage = message;
+
   blockTransitionTitle.textContent = personalizeText(message.titulo || "");
-  blockTransitionText.textContent = personalizeText(message.texto || "");
+  blockTransitionText.textContent = "";
   blockTransitionModal.classList.remove("hidden");
+
+  stopBlockTransitionAudio();
+
+  blockTransitionContinueBtn.disabled = false;
+
+  if (!message.audio) {
+    blockTransitionText.textContent = personalizeText(message.texto || "");
+    blockTransitionReplayBtn.classList.add("hidden");
+    return;
+  }
+
+  blockTransitionReplayBtn.classList.remove("hidden");
+
+  blockTransitionAudio = new Audio(message.audio);
+  blockTransitionAudio.preload = "auto";
+
+  blockTransitionCues = [];
+
+  if (message.subtitulos) {
+    try {
+      const response = await fetch(message.subtitulos);
+      if (response.ok) {
+        const vttText = await response.text();
+        blockTransitionCues = parseVtt(vttText);
+      }
+    } catch (error) {
+      console.warn("No se pudieron cargar los subtítulos de la transición.", error);
+    }
+  }
+
+  try {
+    await blockTransitionAudio.play();
+    startBlockTransitionSubtitles(message);
+  } catch (error) {
+    console.warn("No se pudo reproducir el audio de transición.", error);
+    blockTransitionText.textContent = personalizeText(message.texto || "");
+  }
+}
+
+function startBlockTransitionSubtitles(message) {
+  if (!blockTransitionAudio) return;
+
+  if (!blockTransitionCues.length) {
+    blockTransitionText.textContent = personalizeText(message.texto || "");
+    return;
+  }
+
+  blockTransitionSubtitleTimer = setInterval(() => {
+    const currentTime = blockTransitionAudio.currentTime;
+    const cue = blockTransitionCues.find(item => currentTime >= item.start && currentTime <= item.end);
+
+    blockTransitionText.textContent = cue
+      ? personalizeText(cue.text)
+      : "";
+  }, 100);
+
+  blockTransitionAudio.addEventListener("ended", () => {
+    stopBlockTransitionSubtitlesOnly();
+    blockTransitionText.textContent = personalizeText(message.texto || "");
+  }, { once: true });
+}
+
+function stopBlockTransitionSubtitlesOnly() {
+  if (blockTransitionSubtitleTimer) {
+    clearInterval(blockTransitionSubtitleTimer);
+    blockTransitionSubtitleTimer = null;
+  }
+}
+
+function stopBlockTransitionAudio() {
+  stopBlockTransitionSubtitlesOnly();
+
+  if (blockTransitionAudio) {
+    blockTransitionAudio.pause();
+    blockTransitionAudio.currentTime = 0;
+    blockTransitionAudio = null;
+  }
+}
+
+async function replayBlockTransitionAudio() {
+  if (!currentTransitionMessage) return;
+
+  stopBlockTransitionAudio();
+
+  blockTransitionText.textContent = "";
+  blockTransitionAudio = new Audio(currentTransitionMessage.audio);
+  blockTransitionAudio.preload = "auto";
+
+  try {
+    await blockTransitionAudio.play();
+    startBlockTransitionSubtitles(currentTransitionMessage);
+  } catch (error) {
+    console.warn("No se pudo reproducir de nuevo el audio de transición.", error);
+    blockTransitionText.textContent = personalizeText(currentTransitionMessage.texto || "");
+  }
 }
 
 function continueAfterBlockTransition() {
+  stopBlockTransitionAudio();
+
   blockTransitionModal.classList.add("hidden");
 
   if (!pendingNextStep) {
