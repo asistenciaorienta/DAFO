@@ -212,7 +212,7 @@ h3 {
   display: grid;
   place-items: center;
   padding: 22px;
-  background: rgba(0,0,0,.62);
+  background: rgba(0,0,0,.72);
   backdrop-filter: blur(6px);
 }
 
@@ -1131,4 +1131,27 @@ button.primary {
     margin: 0 auto 16px;
     width: min(170px, 48vw);
   }
+}
+
+/* Modal de transición entre bloques */
+.block-transition-card {
+  background: rgba(255, 255, 255, .96);
+  color: #14383d;
+  border: 1px solid rgba(255, 255, 255, .75);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .35);
+}
+
+.block-transition-card h4 {
+  color: #026c74;
+  font-weight: 900;
+}
+
+.block-transition-card .lead {
+  color: #14383d;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.block-transition-card .actions {
+  justify-content: center;
 }
