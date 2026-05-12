@@ -884,9 +884,9 @@ button.primary {
   position: relative;
   min-height: 400px;
   display: flex;
-  justify-content: center;
-  align-items: start;
-  padding-right: 20px;
+  justify-content: flex-start; /* antes probablemente estaba center */
+  align-items: flex-start;
+  padding-right: 180px; /* reserva espacio para el logo SAE */
 }
 
 .result-video-panel {
@@ -895,7 +895,7 @@ button.primary {
   height: auto;
   min-height: 0;
   max-height: none;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .result-top-logo {
@@ -905,6 +905,7 @@ button.primary {
   width: min(170px, 22vw);
   height: auto;
   opacity: .95;
+  z-index: 2;
 }
 
 .result-section-title {
@@ -1111,5 +1112,23 @@ button.primary {
   .start-button {
     width: auto;
     justify-self: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .result-hero-video-area {
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .result-video-panel {
+    margin: 0 auto;
+  }
+
+  .result-top-logo {
+    position: static;
+    display: block;
+    margin: 0 auto 16px;
+    width: min(170px, 48vw);
   }
 }
