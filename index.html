@@ -181,11 +181,17 @@
   
   <!-- MODAL TRANSICIONAL -->
   <div id="blockTransitionModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Mensaje entre bloques">
-    <div class="modal-card block-transition-card">
+    <div class="block-transition-card">
+      <span class="section-pill">Antes de continuar</span>
+  
       <h3 id="blockTransitionTitle"></h3>
-      <p id="blockTransitionText" class="lead"></p>
+  
+      <div class="block-transition-textbox">
+        <p id="blockTransitionText" class="lead"></p>
+      </div>
   
       <div class="actions">
+        <button id="blockTransitionReplayBtn" class="secondary" type="button">Escuchar de nuevo</button>
         <button id="blockTransitionContinueBtn" type="button">Continuar</button>
       </div>
     </div>
