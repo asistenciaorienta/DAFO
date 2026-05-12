@@ -32,7 +32,7 @@ const BLOCK_TRANSITION_MESSAGES = {
     texto: "Ayuda a legitimar el autorreconocimiento sin arrogancia. Ahora vamos a mirar el entorno y aquello que podría frenarte."
   },
   Amenaza: {
-    titulo: "Ya has revisado posibles obstáculos",
+    titulo: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional.",
     texto: "Anticipar lo que puede frenarte te ayuda a prepararte mejor. Ahora vamos a ver qué aspectos puedes reforzar."
   },
   Debilidad: {
