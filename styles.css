@@ -127,16 +127,19 @@ h3 {
 
 .brand-footer {
   position: fixed;
-  z-index: 10;
-  left: clamp(18px, 4vw, 42px);
+  left: 50%;
   bottom: 22px;
-  width: min(50vw, 610px);
-  min-width: 250px;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: min(520px, 72vw);
+  display: flex;
+  justify-content: center;
   pointer-events: none;
 }
 
 .brand-logo {
   width: 100%;
+  max-width: 520px;
   height: auto;
   display: block;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,.20));
@@ -258,17 +261,18 @@ h3 {
 }
 
 /* PORTADA */
-
+#intro {
+  position: relative;
+}
 .intro-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 230px;
-  gap: clamp(24px, 5vw, 70px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr);
+  gap: clamp(28px, 5vw, 70px);
   align-items: center;
-  padding-top: 64px;
 }
 
 .intro-panel {
-  max-width: 860px;
+  align-self: center;
 }
 
 .intro-kicker {
@@ -287,16 +291,15 @@ h3 {
 .intro-side {
   display: grid;
   justify-items: center;
-  align-self: start;
-  gap: 10px;
+  align-content: center;
+  gap: 22px;
+  padding-top: 70px;
 }
 
 .intro-dafo-logo {
-  justify-self: center;
-  align-self: start;
-  width: min(210px, 44vw);
-  opacity: .92;
-  filter: drop-shadow(0 12px 24px rgba(0,0,0,.18));
+  width: min(280px, 42vw);
+  height: auto;
+  display: block;
 }
 
 .intro-subtitle {
@@ -350,12 +353,10 @@ button.primary {
 }
 
 .start-button {
-  position: fixed;
-  right: clamp(18px, 4vw, 42px);
-  bottom: 30px;
-  z-index: 13;
-  text-transform: uppercase;
-  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  position: static;
+  justify-self: center;
+  align-self: center;
+  margin-top: 8px;
 }
 
 /* ACTIVIDAD */
@@ -1085,4 +1086,29 @@ button.primary {
 
 .block-transition-card .actions {
   justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .brand-footer {
+    width: min(420px, 82vw);
+    bottom: 18px;
+  }
+
+  .intro-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .intro-side {
+    padding-top: 0;
+  }
+
+  .intro-dafo-logo {
+    width: min(220px, 54vw);
+  }
+
+  .start-button {
+    width: auto;
+    justify-self: center;
+  }
 }
