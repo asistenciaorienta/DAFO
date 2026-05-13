@@ -753,37 +753,24 @@ async function renderBlockTransitionQuestion(question) {
   continueBtn.textContent = question.texto_boton || "Continuar";
   continueBtn.disabled = false;
 
+  stopTransitionQuestionAudio();
+
+  // Mostramos TODO el texto desde el principio
   questionText.innerHTML = `
     <span class="reflection-intro">Antes de continuar</span>
     <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
   `;
 
-  stopTransitionQuestionAudio();
-
+  // Reproducimos el audio, pero ya no usamos subtítulos progresivos
   if (!question.audio) {
     return;
   }
 
   transitionQuestionAudio = new Audio(question.audio);
   transitionQuestionAudio.preload = "auto";
-  transitionQuestionCues = [];
-
-  if (question.subtitulos) {
-    try {
-      const response = await fetch(question.subtitulos);
-
-      if (response.ok) {
-        const vttText = await response.text();
-        transitionQuestionCues = parseVtt(vttText);
-      }
-    } catch (error) {
-      console.warn("No se pudieron cargar los subtítulos de la transición.", error);
-    }
-  }
 
   try {
     await transitionQuestionAudio.play();
-    startTransitionQuestionSubtitles(question);
   } catch (error) {
     console.warn("No se pudo reproducir el audio de transición.", error);
   }
@@ -1025,25 +1012,16 @@ function showResult() {
   setScreenMode("result");
 
   const key = chooseSummaryVideoKey();
-  const feedbackInfo = feedbacksData[key] || {};
-  const userLabel = userName ? `${userName}, esta es tu valoración DAFO` : "Esta es tu valoración DAFO";
 
   renderVideo("#summaryVideoContainer", SUMMARY_VIDEOS[key], "Ver resumen", null);
 
-  document.querySelector("#resultHeading").innerHTML = userLabel.replace(", ", ",<br>");
-  document.querySelector("#resultText").textContent =
-    "Has completado la ruta. A continuación verás una reflexión adaptada a tus respuestas para ayudarte a seguir avanzando.";
+  const finalTitle = document.querySelector("#finalReflectionTitle");
 
-  document.querySelector("#feedbackTitle").textContent =
-    feedbackInfo.titulo || "Tu reflexión final";
-
-  document.querySelector("#feedbackSummary").textContent =
-    feedbackInfo.resumen || "Aquí aparecerá el resumen asociado a tu vídeo final.";
-
-  document.querySelector("#feedbackReflection").textContent =
-    feedbackInfo.reflexion || feedbackInfo.recomendacion || "";
-
-  renderDafoMatrix();
+  if (finalTitle) {
+    finalTitle.textContent = userName
+      ? `${userName}, aquí puedes descargar tu reflexión personalizada.`
+      : "Aquí puedes descargar tu reflexión personalizada.";
+  }
 }
 
 function renderDafoMatrix() {
