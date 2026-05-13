@@ -65,6 +65,9 @@ let waitingForVideoStart = false;
 let reflectionQuestionsData = null;
 let reflectionQuestionInserted = false;
 let currentShuffledOptions = [];
+let transitionQuestionAudio = null;
+let transitionQuestionCues = [];
+let transitionQuestionSubtitleTimer = null;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -86,24 +89,10 @@ const userNameInput = document.querySelector("#userNameInput");
 
 const questionForm = document.querySelector("#questionForm");
 const continueBtn = document.querySelector("#continueBtn");
-const questionHelpText = document.querySelector("#questionHelpText");
 
 const restartBtn = document.querySelector("#restartBtn");
 const downloadPdfBtn = document.querySelector("#downloadPdfBtn");
 const sharePdfBtn = document.querySelector("#sharePdfBtn");
-
-const blockTransitionModal = document.querySelector("#blockTransitionModal");
-const blockTransitionTitle = document.querySelector("#blockTransitionTitle");
-const blockTransitionText = document.querySelector("#blockTransitionText");
-const blockTransitionContinueBtn = document.querySelector("#blockTransitionContinueBtn");
-const blockTransitionReplayBtn = document.querySelector("#blockTransitionReplayBtn");
-
-let blockTransitionAudio = null;
-let blockTransitionCues = [];
-let blockTransitionSubtitleTimer = null;
-let currentTransitionMessage = null;
-
-let pendingNextStep = null;
 
 bindEvents();
 setScreenMode("intro");
@@ -151,13 +140,7 @@ function bindEvents() {
   });
 
   continueBtn.addEventListener("click", commitAnswerAndGoNext);
-  if (blockTransitionContinueBtn) {
-    blockTransitionContinueBtn.addEventListener("click", continueAfterBlockTransition);
-  }
-  
-  if (blockTransitionReplayBtn) {
-    blockTransitionReplayBtn.addEventListener("click", replayBlockTransitionAudio);
-  }
+
   restartBtn.addEventListener("click", () => {
     location.reload();
   });
@@ -322,21 +305,26 @@ function startIntroSubtitles() {
     const subtitleOffset = 0.4;
     const currentTime = introAudio.currentTime + subtitleOffset;
     const cue = introCues.find(item => currentTime >= item.start && currentTime <= item.end);
-
+  
     if (!cue) {
       subtitle.textContent = "";
       box.classList.add("hidden");
       if (logo) logo.classList.add("hidden");
       return;
     }
-
+  
     const text = cue.text || "";
     subtitle.textContent = text;
     box.classList.remove("hidden");
-
+  
+    const normalizedText = text
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  
     const shouldShowLogo =
-      text.toLowerCase().includes("servicio andaluz de empleo");
-
+      normalizedText.includes("servicio andaluz de empleo. a tu lado, en cada paso hacia tu meta.");
+  
     if (logo) {
       logo.classList.toggle("hidden", !shouldShowLogo);
     }
@@ -412,6 +400,7 @@ async function startApp() {
     groupedQuestions = groupByType(questions);
     groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 3, 3);
     insertReflectionQuestionIfAvailable(groupedQuestions, reflectionQuestionsData);
+    insertBlockTransitionQuestions(groupedQuestions);
 
     intro.classList.add("hidden");
     app.classList.remove("hidden");
@@ -507,6 +496,24 @@ function insertReflectionQuestionIfAvailable(groupedItems, reflectionData) {
   reflectionQuestionInserted = true;
 }
 
+function insertBlockTransitionQuestions(groupedItems) {
+  SECTION_ORDER.forEach(type => {
+    const transitionMessage = BLOCK_TRANSITION_MESSAGES[type];
+
+    if (!transitionMessage) return;
+    if (!Array.isArray(groupedItems[type])) return;
+
+    groupedItems[type].push({
+      tipo: type,
+      esTransicionBloque: true,
+      pregunta: transitionMessage.texto || "",
+      texto_boton: "Continuar",
+      audio: transitionMessage.audio || "",
+      subtitulos: transitionMessage.subtitulos || ""
+    });
+  });
+}
+
 function getRandomArrayItem(items) {
   if (!Array.isArray(items) || items.length === 0) return "";
   return items[Math.floor(Math.random() * items.length)];
@@ -542,22 +549,14 @@ function renderCurrentStep() {
 
   selectedOptionIndex = null;
 
-  document.querySelector("#sectionPill").textContent = `Bloque ${sectionIndex + 1} de 4`;
   document.querySelector("#sectionTitle").textContent = pluralTitle(type);
   document.querySelector("#answerInput").value = "";
   
-  if (currentQuestion.esReflexion) {
-    if (questionHelpText) {
-      questionHelpText.classList.add("hidden");
-    }
-  
+  if (currentQuestion.esTransicionBloque) {
+    renderBlockTransitionQuestion(currentQuestion);
+  } else if (currentQuestion.esReflexion) {
     renderReflectionQuestion(currentQuestion);
   } else {
-    if (questionHelpText) {
-      questionHelpText.classList.remove("hidden");
-      questionHelpText.textContent = "Elige la opción que mejor encaje contigo. No hay que escribir: solo pensar, elegir y continuar.";
-    }
-  
     document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
     continueBtn.textContent = "Continuar";
     continueBtn.disabled = true;
@@ -744,6 +743,107 @@ function renderReflectionQuestion(question) {
   continueBtn.disabled = false;
 }
 
+async function renderBlockTransitionQuestion(question) {
+  const optionsList = document.querySelector("#optionsList");
+  const questionText = document.querySelector("#questionText");
+
+  selectedOptionIndex = null;
+  currentShuffledOptions = [];
+
+  optionsList.innerHTML = "";
+  continueBtn.textContent = question.texto_boton || "Continuar";
+  continueBtn.disabled = false;
+
+  questionText.innerHTML = `
+    <span class="reflection-intro">Antes de continuar</span>
+    <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
+  `;
+
+  stopTransitionQuestionAudio();
+
+  if (!question.audio) {
+    return;
+  }
+
+  transitionQuestionAudio = new Audio(question.audio);
+  transitionQuestionAudio.preload = "auto";
+  transitionQuestionCues = [];
+
+  if (question.subtitulos) {
+    try {
+      const response = await fetch(question.subtitulos);
+
+      if (response.ok) {
+        const vttText = await response.text();
+        transitionQuestionCues = parseVtt(vttText);
+      }
+    } catch (error) {
+      console.warn("No se pudieron cargar los subtítulos de la transición.", error);
+    }
+  }
+
+  try {
+    await transitionQuestionAudio.play();
+    startTransitionQuestionSubtitles(question);
+  } catch (error) {
+    console.warn("No se pudo reproducir el audio de transición.", error);
+  }
+}
+
+function startTransitionQuestionSubtitles(question) {
+  const questionText = document.querySelector("#questionText");
+
+  if (!transitionQuestionAudio || !questionText) return;
+
+  if (!transitionQuestionCues.length) {
+    questionText.innerHTML = `
+      <span class="reflection-intro">Antes de continuar</span>
+      <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
+    `;
+    return;
+  }
+
+  transitionQuestionSubtitleTimer = setInterval(() => {
+    const currentTime = transitionQuestionAudio.currentTime;
+    const cue = transitionQuestionCues.find(item => currentTime >= item.start && currentTime <= item.end);
+
+    questionText.innerHTML = `
+      <span class="reflection-intro">Antes de continuar</span>
+      <span class="reflection-question">${
+        cue
+          ? escapeHtml(personalizeText(cue.text))
+          : ""
+      }</span>
+    `;
+  }, 100);
+
+  transitionQuestionAudio.addEventListener("ended", () => {
+    stopTransitionQuestionSubtitlesOnly();
+
+    questionText.innerHTML = `
+      <span class="reflection-intro">Antes de continuar</span>
+      <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
+    `;
+  }, { once: true });
+}
+
+function stopTransitionQuestionSubtitlesOnly() {
+  if (transitionQuestionSubtitleTimer) {
+    clearInterval(transitionQuestionSubtitleTimer);
+    transitionQuestionSubtitleTimer = null;
+  }
+}
+
+function stopTransitionQuestionAudio() {
+  stopTransitionQuestionSubtitlesOnly();
+
+  if (transitionQuestionAudio) {
+    transitionQuestionAudio.pause();
+    transitionQuestionAudio.currentTime = 0;
+    transitionQuestionAudio = null;
+  }
+}
+
 async function startActiveVideo() {
   if (!activeVideo) {
     return;
@@ -776,6 +876,11 @@ function selectOption(index) {
 }
 
 function commitAnswerAndGoNext() {
+  if (currentQuestion && currentQuestion.esTransicionBloque) {
+    stopTransitionQuestionAudio();
+    goNext();
+    return;
+  }  
   if (currentQuestion && currentQuestion.esReflexion) {
     if (currentQuestion.guardar_en_informe === true) {
       answers.push({
@@ -845,6 +950,8 @@ function getFeedbackForSelectedOption(question, selectedIndex) {
 }
 
 function goNext() {
+  stopTransitionQuestionAudio();
+
   questionIndex++;
 
   const currentType = SECTION_ORDER[sectionIndex];
@@ -863,153 +970,21 @@ function goNext() {
     return;
   }
 
-  const transitionMessage = BLOCK_TRANSITION_MESSAGES[currentType];
-
-  if (transitionMessage) {
-    pendingNextStep = {
-      sectionIndex: nextSectionIndex,
-      questionIndex: 0
-    };
-
-    showBlockTransitionModal(transitionMessage);
-    return;
-  }
-
   sectionIndex = nextSectionIndex;
   questionIndex = 0;
   renderCurrentStep();
 }
 
-async function showBlockTransitionModal(message) {
-  currentTransitionMessage = message;
-
-  blockTransitionTitle.textContent = personalizeText(message.titulo || "");
-  blockTransitionText.textContent = "";
-  blockTransitionModal.classList.remove("hidden");
-
-  stopBlockTransitionAudio();
-
-  blockTransitionContinueBtn.disabled = false;
-
-  if (!message.audio) {
-    blockTransitionText.textContent = personalizeText(message.texto || "");
-    blockTransitionReplayBtn.classList.add("hidden");
-    return;
-  }
-
-  blockTransitionReplayBtn.classList.remove("hidden");
-
-  blockTransitionAudio = new Audio(message.audio);
-  blockTransitionAudio.preload = "auto";
-
-  blockTransitionCues = [];
-
-  if (message.subtitulos) {
-    try {
-      const response = await fetch(message.subtitulos);
-      if (response.ok) {
-        const vttText = await response.text();
-        blockTransitionCues = parseVtt(vttText);
-      }
-    } catch (error) {
-      console.warn("No se pudieron cargar los subtítulos de la transición.", error);
-    }
-  }
-
-  try {
-    await blockTransitionAudio.play();
-    startBlockTransitionSubtitles(message);
-  } catch (error) {
-    console.warn("No se pudo reproducir el audio de transición.", error);
-    blockTransitionText.textContent = personalizeText(message.texto || "");
-  }
-}
-
-function startBlockTransitionSubtitles(message) {
-  if (!blockTransitionAudio) return;
-
-  if (!blockTransitionCues.length) {
-    blockTransitionText.textContent = personalizeText(message.texto || "");
-    return;
-  }
-
-  blockTransitionSubtitleTimer = setInterval(() => {
-    const currentTime = blockTransitionAudio.currentTime;
-    const cue = blockTransitionCues.find(item => currentTime >= item.start && currentTime <= item.end);
-
-    blockTransitionText.textContent = cue
-      ? personalizeText(cue.text)
-      : "";
-  }, 100);
-
-  blockTransitionAudio.addEventListener("ended", () => {
-    stopBlockTransitionSubtitlesOnly();
-    blockTransitionText.textContent = personalizeText(message.texto || "");
-  }, { once: true });
-}
-
-function stopBlockTransitionSubtitlesOnly() {
-  if (blockTransitionSubtitleTimer) {
-    clearInterval(blockTransitionSubtitleTimer);
-    blockTransitionSubtitleTimer = null;
-  }
-}
-
-function stopBlockTransitionAudio() {
-  stopBlockTransitionSubtitlesOnly();
-
-  if (blockTransitionAudio) {
-    blockTransitionAudio.pause();
-    blockTransitionAudio.currentTime = 0;
-    blockTransitionAudio = null;
-  }
-}
-
-async function replayBlockTransitionAudio() {
-  if (!currentTransitionMessage) return;
-
-  stopBlockTransitionAudio();
-
-  blockTransitionText.textContent = "";
-  blockTransitionAudio = new Audio(currentTransitionMessage.audio);
-  blockTransitionAudio.preload = "auto";
-
-  try {
-    await blockTransitionAudio.play();
-    startBlockTransitionSubtitles(currentTransitionMessage);
-  } catch (error) {
-    console.warn("No se pudo reproducir de nuevo el audio de transición.", error);
-    blockTransitionText.textContent = personalizeText(currentTransitionMessage.texto || "");
-  }
-}
-
-function continueAfterBlockTransition() {
-  stopBlockTransitionAudio();
-
-  blockTransitionModal.classList.add("hidden");
-
-  if (!pendingNextStep) {
-    return;
-  }
-
-  sectionIndex = pendingNextStep.sectionIndex;
-  questionIndex = pendingNextStep.questionIndex;
-  pendingNextStep = null;
-
-  renderCurrentStep();
-}
-
 function updateProgress() {
-  const totalQuestions = SECTION_ORDER.reduce((sum, type) => {
-    return sum + (groupedQuestions[type] || []).length;
-  }, 0);
+  const allQuestions = SECTION_ORDER.flatMap(type => groupedQuestions[type] || []);
+  const progressQuestions = allQuestions.filter(question => !question.esTransicionBloque);
 
   const completed = answers.length;
+  const totalQuestions = progressQuestions.length;
   const percent = totalQuestions ? Math.round((completed / totalQuestions) * 100) : 0;
 
   document.querySelector("#progressBar").style.width = `${percent}%`;
   document.querySelector("#progressPercent").textContent = `${percent}%`;
-  document.querySelector("#progressText").textContent = `Pregunta ${Math.min(completed + 1, totalQuestions)} de ${totalQuestions}`;
 }
 
 function isBlockPassed(type) {
