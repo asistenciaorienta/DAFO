@@ -757,7 +757,6 @@ async function renderBlockTransitionQuestion(question) {
 
   // Mostramos TODO el texto desde el principio
   questionText.innerHTML = `
-    <span class="reflection-intro">Antes de continuar</span>
     <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
   `;
 
@@ -783,7 +782,6 @@ function startTransitionQuestionSubtitles(question) {
 
   if (!transitionQuestionCues.length) {
     questionText.innerHTML = `
-      <span class="reflection-intro">Antes de continuar</span>
       <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
     `;
     return;
@@ -794,7 +792,6 @@ function startTransitionQuestionSubtitles(question) {
     const cue = transitionQuestionCues.find(item => currentTime >= item.start && currentTime <= item.end);
 
     questionText.innerHTML = `
-      <span class="reflection-intro">Antes de continuar</span>
       <span class="reflection-question">${
         cue
           ? escapeHtml(personalizeText(cue.text))
@@ -807,7 +804,6 @@ function startTransitionQuestionSubtitles(question) {
     stopTransitionQuestionSubtitlesOnly();
 
     questionText.innerHTML = `
-      <span class="reflection-intro">Antes de continuar</span>
       <span class="reflection-question">${escapeHtml(personalizeText(question.pregunta || ""))}</span>
     `;
   }, { once: true });
