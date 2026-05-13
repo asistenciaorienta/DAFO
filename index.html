@@ -87,10 +87,6 @@
     <section id="result" class="page hidden">
       <article class="result-screen">
         <div class="result-hero">
-          <div class="result-hero-text">
-            <h4 id="resultHeading" class="result-main-title">Esta es tu valoración DAFO</h4>
-          </div>
-    
           <div class="result-hero-video-area">
             <div id="summaryVideoContainer" class="video-panel result-video-panel"></div>
             <img class="result-top-logo" src="imagenes/logo_Vertical_SAE_blanco_transparente.png" alt="Junta de Andalucía">
@@ -98,51 +94,9 @@
         </div>
     
         <section class="result-reflection-section">
-          <h4 class="result-section-title">Una reflexión para seguir avanzando</h4>
-        
-          <p id="resultText" class="result-lead">
-            Has completado la ruta. A continuación verás una reflexión adaptada a tus respuestas para ayudarte a seguir avanzando.
-          </p>
-        
-          <div class="result-reflection-card">
-            <h4 id="feedbackTitle"></h4>
-            <p id="feedbackSummary"></p>
-            <p class="reflection-line">
-              <strong>* </strong>
-              <span id="feedbackReflection"></span>
-            </p>
-          </div>
+          <h4 class="result-section-title">{nombre}, aquí puedes descargar tu reflexión personalizada.</h4>
         </section>
-    
-        <section class="result-matrix-section">
-          <h3 class="result-section-title">Tu matriz DAFO</h3>
-          <p class="help-text">
-            Estas reflexiones se han generado a partir de tus respuestas. Puedes guardarlas o compartirlas en tu informe.
-          </p>
-    
-          <div class="dafo-grid">
-            <article class="dafo-box dafo-box-debilidades">
-              <h5>LO QUE PUEDES REFORZAR</h5>
-              <ul id="dafoDebilidades"></ul>
-            </article>
-            
-            <article class="dafo-box dafo-box-amenazas">
-              <h5>LO QUE PUEDE FRENARTE</h5>
-              <ul id="dafoAmenazas"></ul>
-            </article>
-            
-            <article class="dafo-box dafo-box-fortalezas">
-              <h5>LO QUE HOY TE IMPULSA</h5>
-              <ul id="dafoFortalezas"></ul>
-            </article>
-            
-            <article class="dafo-box dafo-box-oportunidades">
-              <h5>LO QUE PODRÍAS APROVECHAR</h5>
-              <ul id="dafoOportunidades"></ul>
-            </article>
-          </div>
-        </section>
-    
+       
         <div class="actions result-actions">
           <button id="downloadPdfBtn" type="button">Guardar PDF</button>
           <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
@@ -177,10 +131,6 @@
   <!-- MODAL TRANSICIONAL -->
   <div id="blockTransitionModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Mensaje entre bloques">
     <div class="block-transition-card">
-      <span class="section-pill">Antes de continuar</span>
-  
-      <h4 id="blockTransitionTitle"></h4>
-  
       <div class="block-transition-textbox">
         <p id="blockTransitionText" class="lead"></p>
       </div>
