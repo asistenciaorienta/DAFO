@@ -1291,4 +1291,10 @@ button.primary {
   filter: drop-shadow(0 10px 24px rgba(0,0,0,.22));
 }
 
+.progress-label.only-percent {
+  justify-content: flex-end;
+  font-size: .95rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.9);
+}
 
