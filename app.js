@@ -905,7 +905,7 @@ function buildAnswerFromCurrentSelection() {
       respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
       correcta: false,
       feedback: "No se ha podido registrar correctamente la respuesta.",
-      pdf: "No se ha podido registrar correctamente la valoración para el informe."
+      pdfFeedback: "No se ha podido registrar correctamente la valoración para el informe."
     };
   }
 
@@ -921,7 +921,7 @@ function buildAnswerFromCurrentSelection() {
     respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
     correcta: adequate,
     feedback: getFeedbackForSelectedOption(currentQuestion, originalIndex),
-    pdf: getPdfTextForSelectedOption(currentQuestion, originalIndex)
+    pdfFeedback: getPdfFeedbackForSelectedOption(currentQuestion, originalIndex)
   };
 }
 
@@ -939,6 +939,14 @@ function getFeedbackForSelectedOption(question, selectedIndex) {
   }
 
   return personalizeText(question.feedback || "Revisa este apartado con más profundidad.");
+}
+
+function getPdfFeedbackForSelectedOption(question, selectedIndex) {
+  if (Array.isArray(question.pdf)) {
+    return personalizeText(question.pdf[selectedIndex] || "");
+  }
+
+  return "";
 }
 
 function goNext() {
@@ -1264,16 +1272,16 @@ async function createPdfDocument() {
     });
   });
 
-  // Matriz DAFO técnica para el informe
-  y = ensureSpace(doc, y, 90, pageHeight, margin);
+  // DAFO de empleabilidad
+  y = ensureSpace(doc, y, 80, pageHeight, margin);
   y = drawSectionTitle(doc, "DAFO de empleabilidad", margin, y);
   y += 4;
-
-  y = drawPdfColumnDafoMatrix(doc, margin, y, usableWidth, pageHeight);
-
+  
+  y = drawEmployabilityDafoPdf(doc, margin, y, usableWidth, pageHeight);
+  
   // Pie
   addPdfFooter(doc);
-
+  
   return doc;
 }
 
@@ -1637,6 +1645,159 @@ function drawPdfDafoBox(doc, x, y, width, height, title, items, color) {
 
   visibleItems.slice(0, 3).forEach(item => {
     const lines = doc.splitTextToSize(`• ${item}`, width - 10);
+    doc.text(lines, x + 5, itemY);
+    itemY += lines.length * 3.6 + 2;
+  });
+}
+
+function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
+  const gap = 6;
+  const boxWidth = (width - gap) / 2;
+
+  const boxes = [
+    {
+      type: "Fortaleza",
+      title: "FORTALEZAS",
+      color: [36, 133, 92],
+      bg: [232, 246, 239]
+    },
+    {
+      type: "Debilidad",
+      title: "DEBILIDADES",
+      color: [211, 132, 37],
+      bg: [255, 244, 229]
+    },
+    {
+      type: "Oportunidad",
+      title: "OPORTUNIDADES",
+      color: [49, 119, 186],
+      bg: [232, 242, 252]
+    },
+    {
+      type: "Amenaza",
+      title: "AMENAZAS",
+      color: [181, 65, 65],
+      bg: [252, 234, 234]
+    }
+  ];
+
+  const boxData = boxes.map(box => {
+    const items = answers
+      .filter(answer => answer.tipo === box.type)
+      .map(answer => answer.pdfFeedback || "")
+      .filter(Boolean);
+
+    const height = calculateEmployabilityDafoBoxHeightPdf(doc, boxWidth, items);
+
+    return {
+      ...box,
+      items,
+      height
+    };
+  });
+
+  const row1Height = Math.max(boxData[0].height, boxData[1].height);
+  const row2Height = Math.max(boxData[2].height, boxData[3].height);
+
+  y = ensureSpace(doc, y, row1Height + row2Height + gap + 12, pageHeight, 14);
+
+  drawEmployabilityDafoBoxPdf(
+    doc,
+    x,
+    y,
+    boxWidth,
+    row1Height,
+    boxData[0].title,
+    boxData[0].items,
+    boxData[0].color,
+    boxData[0].bg
+  );
+
+  drawEmployabilityDafoBoxPdf(
+    doc,
+    x + boxWidth + gap,
+    y,
+    boxWidth,
+    row1Height,
+    boxData[1].title,
+    boxData[1].items,
+    boxData[1].color,
+    boxData[1].bg
+  );
+
+  drawEmployabilityDafoBoxPdf(
+    doc,
+    x,
+    y + row1Height + gap,
+    boxWidth,
+    row2Height,
+    boxData[2].title,
+    boxData[2].items,
+    boxData[2].color,
+    boxData[2].bg
+  );
+
+  drawEmployabilityDafoBoxPdf(
+    doc,
+    x + boxWidth + gap,
+    y + row1Height + gap,
+    boxWidth,
+    row2Height,
+    boxData[3].title,
+    boxData[3].items,
+    boxData[3].color,
+    boxData[3].bg
+  );
+
+  return y + row1Height + row2Height + gap + 10;
+}
+
+function calculateEmployabilityDafoBoxHeightPdf(doc, width, items) {
+  const visibleItems = items.length ? items : ["Sin información registrada."];
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.4);
+
+  let textHeight = 0;
+
+  visibleItems.slice(0, 3).forEach(item => {
+    const lines = doc.splitTextToSize(`• ${item}`, width - 12);
+    textHeight += lines.length * 3.6 + 2;
+  });
+
+  const titleArea = 15;
+  const bottomPadding = 7;
+  const minHeight = 48;
+
+  return Math.max(minHeight, titleArea + textHeight + bottomPadding);
+}
+
+function drawEmployabilityDafoBoxPdf(doc, x, y, width, height, title, items, color, bg) {
+  doc.setFillColor(bg[0], bg[1], bg[2]);
+  doc.setDrawColor(color[0], color[1], color[2]);
+  doc.setLineWidth(0.6);
+  doc.roundedRect(x, y, width, height, 4, 4, "FD");
+
+  doc.setFillColor(color[0], color[1], color[2]);
+  doc.roundedRect(x, y, width, 13, 4, 4, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.4);
+  doc.setTextColor(255, 255, 255);
+  doc.text(title, x + 5, y + 8.8);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.4);
+  doc.setTextColor(35, 45, 48);
+
+  const visibleItems = items.length ? items : ["Sin información registrada."];
+  let itemY = y + 20;
+  const maxY = y + height - 5;
+
+  visibleItems.slice(0, 3).forEach(item => {
+    if (itemY >= maxY) return;
+
+    const lines = doc.splitTextToSize(`• ${item}`, width - 12);
     doc.text(lines, x + 5, itemY);
     itemY += lines.length * 3.6 + 2;
   });
