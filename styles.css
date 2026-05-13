@@ -13,7 +13,7 @@
   --shadow: 0 24px 70px rgba(0,0,0,.24);
   --radius-xl: 32px;
   --radius-lg: 22px;
-  --footer-space: 110px;
+  --footer-space: 135px;
 }
 
 * {
@@ -74,7 +74,7 @@ main {
   min-height: 100dvh;
   margin: 0 auto;
   padding: clamp(22px, 4vw, 42px);
-  padding-bottom: var(--footer-space);
+  padding-bottom: calc(var(--footer-space) + 24px);
 }
 
 h1,
@@ -117,28 +117,29 @@ h3 {
 }
 
 .page {
-  min-height: calc(100dvh - var(--footer-space));
+  min-height: calc(100dvh - var(--footer-space) - 24px);
   display: grid;
   align-items: center;
+  padding-bottom: 24px;
 }
 
 /* LOGO INSTITUCIONAL */
-
 .brand-footer {
   position: fixed;
   left: 50%;
-  bottom: 22px;
+  bottom: clamp(14px, 2.2vh, 24px);
   transform: translateX(-50%);
   z-index: 2;
-  width: min(520px, 72vw);
+  width: min(500px, 72vw);
   display: flex;
   justify-content: center;
+  align-items: center;
   pointer-events: none;
 }
 
 .brand-logo {
   width: 100%;
-  max-width: 520px;
+  max-width: 500px;
   height: auto;
   display: block;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,.20));
@@ -365,13 +366,14 @@ button.primary {
   grid-template-columns: minmax(270px, 360px) minmax(0, 1fr);
   gap: clamp(28px, 5vw, 64px);
   align-items: center;
-  min-height: calc(100dvh - var(--footer-space) - 40px);
+  min-height: calc(100dvh - var(--footer-space) - 70px);
+  padding-bottom: 16px;
 }
 
 .video-panel {
   position: relative;
   justify-self: center;
-  width: min(360px, calc((100dvh - var(--footer-space) - 90px) * 9 / 16), 100%);
+  width: min(360px, calc((100dvh - var(--footer-space) - 130px) * 9 / 16), 100%);
   aspect-ratio: 9 / 16;
   height: auto;
   overflow: hidden;
@@ -667,12 +669,6 @@ button.primary {
     top: 18px;
   }
 
-  .brand-footer {
-    width: 52vw;
-    min-width: 230px;
-    bottom: 18px;
-  }
-
   .start-button {
     right: 18px;
     bottom: 22px;
@@ -738,12 +734,7 @@ button.primary {
   .start-button {
     width: auto;
   }
-
-  .brand-footer {
-    width: 70vw;
-    min-width: 210px;
-  }
-
+  
   .option-button {
     grid-template-columns: 32px 1fr;
     padding: 14px;
@@ -1110,11 +1101,6 @@ button.primary {
 }
 
 @media (max-width: 900px) {
-  .brand-footer {
-    width: min(420px, 82vw);
-    bottom: 18px;
-  }
-
   .intro-grid {
     grid-template-columns: 1fr;
     gap: 26px;
@@ -1298,3 +1284,55 @@ button.primary {
   color: rgba(255,255,255,.9);
 }
 
+@media (max-width: 900px) {
+  :root {
+    --footer-space: 125px;
+  }
+
+  main {
+    padding-bottom: calc(var(--footer-space) + 22px);
+  }
+
+  .page {
+    min-height: calc(100dvh - var(--footer-space) - 22px);
+    padding-bottom: 22px;
+  }
+
+  .brand-footer {
+    width: min(420px, 82vw);
+    bottom: 16px;
+  }
+
+  .activity-grid {
+    min-height: auto;
+    padding-bottom: 32px;
+  }
+
+  .video-panel {
+    width: min(330px, calc((100dvh - var(--footer-space) - 110px) * 9 / 16), 100%);
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --footer-space: 112px;
+  }
+
+  main {
+    padding-bottom: calc(var(--footer-space) + 18px);
+  }
+
+  .brand-footer {
+    width: min(340px, 76vw);
+    bottom: 14px;
+  }
+
+  .video-panel {
+    width: min(300px, calc((100dvh - var(--footer-space) - 100px) * 9 / 16), 100%);
+  }
+
+  .result-screen,
+  .question-card {
+    margin-bottom: 18px;
+  }
+}
