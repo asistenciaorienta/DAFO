@@ -79,16 +79,20 @@
 
     <!-- RESUMEN FINAL -->
     <section id="result" class="page hidden">
-      <article class="result-screen">
-        <div class="result-hero">
-          <div class="result-hero-video-area">
+      <article class="result-screen final-screen">
+    
+        <div class="final-video-row">
+          <div class="final-video-center">
             <div id="summaryVideoContainer" class="video-panel result-video-panel"></div>
-            <img class="result-top-logo" src="imagenes/logo_Vertical_SAE_blanco_transparente.png" alt="Junta de Andalucía">
           </div>
+    
+          <img class="result-top-logo" src="imagenes/logo_Vertical_SAE_blanco_transparente.png" alt="Servicio Andaluz de Empleo">
         </div>
     
-        <section class="result-reflection-section">
-          <h4 class="result-section-title">{nombre}, aquí puedes descargar tu reflexión personalizada.</h4>
+        <section class="result-reflection-section final-text-section">
+          <h4 id="finalReflectionTitle" class="result-section-title">
+            {nombre}, aquí puedes descargar tu reflexión personalizada.
+          </h4>
         </section>
        
         <div class="actions result-actions">
@@ -96,6 +100,7 @@
           <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
           <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
         </div>
+    
       </article>
     </section>
   </main>
