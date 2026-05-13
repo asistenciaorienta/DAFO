@@ -908,7 +908,8 @@ function buildAnswerFromCurrentSelection() {
       respuestaAdecuada: personalizeText(options[Number(currentQuestion.respuesta_adecuada)] || ""),
       respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
       correcta: false,
-      feedback: "No se ha podido registrar correctamente la respuesta."
+      feedback: "No se ha podido registrar correctamente la respuesta.",
+      pdf: "No se ha podido registrar correctamente la valoración para el informe."
     };
   }
 
@@ -923,8 +924,17 @@ function buildAnswerFromCurrentSelection() {
     respuestaAdecuada: personalizeText(options[Number(currentQuestion.respuesta_adecuada)] || ""),
     respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
     correcta: adequate,
-    feedback: getFeedbackForSelectedOption(currentQuestion, originalIndex)
+    feedback: getFeedbackForSelectedOption(currentQuestion, originalIndex),
+    pdf: getPdfTextForSelectedOption(currentQuestion, originalIndex)
   };
+}
+
+function getPdfTextForSelectedOption(question, selectedIndex) {
+  if (Array.isArray(question.pdf)) {
+    return personalizeText(question.pdf[selectedIndex] || "");
+  }
+
+  return "";
 }
 
 function getFeedbackForSelectedOption(question, selectedIndex) {
@@ -1244,7 +1254,7 @@ async function createPdfDocument() {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.setTextColor(45, 62, 66);
-      
+
       y = addWrappedText(
         doc,
         `Tu respuesta: ${answer.respuestaUsuario}`,
@@ -1253,19 +1263,17 @@ async function createPdfDocument() {
         usableWidth - 10,
         5
       );
-      
- /*     y = addWrappedText(
-        doc,
-        `A tener en cuenta: ${answer.feedback}`,
-        margin + 5,
-        y + 1,
-        usableWidth - 10,
-        5
-      );
-  */    
+
       y += 8;
     });
   });
+
+  // Matriz DAFO técnica para el informe
+  y = ensureSpace(doc, y, 90, pageHeight, margin);
+  y = drawSectionTitle(doc, "DAFO de empleabilidad", margin, y);
+  y += 4;
+
+  y = drawPdfColumnDafoMatrix(doc, margin, y, usableWidth, pageHeight);
 
   // Pie
   addPdfFooter(doc);
@@ -1490,6 +1498,154 @@ function drawDafoBoxPdf(doc, x, y, width, height, title, items, color) {
   });
 }
 
+function drawPdfColumnDafoMatrix(doc, x, y, width, pageHeight) {
+  const gap = 6;
+  const boxWidth = (width - gap) / 2;
+
+  const boxes = [
+    {
+      type: "Fortaleza",
+      title: "FORTALEZAS",
+      color: [244, 196, 0]
+    },
+    {
+      type: "Debilidad",
+      title: "DEBILIDADES",
+      color: [87, 211, 0]
+    },
+    {
+      type: "Oportunidad",
+      title: "OPORTUNIDADES",
+      color: [176, 122, 230]
+    },
+    {
+      type: "Amenaza",
+      title: "AMENAZAS",
+      color: [66, 161, 242]
+    }
+  ];
+
+  const boxData = boxes.map(box => {
+    const items = answers
+      .filter(answer => answer.tipo === box.type)
+      .map(answer => answer.pdf || answer.feedback || "")
+      .filter(Boolean);
+
+    const height = calculatePdfDafoBoxHeight(doc, boxWidth, items);
+
+    return {
+      ...box,
+      items,
+      height
+    };
+  });
+
+  const row1Height = Math.max(boxData[0].height, boxData[1].height);
+  const row2Height = Math.max(boxData[2].height, boxData[3].height);
+
+  const neededHeight = row1Height + row2Height + gap + 10;
+
+  if (y + neededHeight > pageHeight - 22) {
+    doc.addPage();
+    y = 18;
+    y = drawSectionTitle(doc, "DAFO de empleabilidad", x, y);
+    y += 4;
+  }
+
+  drawPdfDafoBox(
+    doc,
+    x,
+    y,
+    boxWidth,
+    row1Height,
+    boxData[0].title,
+    boxData[0].items,
+    boxData[0].color
+  );
+
+  drawPdfDafoBox(
+    doc,
+    x + boxWidth + gap,
+    y,
+    boxWidth,
+    row1Height,
+    boxData[1].title,
+    boxData[1].items,
+    boxData[1].color
+  );
+
+  drawPdfDafoBox(
+    doc,
+    x,
+    y + row1Height + gap,
+    boxWidth,
+    row2Height,
+    boxData[2].title,
+    boxData[2].items,
+    boxData[2].color
+  );
+
+  drawPdfDafoBox(
+    doc,
+    x + boxWidth + gap,
+    y + row1Height + gap,
+    boxWidth,
+    row2Height,
+    boxData[3].title,
+    boxData[3].items,
+    boxData[3].color
+  );
+
+  return y + row1Height + row2Height + gap + 10;
+}
+
+function calculatePdfDafoBoxHeight(doc, width, items) {
+  const visibleItems = items.length ? items : ["Sin información registrada."];
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.4);
+
+  let textHeight = 0;
+
+  visibleItems.slice(0, 3).forEach(item => {
+    const lines = doc.splitTextToSize(`• ${item}`, width - 10);
+    textHeight += lines.length * 3.6 + 2;
+  });
+
+  const titleArea = 18;
+  const bottomPadding = 7;
+  const minHeight = 42;
+
+  return Math.max(minHeight, titleArea + textHeight + bottomPadding);
+}
+
+function drawPdfDafoBox(doc, x, y, width, height, title, items, color) {
+  doc.setFillColor(color[0], color[1], color[2]);
+  doc.roundedRect(x, y, width, height, 5, 5, "F");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text(title, x + 5, y + 8.5);
+
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.7);
+  doc.line(x + 5, y + 11.5, x + width - 5, y + 11.5);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.4);
+  doc.setTextColor(20, 35, 38);
+
+  const visibleItems = items.length ? items : ["Sin información registrada."];
+  let itemY = y + 18;
+
+  visibleItems.slice(0, 3).forEach(item => {
+    const lines = doc.splitTextToSize(`• ${item}`, width - 10);
+    doc.text(lines, x + 5, itemY);
+    itemY += lines.length * 3.6 + 2;
+  });
+}
+
 function addPdfFooter(doc) {
   const pageCount = doc.internal.getNumberOfPages();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -1590,3 +1746,4 @@ function getTotalSelectedQuestions(groupedItems) {
     return sum + (groupedItems[type] || []).length;
   }, 0);
 }
+
