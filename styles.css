@@ -1263,3 +1263,32 @@ button.primary {
   }
 }
 
+.intro-subtitle-box {
+  width: min(620px, 92vw);
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+}
+
+.intro-subtitle {
+  width: 100%;
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.30);
+  color: #ffffff;
+  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.35;
+  box-shadow: 0 12px 28px rgba(0,0,0,.18);
+}
+
+.intro-subtitle-logo {
+  width: min(210px, 48vw);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.22));
+}
+
+
