@@ -307,9 +307,11 @@ function vttTimeToSeconds(time) {
 }
 
 function startIntroSubtitles() {
-  const box = document.querySelector("#introSubtitle");
+  const box = document.querySelector("#introSubtitleBox");
+  const subtitle = document.querySelector("#introSubtitle");
+  const logo = document.querySelector("#introSubtitleLogo");
 
-  if (!box || !introAudio) {
+  if (!box || !subtitle || !introAudio) {
     return;
   }
 
@@ -321,8 +323,23 @@ function startIntroSubtitles() {
     const currentTime = introAudio.currentTime + subtitleOffset;
     const cue = introCues.find(item => currentTime >= item.start && currentTime <= item.end);
 
-    box.textContent = cue ? cue.text : "";
-    box.classList.toggle("hidden", !cue);
+    if (!cue) {
+      subtitle.textContent = "";
+      box.classList.add("hidden");
+      if (logo) logo.classList.add("hidden");
+      return;
+    }
+
+    const text = cue.text || "";
+    subtitle.textContent = text;
+    box.classList.remove("hidden");
+
+    const shouldShowLogo =
+      text.toLowerCase().includes("servicio andaluz de empleo");
+
+    if (logo) {
+      logo.classList.toggle("hidden", !shouldShowLogo);
+    }
   }, 100);
 
   introAudio.addEventListener("ended", () => {
@@ -332,15 +349,24 @@ function startIntroSubtitles() {
 }
 
 function stopIntroSubtitles() {
-  const box = document.querySelector("#introSubtitle");
+  const box = document.querySelector("#introSubtitleBox");
+  const subtitle = document.querySelector("#introSubtitle");
+  const logo = document.querySelector("#introSubtitleLogo");
 
   if (introSubtitleTimer) {
     clearInterval(introSubtitleTimer);
     introSubtitleTimer = null;
   }
 
+  if (subtitle) {
+    subtitle.textContent = "";
+  }
+
+  if (logo) {
+    logo.classList.add("hidden");
+  }
+
   if (box) {
-    box.textContent = "";
     box.classList.add("hidden");
   }
 }
