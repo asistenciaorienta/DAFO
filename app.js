@@ -5,7 +5,6 @@ const SECTION_VIDEOS = {
   Fortaleza: "videos/fortalezas.mp4",
   Oportunidad: "videos/oportunidades.mp4"
 };
-
 const SUMMARY_VIDEOS = {
   feedback_1: "videos/feedback-1.mp4",
   feedback_2: "videos/feedback-2.mp4",
