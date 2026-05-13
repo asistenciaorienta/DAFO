@@ -487,11 +487,11 @@ button.primary {
   margin-top: 20px;
 }
 #sectionTitle {
-  margin: 12px 0 10px;
-  font-size: clamp(1.9rem, 4vw, 3.4rem);
-  line-height: 1;
-  font-weight: 900;
-  color: #ffffff;
+  margin: 10px 0 8px;
+  font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+  line-height: 1.15;
+  font-weight: 800;
+  color: rgba(255,255,255,.9);
 }
 
 #questionText {
