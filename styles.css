@@ -886,14 +886,7 @@ button.primary {
   line-height: 1.45;
 }
 
-.result-hero-video-area {
-  position: relative;
-  min-height: 400px;
-  display: flex;
-  justify-content: flex-start; /* antes probablemente estaba center */
-  align-items: flex-start;
-  padding-right: 180px; /* reserva espacio para el logo SAE */
-}
+
 
 .result-video-panel {
   width: min(320px, calc((100dvh - 150px) * 9 / 16), 100%);
@@ -902,16 +895,6 @@ button.primary {
   min-height: 0;
   max-height: none;
   margin: 0;
-}
-
-.result-top-logo {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: min(170px, 22vw);
-  height: auto;
-  opacity: .95;
-  z-index: 2;
 }
 
 .result-section-title {
@@ -1377,3 +1360,112 @@ button.primary {
   font-weight: 700;
   letter-spacing: .01em;
 }
+
+/* =========================
+   PANTALLA FINAL SIMPLIFICADA
+   ========================= */
+
+.final-screen {
+  width: 100%;
+  display: grid;
+  gap: 26px;
+  align-items: start;
+  justify-items: center;
+}
+
+.final-video-row {
+  position: relative;
+  width: 100%;
+  min-height: 460px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 28px;
+}
+
+.final-video-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.result-video-panel {
+  width: min(390px, calc((100dvh - 230px) * 9 / 16), 88vw);
+  aspect-ratio: 9 / 16;
+  height: auto;
+  max-height: none;
+  margin: 0 auto;
+}
+
+.result-top-logo {
+  position: static;
+  width: min(150px, 18vw);
+  height: auto;
+  justify-self: end;
+  align-self: start;
+  margin-top: 4px;
+  opacity: .95;
+  z-index: 2;
+}
+
+.final-text-section {
+  width: min(760px, 92vw);
+  text-align: center;
+  margin-top: 0;
+}
+
+.final-text-section .result-section-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.6vw, 2.15rem);
+  line-height: 1.2;
+  font-weight: 850;
+  color: rgba(255,255,255,.95);
+}
+
+.result-actions {
+  justify-content: center;
+  margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+  .final-video-row {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .result-top-logo {
+    order: -1;
+    justify-self: center;
+    width: min(150px, 45vw);
+    margin: 0 auto;
+  }
+
+  .result-video-panel {
+    width: min(330px, calc((100dvh - 250px) * 9 / 16), 86vw);
+  }
+
+  .final-text-section .result-section-title {
+    font-size: clamp(1.25rem, 5vw, 1.8rem);
+  }
+
+  .result-actions {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .result-video-panel {
+    width: min(300px, 86vw);
+  }
+
+  .final-text-section {
+    width: 94vw;
+  }
+
+  .final-text-section .result-section-title {
+    font-size: 1.35rem;
+  }
+}
+
