@@ -26,17 +26,17 @@ const SUMMARY_VIDEOS = {
 
 const BLOCK_TRANSITION_MESSAGES = {
   Fortaleza: {
-    texto: "Reconocer lo que haces bien también forma parte de prepararte mejor. Ayuda a legitimar el autorreconocimiento sin arrogancia.",
+    texto: "Reconocer lo que haces bien también forma parte de prepararte mejor./nAyuda a legitimar el autorreconocimiento sin arrogancia.",
     audio: "transiciones/fortaleza.mp3",
     subtitulos: "transiciones/fortaleza.vtt"
   },
   Amenaza: {
-    texto: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional. Anticipar lo que puede frenarte te ayuda a prepararte mejor.",
+    texto: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional./nAnticipar lo que puede frenarte te ayuda a prepararte mejor.",
     audio: "transiciones/amenaza.mp3",
     subtitulos: "transiciones/amenaza.vtt"
   },
   Debilidad: {
-    texto: "Detectar un área de mejora es el primer paso para poder cambiarla. Muy importante porque evita sensación de juicio.",
+    texto: "Detectar un área de mejora es el primer paso para poder cambiarla./nMuy importante porque evita sensación de juicio.",
     audio: "transiciones/debilidad.mp3",
     subtitulos: "transiciones/debilidad.vtt"
   }
@@ -72,6 +72,7 @@ let nameAudioPlayed = false;
 let backgroundMusic = null;
 let backgroundMusicStarted = false;
 let backgroundMusicShouldPlay = false;
+let optionsDelayTimer = null;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -658,31 +659,57 @@ function renderCurrentStep() {
 
   selectedOptionIndex = null;
 
+  const questionText = document.querySelector("#questionText");
+  const answerInput = document.querySelector("#answerInput");
+  const card = document.querySelector("#questionCard");
+
   document.querySelector("#sectionTitle").textContent = pluralTitle(type);
-  document.querySelector("#answerInput").value = "";
-  
+  answerInput.value = "";
+
+  const isNormalQuestion =
+    !currentQuestion.esTransicionBloque &&
+    !currentQuestion.esReflexion;
+
   if (currentQuestion.esTransicionBloque) {
     renderBlockTransitionQuestion(currentQuestion);
   } else if (currentQuestion.esReflexion) {
     renderReflectionQuestion(currentQuestion);
   } else {
-    document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
+    questionText.textContent = personalizeText(currentQuestion.pregunta);
     continueBtn.textContent = "Continuar";
     continueBtn.disabled = true;
+
     renderOptions(currentQuestion);
+
+    // En TODAS las preguntas normales ocultamos opciones y botón al principio
+    hideOptionsTemporarily();
   }
 
   if (currentVideoType !== type) {
     currentVideoType = type;
-    renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo para contituar", type);
+
+    if (!watchedVideoTypes.has(type)) {
+      prepareVideoFocusLayout();
+    }
+
+    renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo para continuar", type);
+  } else if (watchedVideoTypes.has(type)) {
+    showQuestionsLayoutImmediate();
+
+    // Si es una pregunta normal posterior dentro del mismo bloque,
+    // mostramos las opciones a los 3 segundos.
+    if (isNormalQuestion) {
+      hideOptionsTemporarily();
+      showOptionsAfterDelay(3000);
+    }
   }
 
-  const card = document.querySelector("#questionCard");
-
-  if (watchedVideoTypes.has(type)) {
-    card.classList.remove("waiting-video");
-  } else {
-    card.classList.add("waiting-video");
+  if (card) {
+    if (watchedVideoTypes.has(type)) {
+      card.classList.remove("waiting-video");
+    } else {
+      card.classList.add("waiting-video");
+    }
   }
 
   updateProgress();
@@ -751,19 +778,7 @@ function renderVideo(selector, source, buttonText, type) {
   });
 
   video.addEventListener("ended", () => {
-    waitingForVideoStart = false;
-  
-    resumeBackgroundMusicAfterVideo();
-  
-    if (type) {
-      watchedVideoTypes.add(type);
-    }
-  
-    const card = document.querySelector("#questionCard");
-  
-    if (card) {
-      card.classList.remove("waiting-video");
-    }
+    finishSectionVideo(type);
   });
 
   video.addEventListener("pause", () => {
@@ -785,10 +800,146 @@ function renderVideo(selector, source, buttonText, type) {
   
     if (type && !watchedVideoTypes.has(type)) {
       card.classList.add("waiting-video");
+      card.classList.add("pre-reveal");
+      card.classList.remove("reveal");
     } else {
       card.classList.remove("waiting-video");
     }
   });
+}
+
+function prepareVideoFocusLayout() {
+  const activityGrid = document.querySelector(".activity-grid");
+  const card = document.querySelector("#questionCard");
+
+  if (!activityGrid || !card) return;
+
+  activityGrid.classList.add("video-focus");
+  card.classList.add("pre-reveal");
+  card.classList.remove("reveal");
+}
+
+function showQuestionsLayoutImmediate() {
+  const activityGrid = document.querySelector(".activity-grid");
+  const card = document.querySelector("#questionCard");
+
+  if (!activityGrid || !card) return;
+
+  activityGrid.classList.remove("video-focus");
+  card.classList.remove("pre-reveal");
+  card.classList.add("reveal");
+}
+
+function revealQuestionsAfterVideo() {
+  const activityGrid = document.querySelector(".activity-grid");
+  const videoPanel = document.querySelector("#videoContainer");
+  const card = document.querySelector("#questionCard");
+
+  if (!activityGrid || !videoPanel || !card) {
+    showQuestionsLayoutImmediate();
+    return;
+  }
+
+  const firstRect = videoPanel.getBoundingClientRect();
+
+  activityGrid.classList.remove("video-focus");
+
+  const lastRect = videoPanel.getBoundingClientRect();
+
+  const deltaX = firstRect.left - lastRect.left;
+  const deltaY = firstRect.top - lastRect.top;
+  const scaleX = firstRect.width / lastRect.width;
+  const scaleY = firstRect.height / lastRect.height;
+
+  videoPanel.style.transformOrigin = "top left";
+  videoPanel.style.transition = "none";
+  videoPanel.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
+
+  card.classList.add("pre-reveal");
+  card.classList.remove("reveal");
+
+  requestAnimationFrame(() => {
+    videoPanel.style.transition = "transform .78s cubic-bezier(.22, 1, .36, 1)";
+    videoPanel.style.transform = "translate(0, 0) scale(1)";
+
+    setTimeout(() => {
+      card.classList.remove("pre-reveal");
+      card.classList.add("reveal");
+    
+      hideOptionsTemporarily();
+      showOptionsAfterDelay(3000);
+    }, 260);
+  });
+
+  videoPanel.addEventListener("transitionend", () => {
+    videoPanel.style.transition = "";
+    videoPanel.style.transform = "";
+    videoPanel.style.transformOrigin = "";
+  }, { once: true });
+}
+
+function hideOptionsTemporarily() {
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.add("options-delayed");
+    optionsList.classList.remove("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.add("actions-delayed");
+    actions.classList.remove("actions-visible");
+  }
+}
+
+function showOptionsAfterDelay(delay = 3000) {
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  setTimeout(() => {
+    if (optionsList) {
+      optionsList.classList.remove("options-delayed");
+      optionsList.classList.add("options-visible");
+    }
+
+    if (actions) {
+      actions.classList.remove("actions-delayed");
+      actions.classList.add("actions-visible");
+    }
+  }, delay);
+}
+
+function showOptionsImmediate() {
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.remove("options-delayed");
+    optionsList.classList.add("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.remove("actions-delayed");
+    actions.classList.add("actions-visible");
+  }
+}
+
+function finishSectionVideo(type) {
+  waitingForVideoStart = false;
+  resumeBackgroundMusicAfterVideo();
+
+  if (type) {
+    watchedVideoTypes.add(type);
+  }
+
+  const card = document.querySelector("#questionCard");
+
+  if (card) {
+    card.classList.remove("waiting-video");
+  }
+
+  revealQuestionsAfterVideo();
 }
 
 async function handleGlobalVideoStartClick(event) {
@@ -860,6 +1011,7 @@ function renderReflectionQuestion(question) {
 
   continueBtn.textContent = question.texto_boton || "Continuar";
   continueBtn.disabled = false;
+  showOptionsImmediate();
 }
 
 async function renderBlockTransitionQuestion(question) {
@@ -872,6 +1024,7 @@ async function renderBlockTransitionQuestion(question) {
   optionsList.innerHTML = "";
   continueBtn.textContent = question.texto_boton || "Continuar";
   continueBtn.disabled = false;
+  showOptionsImmediate();
 
   stopTransitionQuestionAudio();
 
@@ -1872,6 +2025,68 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
   return y + row1Height + row2Height + gap + 10;
 }
 
+function clearOptionsDelayTimer() {
+  if (optionsDelayTimer) {
+    clearTimeout(optionsDelayTimer);
+    optionsDelayTimer = null;
+  }
+}
+
+function hideOptionsTemporarily() {
+  clearOptionsDelayTimer();
+
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.add("options-delayed");
+    optionsList.classList.remove("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.add("actions-delayed");
+    actions.classList.remove("actions-visible");
+  }
+}
+
+function showOptionsAfterDelay(delay = 3000) {
+  clearOptionsDelayTimer();
+
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  optionsDelayTimer = setTimeout(() => {
+    if (optionsList) {
+      optionsList.classList.remove("options-delayed");
+      optionsList.classList.add("options-visible");
+    }
+
+    if (actions) {
+      actions.classList.remove("actions-delayed");
+      actions.classList.add("actions-visible");
+    }
+
+    optionsDelayTimer = null;
+  }, delay);
+}
+
+function showOptionsImmediate() {
+  clearOptionsDelayTimer();
+
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.remove("options-delayed");
+    optionsList.classList.add("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.remove("actions-delayed");
+    actions.classList.add("actions-visible");
+  }
+}
+
 function calculateEmployabilityDafoBoxHeightPdf(doc, width, items) {
   const visibleItems = items.length ? items : ["Sin información registrada."];
 
@@ -2023,4 +2238,3 @@ function getTotalSelectedQuestions(groupedItems) {
     return sum + (groupedItems[type] || []).length;
   }, 0);
 }
-
