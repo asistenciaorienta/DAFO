@@ -659,48 +659,60 @@ function renderCurrentStep() {
 
   selectedOptionIndex = null;
 
+  const questionText = document.querySelector("#questionText");
+  const answerInput = document.querySelector("#answerInput");
+  const card = document.querySelector("#questionCard");
+
   document.querySelector("#sectionTitle").textContent = pluralTitle(type);
-  document.querySelector("#answerInput").value = "";
-  
+  answerInput.value = "";
+
+  const isNormalQuestion =
+    !currentQuestion.esTransicionBloque &&
+    !currentQuestion.esReflexion;
+
   if (currentQuestion.esTransicionBloque) {
     renderBlockTransitionQuestion(currentQuestion);
   } else if (currentQuestion.esReflexion) {
     renderReflectionQuestion(currentQuestion);
   } else {
-    document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
+    questionText.textContent = personalizeText(currentQuestion.pregunta);
     continueBtn.textContent = "Continuar";
     continueBtn.disabled = true;
-    
+
     renderOptions(currentQuestion);
-    
-    // Oculta siempre las opciones en preguntas normales
+
+    // En TODAS las preguntas normales ocultamos opciones y botón al principio
     hideOptionsTemporarily();
   }
 
   if (currentVideoType !== type) {
     currentVideoType = type;
-  
+
     if (!watchedVideoTypes.has(type)) {
       prepareVideoFocusLayout();
     }
-  
+
     renderVideo("#videoContainer", SECTION_VIDEOS[type], "Ver vídeo para continuar", type);
   } else if (watchedVideoTypes.has(type)) {
     showQuestionsLayoutImmediate();
+
+    // Si es una pregunta normal posterior dentro del mismo bloque,
+    // mostramos las opciones a los 3 segundos.
+    if (isNormalQuestion) {
+      hideOptionsTemporarily();
+      showOptionsAfterDelay(3000);
+    }
   }
 
-  const card = document.querySelector("#questionCard");
-
-  if (watchedVideoTypes.has(type)) {
-    card.classList.remove("waiting-video");
-  } else {
-    card.classList.add("waiting-video");
+  if (card) {
+    if (watchedVideoTypes.has(type)) {
+      card.classList.remove("waiting-video");
+    } else {
+      card.classList.add("waiting-video");
+    }
   }
 
   updateProgress();
-  if (watchedVideoTypes.has(type)) {
-    showOptionsImmediate();
-  }
 }
 
 function pluralTitle(type) {
@@ -816,8 +828,6 @@ function showQuestionsLayoutImmediate() {
   activityGrid.classList.remove("video-focus");
   card.classList.remove("pre-reveal");
   card.classList.add("reveal");
-
-  showOptionsImmediate();
 }
 
 function revealQuestionsAfterVideo() {
