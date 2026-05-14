@@ -26,17 +26,17 @@ const SUMMARY_VIDEOS = {
 
 const BLOCK_TRANSITION_MESSAGES = {
   Fortaleza: {
-    texto: "Reconocer lo que haces bien también forma parte de prepararte mejor./nAyuda a legitimar el autorreconocimiento sin arrogancia.",
+    texto: "Reconocer lo que haces bien también forma parte de prepararte mejor.",
     audio: "transiciones/fortaleza.mp3",
     subtitulos: "transiciones/fortaleza.vtt"
   },
   Amenaza: {
-    texto: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional./nAnticipar lo que puede frenarte te ayuda a prepararte mejor.",
+    texto: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional.",
     audio: "transiciones/amenaza.mp3",
     subtitulos: "transiciones/amenaza.vtt"
   },
   Debilidad: {
-    texto: "Detectar un área de mejora es el primer paso para poder cambiarla./nMuy importante porque evita sensación de juicio.",
+    texto: "Detectar un área de mejora es el primer paso para poder cambiarla.",
     audio: "transiciones/debilidad.mp3",
     subtitulos: "transiciones/debilidad.vtt"
   }
