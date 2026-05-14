@@ -67,6 +67,8 @@ let currentShuffledOptions = [];
 let transitionQuestionAudio = null;
 let transitionQuestionCues = [];
 let transitionQuestionSubtitleTimer = null;
+let nameAudio = null;
+let nameAudioPlayed = false;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -92,6 +94,9 @@ const continueBtn = document.querySelector("#continueBtn");
 const restartBtn = document.querySelector("#restartBtn");
 const downloadPdfBtn = document.querySelector("#downloadPdfBtn");
 const sharePdfBtn = document.querySelector("#sharePdfBtn");
+
+const nameStartControls = document.querySelector("#nameStartControls");
+const nameAudioNotice = document.querySelector("#nameAudioNotice");
 
 bindEvents();
 setScreenMode("intro");
@@ -189,8 +194,58 @@ async function handleStartButton() {
     introAudio.currentTime = 0;
   }
 
+  openNameModalWithAudio();
+}
+
+async function openNameModalWithAudio() {
   nameModal.classList.remove("hidden");
-  setTimeout(() => userNameInput.focus(), 50);
+
+  if (nameStartControls) {
+    nameStartControls.classList.add("hidden");
+  }
+
+  if (nameAudioNotice) {
+    nameAudioNotice.classList.remove("hidden");
+    nameAudioNotice.textContent = "Escucha este breve mensaje antes de comenzar.";
+  }
+
+  if (nameAudio) {
+    nameAudio.pause();
+    nameAudio.currentTime = 0;
+  }
+
+  nameAudio = new Audio("mensaje_nombre.mp3");
+  nameAudio.preload = "auto";
+
+  nameAudio.addEventListener("ended", showNameControls, { once: true });
+
+  try {
+    await nameAudio.play();
+  } catch (error) {
+    console.warn("No se pudo reproducir mensaje_nombre.mp3.", error);
+
+    if (nameAudioNotice) {
+      nameAudioNotice.textContent = "Pulsa para continuar cuando estés preparado.";
+    }
+
+    showNameControls();
+  }
+}
+
+function showNameControls() {
+  if (nameStartControls) {
+    nameStartControls.classList.remove("hidden");
+  }
+
+  if (nameAudioNotice) {
+    nameAudioNotice.classList.add("hidden");
+  }
+
+  setTimeout(() => {
+    if (userNameInput) {
+      userNameInput.focus();
+    }
+  }, 80);
 }
 
 function handleNameSubmit(event) {
