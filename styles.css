@@ -1469,3 +1469,15 @@ button.primary {
   }
 }
 
+.name-audio-notice {
+  margin-top: 20px;
+  padding: 15px 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.22);
+  color: rgba(255,255,255,.92);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  font-weight: 700;
+  text-align: center;
+}
