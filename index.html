@@ -121,19 +121,29 @@
   <div id="nameModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Introduce tu nombre">
     <form id="nameForm" class="modal-card">
       <h3>Antes de empezar</h3>
+  
       <p class="lead">
-        Enfócate en tus metas profesionales antes de  iniciar la actividad,... tómate tu tiempo y reflexiona antes de contestar.  
+        Enfócate en tus metas profesionales antes de iniciar la actividad,... tómate tu tiempo y reflexiona antes de contestar.
       </p>
+  
       <p class="lead">
         Al finalizar recibirás una reflexión personalizada que te ayudará en tu camino profesional.
-      </p>      
+      </p>
+  
       <p class="lead">
         Por favor, escribe tu nombre para continuar.
-      </p>      
-      
-      <input id="userNameInput" class="name-input" type="text" autocomplete="given-name" maxlength="40" placeholder="Tu nombre" required>
-      <div class="actions">
-        <button type="submit">Empezar actividad</button>
+      </p>
+  
+      <div id="nameAudioNotice" class="name-audio-notice">
+        Escucha este breve mensaje antes de comenzar.
+      </div>
+  
+      <div id="nameStartControls" class="hidden">
+        <input id="userNameInput" class="name-input" type="text" autocomplete="given-name" maxlength="40" placeholder="Tu nombre" required>
+  
+        <div class="actions">
+          <button type="submit">Empezar actividad</button>
+        </div>
       </div>
     </form>
   </div>
