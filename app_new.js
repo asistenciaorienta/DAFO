@@ -72,6 +72,7 @@ let nameAudioPlayed = false;
 let backgroundMusic = null;
 let backgroundMusicStarted = false;
 let backgroundMusicShouldPlay = false;
+let optionsDelayTimer = null;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -669,7 +670,11 @@ function renderCurrentStep() {
     document.querySelector("#questionText").textContent = personalizeText(currentQuestion.pregunta);
     continueBtn.textContent = "Continuar";
     continueBtn.disabled = true;
+    
     renderOptions(currentQuestion);
+    
+    // Oculta siempre las opciones en preguntas normales
+    hideOptionsTemporarily();
   }
 
   if (currentVideoType !== type) {
@@ -996,6 +1001,7 @@ function renderReflectionQuestion(question) {
 
   continueBtn.textContent = question.texto_boton || "Continuar";
   continueBtn.disabled = false;
+  showOptionsImmediate();
 }
 
 async function renderBlockTransitionQuestion(question) {
@@ -1008,6 +1014,7 @@ async function renderBlockTransitionQuestion(question) {
   optionsList.innerHTML = "";
   continueBtn.textContent = question.texto_boton || "Continuar";
   continueBtn.disabled = false;
+  showOptionsImmediate();
 
   stopTransitionQuestionAudio();
 
@@ -2006,6 +2013,68 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
   );
 
   return y + row1Height + row2Height + gap + 10;
+}
+
+function clearOptionsDelayTimer() {
+  if (optionsDelayTimer) {
+    clearTimeout(optionsDelayTimer);
+    optionsDelayTimer = null;
+  }
+}
+
+function hideOptionsTemporarily() {
+  clearOptionsDelayTimer();
+
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.add("options-delayed");
+    optionsList.classList.remove("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.add("actions-delayed");
+    actions.classList.remove("actions-visible");
+  }
+}
+
+function showOptionsAfterDelay(delay = 3000) {
+  clearOptionsDelayTimer();
+
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  optionsDelayTimer = setTimeout(() => {
+    if (optionsList) {
+      optionsList.classList.remove("options-delayed");
+      optionsList.classList.add("options-visible");
+    }
+
+    if (actions) {
+      actions.classList.remove("actions-delayed");
+      actions.classList.add("actions-visible");
+    }
+
+    optionsDelayTimer = null;
+  }, delay);
+}
+
+function showOptionsImmediate() {
+  clearOptionsDelayTimer();
+
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.remove("options-delayed");
+    optionsList.classList.add("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.remove("actions-delayed");
+    actions.classList.add("actions-visible");
+  }
 }
 
 function calculateEmployabilityDafoBoxHeightPdf(doc, width, items) {
