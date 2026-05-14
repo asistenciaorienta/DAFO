@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Explora tu potencial: conócete y avanza</title>
   <link rel="icon" type="image/png" href="imagenes/logo_DAFO.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles_new.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 <body>
   <span class="shape"></span>
@@ -17,7 +20,7 @@
 
   <!-- QR: solo debe verse en portada -->
   <button id="qrSmallBtn" class="qr-card" type="button" aria-label="Ampliar código QR">
-    <img class="qr-image" src="QR.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
+    <img class="qr-image" src="imagenes/QR_DAFO_movil.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
   </button>
   
   <!-- Salir: oculto en portada, visible en preguntas/resumen -->
@@ -113,7 +116,7 @@
   <div id="qrModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Código QR ampliado">
     <div class="modal-card white">
       <button id="qrCloseBtn" class="close-button" type="button" aria-label="Cerrar código QR">×</button>
-      <img class="qr-image" src="QR.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
+      <img class="qr-image" src="imagenes/QR_DAFO_movil.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
     </div>
   </div>
 
@@ -163,6 +166,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app_new.js"></script>
 </body>
 </html>
