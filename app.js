@@ -69,6 +69,9 @@ let transitionQuestionCues = [];
 let transitionQuestionSubtitleTimer = null;
 let nameAudio = null;
 let nameAudioPlayed = false;
+let backgroundMusic = null;
+let backgroundMusicStarted = false;
+let backgroundMusicShouldPlay = false;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -166,6 +169,57 @@ function setScreenMode(mode) {
   qrSmallBtn.classList.add("hidden");
   qrModal.classList.add("hidden");
   exitBtn.classList.remove("hidden");
+}
+
+function initBackgroundMusic() {
+  if (backgroundMusic) return;
+
+  backgroundMusic = new Audio("fondo_suave.mp3");
+  backgroundMusic.loop = true;
+  backgroundMusic.preload = "auto";
+  backgroundMusic.volume = 0.22; // Ajusta el volumen aquí: 0.10, 0.20, 0.30...
+}
+
+async function startBackgroundMusic() {
+  initBackgroundMusic();
+
+  backgroundMusicShouldPlay = true;
+
+  if (!backgroundMusic || backgroundMusicStarted) return;
+
+  try {
+    await backgroundMusic.play();
+    backgroundMusicStarted = true;
+  } catch (error) {
+    console.warn("No se pudo reproducir fondo_suave.mp3.", error);
+  }
+}
+
+function pauseBackgroundMusicForVideo() {
+  if (!backgroundMusic) return;
+
+  backgroundMusic.pause();
+}
+
+async function resumeBackgroundMusicAfterVideo() {
+  if (!backgroundMusic || !backgroundMusicShouldPlay) return;
+
+  try {
+    await backgroundMusic.play();
+    backgroundMusicStarted = true;
+  } catch (error) {
+    console.warn("No se pudo reanudar fondo_suave.mp3.", error);
+  }
+}
+
+function stopBackgroundMusic() {
+  backgroundMusicShouldPlay = false;
+  backgroundMusicStarted = false;
+
+  if (!backgroundMusic) return;
+
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
 }
 
 async function handleStartButton() {
@@ -459,8 +513,9 @@ async function startApp() {
     intro.classList.add("hidden");
     app.classList.remove("hidden");
     result.classList.add("hidden");
-
+    
     setScreenMode("app");
+    startBackgroundMusic();
     renderCurrentStep();
   } catch (error) {
     alert("Error cargando preguntas.json. Revisa que esté en la misma carpeta que index.html y que el JSON sea válido.");
@@ -698,6 +753,8 @@ function renderVideo(selector, source, buttonText, type) {
   video.addEventListener("ended", () => {
     waitingForVideoStart = false;
   
+    resumeBackgroundMusicAfterVideo();
+  
     if (type) {
       watchedVideoTypes.add(type);
     }
@@ -709,7 +766,15 @@ function renderVideo(selector, source, buttonText, type) {
     }
   });
 
+  video.addEventListener("pause", () => {
+    if (!video.ended) {
+      resumeBackgroundMusicAfterVideo();
+    }
+  });
+
   video.addEventListener("play", () => {
+    pauseBackgroundMusicForVideo();
+  
     waitingForVideoStart = false;
   
     const card = document.querySelector("#questionCard");
