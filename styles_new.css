@@ -1541,3 +1541,20 @@ button.primary {
     width: min(340px, calc((100dvh - var(--footer-space) - 100px) * 9 / 16), 90vw);
   }
 }
+
+/* Opciones ocultas temporalmente para enfocar la atención en la pregunta */
+.options-list.options-delayed,
+.actions.actions-delayed {
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+}
+
+.options-list.options-visible,
+.actions.actions-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity .65s ease,
+    transform .65s cubic-bezier(.22, 1, .36, 1);
+}
