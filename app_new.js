@@ -693,6 +693,9 @@ function renderCurrentStep() {
   }
 
   updateProgress();
+  if (watchedVideoTypes.has(type)) {
+    showOptionsImmediate();
+  }
 }
 
 function pluralTitle(type) {
@@ -808,6 +811,8 @@ function showQuestionsLayoutImmediate() {
   activityGrid.classList.remove("video-focus");
   card.classList.remove("pre-reveal");
   card.classList.add("reveal");
+
+  showOptionsImmediate();
 }
 
 function revealQuestionsAfterVideo() {
@@ -845,6 +850,9 @@ function revealQuestionsAfterVideo() {
     setTimeout(() => {
       card.classList.remove("pre-reveal");
       card.classList.add("reveal");
+    
+      hideOptionsTemporarily();
+      showOptionsAfterDelay(3000);
     }, 260);
   });
 
@@ -853,6 +861,53 @@ function revealQuestionsAfterVideo() {
     videoPanel.style.transform = "";
     videoPanel.style.transformOrigin = "";
   }, { once: true });
+}
+
+function hideOptionsTemporarily() {
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.add("options-delayed");
+    optionsList.classList.remove("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.add("actions-delayed");
+    actions.classList.remove("actions-visible");
+  }
+}
+
+function showOptionsAfterDelay(delay = 3000) {
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  setTimeout(() => {
+    if (optionsList) {
+      optionsList.classList.remove("options-delayed");
+      optionsList.classList.add("options-visible");
+    }
+
+    if (actions) {
+      actions.classList.remove("actions-delayed");
+      actions.classList.add("actions-visible");
+    }
+  }, delay);
+}
+
+function showOptionsImmediate() {
+  const optionsList = document.querySelector("#optionsList");
+  const actions = document.querySelector("#questionForm .actions");
+
+  if (optionsList) {
+    optionsList.classList.remove("options-delayed");
+    optionsList.classList.add("options-visible");
+  }
+
+  if (actions) {
+    actions.classList.remove("actions-delayed");
+    actions.classList.add("actions-visible");
+  }
 }
 
 function finishSectionVideo(type) {
