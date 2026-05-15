@@ -1,7 +1,7 @@
 [
   {
     "tipo": "Fortaleza",
-    "pregunta": "Tengo claras mis capacidades que más valor aportan al puesto que quiero conseguir.",
+    "pregunta": "¿Tienes claras tus capacidades que más valor aportan al puesto que quiero conseguir?",
     "opciones": [
       "Sí",
       "No siempre"
@@ -28,7 +28,7 @@
   },
   {
     "tipo": "Fortaleza",
-    "pregunta": "Cómo adapto mi currículum al puesto cuando encuentro una oferta.",
+    "pregunta": "¿Cómo adaptas tu currículum al puesto cuando encuentro una oferta?",
     "opciones": [
       "Ajusto algunos apartados según la oferta.",
       "Personalizo mi candidatura para cada oportunidad.",
@@ -112,7 +112,7 @@
   },
   {
     "tipo": "Debilidad",
-    "pregunta": "Actualmente, hay aspectos que pueden estar frenando mi desarrollo profesional.",
+    "pregunta": "Actualmente, hay aspectos que pueden estar frenando tu desarrollo profesional.",
     "opciones": [
       "Me cuesta identificar qué necesito mejorar en mi búsqueda de empleo.",
       "Algunas circunstancias personales afectan a mi avance profesional.",
@@ -138,9 +138,9 @@
     "tipo": "Debilidad",
     "pregunta": "¿Cómo actuarás cuando aparezca un conflicto en el trabajo?",
     "opciones": [
-      "Prefiero mantenerme al margen para evitar problemas.",
-      "Busco apoyo o lo comunico a una persona responsable.",
-      "Intento hablarlo directamente para encontrar una solución."
+      "Preferiría mantenerme al margen para evitar problemas.",
+      "Buscaría apoyo o lo comunicaría a una persona responsable.",
+      "Intentaría hablarlo directamente para encontrar una solución."
     ],
     "respuesta_adecuada": 2,
     "feedback": [
@@ -269,7 +269,7 @@
   },
   {
     "tipo": "Oportunidad",
-    "pregunta": "Tengo identificadas otras áreas o sectores donde mi perfil también puede aportar valor.",
+    "pregunta": "¿Tienes identificadas otras áreas o sectores donde mi perfil también puede aportar valor?",
     "opciones": [
       "Sí",
       "No"
