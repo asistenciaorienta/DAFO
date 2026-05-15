@@ -904,9 +904,8 @@ function prepareVideoFocusLayout() {
     const type = SECTION_ORDER[sectionIndex];
 
     blockTitle.textContent = pluralTitle(type);
-    blockTitle.classList.remove("hidden");
-    blockTitle.classList.remove("fade-out");
-    blockTitle.classList.add("fade-in");
+    blockTitle.classList.remove("hidden", "hide", "fade-out");
+    blockTitle.classList.add("show");
   }
 }
 
@@ -942,8 +941,8 @@ function showQuestionsLayoutImmediate() {
 
   if (blockTitle) {
     blockTitle.classList.add("hidden");
-    blockTitle.classList.remove("fade-in");
-    blockTitle.classList.remove("fade-out");
+    blockTitle.classList.remove("show", "hide", "fade-in", "fade-out");
+    blockTitle.textContent = "";
   }
 
   card.classList.remove("pre-reveal");
@@ -961,14 +960,15 @@ function revealQuestionsAfterVideo() {
   }
 
   if (blockTitle) {
-    blockTitle.classList.remove("fade-in");
-    blockTitle.classList.add("fade-out");
+    blockTitle.classList.remove("show");
+    blockTitle.classList.add("hide");
   }
 
   setTimeout(() => {
     if (blockTitle) {
       blockTitle.classList.add("hidden");
-      blockTitle.classList.remove("fade-out");
+      blockTitle.classList.remove("hide");
+      blockTitle.textContent = "";
     }
 
     activityGrid.classList.remove("video-focus");
@@ -978,7 +978,7 @@ function revealQuestionsAfterVideo() {
 
     hideOptionsTemporarily();
     showOptionsAfterDelay(3000);
-  }, 450);
+  }, 420);
 }
 
 function hideOptionsTemporarily() {
