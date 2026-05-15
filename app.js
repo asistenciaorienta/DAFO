@@ -657,18 +657,16 @@ function insertReflectionQuestionIfAvailable(groupedItems, reflectionData) {
   const currentBlockQuestions = groupedItems[selectedBlock] || [];
 
   /*
-    Queremos que sigan siendo 3 elementos en el bloque:
-    - Quitamos una pregunta normal.
-    - Añadimos la reflexión.
-    - Mezclamos el orden.
+    Ahora NO quitamos ninguna pregunta normal.
+    El bloque seleccionado tendrá:
+    - 3 preguntas normales
+    - 1 pregunta de reflexión
   */
-  const normalQuestions = currentBlockQuestions.filter(item => !item.esReflexion);
+  groupedItems[selectedBlock] = shuffleArray([
+    ...currentBlockQuestions,
+    reflectionQuestion
+  ]);
 
-  if (normalQuestions.length >= 3) {
-    normalQuestions.pop();
-  }
-
-  groupedItems[selectedBlock] = shuffleArray([...normalQuestions, reflectionQuestion]);
   reflectionQuestionInserted = true;
 }
 
@@ -1720,84 +1718,165 @@ function drawCenteredSaeClaim(doc, pageWidth, pageHeight, color) {
 }
 
 function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
+  const bottomLimit = pageHeight - 22;
+
+  /*
+    Preparamos una lista plana:
+    - Título de bloque
+    - Preguntas/respuestas del bloque
+  */
+  const rows = [];
+
   SECTION_ORDER.forEach(type => {
     const typeAnswers = answers.filter(answer => answer.tipo === type);
 
     if (!typeAnswers.length) return;
 
-    const blockColor = getDafoPdfColor(type);
-
-    // Más separación antes de cada bloque, excepto si estamos muy arriba.
-    if (y > 48) {
-      y += 5;
-    }
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11.5);
-    doc.setTextColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
-    doc.text(pluralTitle(type), x, y);
-
-    y += 6.5;
+    rows.push({
+      kind: "section",
+      type,
+      title: pluralTitle(type)
+    });
 
     typeAnswers.forEach((answer, index) => {
-      const question = `${index + 1}. ${answer.pregunta}`;
-      const response = `Tu respuesta: ${answer.respuestaUsuario || "Sin respuesta escrita."}`;
+      rows.push({
+        kind: "answer",
+        type,
+        index: index + 1,
+        question: answer.pregunta || "",
+        response: answer.respuestaUsuario || "Reflexión realizada."
+      });
+    });
+  });
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(7.9);
-      const questionLines = doc.splitTextToSize(question, width - 8);
+  /*
+    Tamaños base.
+    Si no entra todo, se reducen un poco de forma automática,
+    pero sin saltarse preguntas.
+  */
+  let titleFontSize = 10.6;
+  let questionFontSize = 7.4;
+  let responseFontSize = 7.1;
+  let lineHeightQuestion = 3.15;
+  let lineHeightResponse = 3.05;
+  let sectionGapTop = 4.2;
+  let sectionGapBottom = 4.4;
+  let boxGap = 2.1;
+  let topPadding = 3.2;
+  let bottomPadding = 2.4;
+  let innerGap = 1.1;
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(7.7);
-      const responseLines = doc.splitTextToSize(response, width - 8);
+  function calculateTotalHeight() {
+    let total = 0;
 
-      /*
-        Antes el recuadro era demasiado alto porque tenía una altura fija
-        o demasiada reserva vertical. Ahora se calcula muy ajustado:
-        margen superior + pregunta + pequeño espacio + respuesta + margen inferior.
-      */
-      const topPadding = 4.5;
-      const gapBetween = 1.4;
-      const bottomPadding = 3.2;
-
-      const questionHeight = questionLines.length * 3.35;
-      const responseHeight = responseLines.length * 3.25;
-
-      const boxHeight =
-        topPadding +
-        questionHeight +
-        gapBetween +
-        responseHeight +
-        bottomPadding;
-
-      if (y + boxHeight > pageHeight - 20) {
+    rows.forEach(row => {
+      if (row.kind === "section") {
+        total += sectionGapTop + 4.6 + sectionGapBottom;
         return;
       }
 
-      doc.setFillColor(blockColor.bg[0], blockColor.bg[1], blockColor.bg[2]);
-      doc.setDrawColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
-      doc.setLineWidth(0.25);
-      doc.roundedRect(x, y, width, boxHeight, 2.5, 2.5, "FD");
-
-      let innerY = y + topPadding;
+      const questionText = `${row.index}. ${row.question}`;
+      const responseText = `Tu respuesta: ${row.response}`;
 
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(7.9);
-      doc.setTextColor(35, 45, 48);
-      doc.text(questionLines, x + 4, innerY);
-
-      innerY += questionHeight + gapBetween;
+      doc.setFontSize(questionFontSize);
+      const questionLines = doc.splitTextToSize(questionText, width - 8);
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(7.7);
-      doc.setTextColor(60, 70, 74);
-      doc.text(responseLines, x + 4, innerY);
+      doc.setFontSize(responseFontSize);
+      const responseLines = doc.splitTextToSize(responseText, width - 8);
 
-      y += boxHeight + 2.6;
+      const boxHeight =
+        topPadding +
+        questionLines.length * lineHeightQuestion +
+        innerGap +
+        responseLines.length * lineHeightResponse +
+        bottomPadding;
+
+      total += boxHeight + boxGap;
     });
 
-    // Separación mayor entre bloques.
-    y += 6;
+    return total;
+  }
+
+  /*
+    Ajuste si no cabe.
+    Bajamos ligeramente fuente y espaciados hasta que quepa.
+  */
+  let availableHeight = bottomLimit - y;
+  let totalHeight = calculateTotalHeight();
+
+  while (totalHeight > availableHeight && questionFontSize > 6.2) {
+    titleFontSize -= 0.25;
+    questionFontSize -= 0.18;
+    responseFontSize -= 0.18;
+    lineHeightQuestion -= 0.08;
+    lineHeightResponse -= 0.08;
+    sectionGapTop -= 0.15;
+    sectionGapBottom -= 0.15;
+    boxGap -= 0.08;
+    topPadding -= 0.06;
+    bottomPadding -= 0.06;
+
+    totalHeight = calculateTotalHeight();
+  }
+
+  rows.forEach(row => {
+    const blockColor = getDafoPdfColor(row.type);
+
+    if (row.kind === "section") {
+      y += sectionGapTop;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(titleFontSize);
+      doc.setTextColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
+      doc.text(row.title, x, y);
+
+      y += sectionGapBottom;
+      return;
+    }
+
+    const questionText = `${row.index}. ${row.question}`;
+    const responseText = `Tu respuesta: ${row.response}`;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(questionFontSize);
+    const questionLines = doc.splitTextToSize(questionText, width - 8);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(responseFontSize);
+    const responseLines = doc.splitTextToSize(responseText, width - 8);
+
+    const questionHeight = questionLines.length * lineHeightQuestion;
+    const responseHeight = responseLines.length * lineHeightResponse;
+
+    const boxHeight =
+      topPadding +
+      questionHeight +
+      innerGap +
+      responseHeight +
+      bottomPadding;
+
+    doc.setFillColor(blockColor.bg[0], blockColor.bg[1], blockColor.bg[2]);
+    doc.setDrawColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
+    doc.setLineWidth(0.25);
+    doc.roundedRect(x, y, width, boxHeight, 2.4, 2.4, "FD");
+
+    let innerY = y + topPadding;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(questionFontSize);
+    doc.setTextColor(35, 45, 48);
+    doc.text(questionLines, x + 4, innerY);
+
+    innerY += questionHeight + innerGap;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(responseFontSize);
+    doc.setTextColor(60, 70, 74);
+    doc.text(responseLines, x + 4, innerY);
+
+    y += boxHeight + boxGap;
   });
 
   return y;
@@ -2426,18 +2505,18 @@ function calculateEmployabilityDafoBoxHeightPdf(doc, width, items) {
   const visibleItems = items.length ? items : ["Sin información registrada."];
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.4);
+  doc.setFontSize(7.4);
 
   let textHeight = 0;
 
   visibleItems.forEach(item => {
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
-    textHeight += lines.length * 2.9 + 1.2;
+    textHeight += lines.length * 3.45 + 1.6;
   });
 
-  const titleArea = 13;
-  const bottomPadding = 5;
-  const minHeight = 42;
+  const titleArea = 15;
+  const bottomPadding = 6;
+  const minHeight = 48;
 
   return Math.max(minHeight, titleArea + textHeight + bottomPadding);
 }
@@ -2449,20 +2528,20 @@ function drawEmployabilityDafoBoxPdf(doc, x, y, width, height, title, items, col
   doc.roundedRect(x, y, width, height, 4, 4, "FD");
 
   doc.setFillColor(color[0], color[1], color[2]);
-  doc.roundedRect(x, y, width, 12, 4, 4, "F");
+  doc.roundedRect(x, y, width, 13, 4, 4, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(8.6);
+  doc.setFontSize(9.2);
   doc.setTextColor(255, 255, 255);
-  doc.text(title, x + 5, y + 8.2);
+  doc.text(title, x + 5, y + 8.8);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.4);
+  doc.setFontSize(7.4);
   doc.setTextColor(35, 45, 48);
 
   const visibleItems = items.length ? items : ["Sin información registrada."];
-  let itemY = y + 18;
-  const maxY = y + height - 4;
+  let itemY = y + 20;
+  const maxY = y + height - 5;
 
   visibleItems.forEach(item => {
     if (itemY >= maxY) return;
@@ -2470,13 +2549,13 @@ function drawEmployabilityDafoBoxPdf(doc, x, y, width, height, title, items, col
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
 
     const availableLines = lines.filter((line, index) => {
-      return itemY + index * 2.9 < maxY;
+      return itemY + index * 3.45 < maxY;
     });
 
     if (!availableLines.length) return;
 
     doc.text(availableLines, x + 5, itemY);
-    itemY += availableLines.length * 2.9 + 1.2;
+    itemY += availableLines.length * 3.45 + 1.6;
   });
 }
 
