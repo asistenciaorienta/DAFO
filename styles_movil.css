@@ -159,59 +159,6 @@ button.secondary {
 }
 
 /* =========================
-   QR Y BOTÓN SALIR
-   ========================= */
-
-.qr-card {
-  position: fixed;
-  right: 16px;
-  top: 16px;
-  z-index: 12;
-  width: 58px;
-  aspect-ratio: 1;
-  border: 0;
-  border-radius: 14px;
-  padding: 6px;
-  background: white;
-  box-shadow: 0 12px 32px rgba(0,0,0,.24);
-}
-
-.qr-card::after {
-  content: "QR";
-  position: absolute;
-  left: 50%;
-  bottom: -22px;
-  transform: translateX(-50%);
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.28);
-  color: white;
-  font-size: .68rem;
-  font-weight: 900;
-}
-
-.qr-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-.exit-button {
-  position: fixed;
-  right: 16px;
-  top: 16px;
-  z-index: 12;
-  padding: 9px 13px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.24);
-  color: rgba(255,255,255,.92);
-  box-shadow: none;
-  font-size: .82rem;
-  backdrop-filter: blur(5px);
-}
-
-/* =========================
    PORTADA
    ========================= */
 
@@ -223,7 +170,7 @@ button.secondary {
   display: grid;
   gap: 28px;
   align-items: center;
-  padding-top: 58px;
+  padding-top: 24px;
 }
 
 .intro-kicker {
@@ -312,7 +259,7 @@ h1 {
   grid-template-columns: 1fr;
   gap: 18px;
   align-content: start;
-  padding-top: 52px;
+  padding-top: 18px;
 }
 
 /* Vídeo del bloque */
