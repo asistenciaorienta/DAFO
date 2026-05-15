@@ -54,7 +54,9 @@
     
       <div class="activity-grid">
         <div id="videoContainer" class="video-panel"></div>
-
+      
+        <div id="blockIntroTitle" class="block-intro-title hidden"></div>
+      
         <article id="questionCard" class="question-card waiting-video">
           <img class="corner-logo" src="imagenes/logo_DAFO.png" alt="Logotipo DAFO">
 
@@ -86,22 +88,26 @@
     <section id="result" class="page hidden">
       <article class="result-screen final-screen">
     
-        <div class="final-video-row">
-          <div class="final-video-center">
+        <div class="final-layout">
+          
+          <div class="final-video-column">
             <div id="summaryVideoContainer" class="video-panel result-video-panel"></div>
           </div>
-         </div>
     
-        <section class="result-reflection-section final-text-section">
-          <h4 id="finalReflectionTitle" class="result-section-title">
-            {nombre}, aquí puedes descargar tu reflexión personalizada.
-          </h4>
-        </section>
-       
-        <div class="actions result-actions">
-          <button id="downloadPdfBtn" type="button">Guardar PDF</button>
-          <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
-          <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
+          <div class="final-content-column">
+            <section class="result-reflection-section final-text-section">
+              <h4 id="finalReflectionTitle" class="result-section-title">
+                {nombre}, aquí puedes descargar tu reflexión personalizada.
+              </h4>
+            </section>
+           
+            <div class="actions result-actions">
+              <button id="downloadPdfBtn" type="button">Guardar PDF</button>
+              <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
+              <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
+            </div>
+          </div>
+    
         </div>
     
       </article>
