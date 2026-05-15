@@ -8,8 +8,8 @@
     ],
     "respuesta_adecuada": 0,
     "feedback": [
-      "{nombre}, cuando reconoces lo que aportas puedes transmitir más seguridad y confianza.",
-      "{nombre}, dedicar tiempo a tus fortalezas ayuda a enfocar mejor el camino que quieres seguir."
+      "Cuando reconoces lo que aportas puedes transmitir más seguridad y confianza.",
+      "Dedicar tiempo a tus fortalezas ayuda a enfocar mejor el camino que quieres seguir."
     ],
     "pdf": [
       "0.F. Alto autoconocimiento profesional.",
@@ -67,9 +67,9 @@
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "{nombre}, lo que hoy percibes como una carencia puede convertirse en un futuro objetivo claro y realista.",
-      "{nombre}, poseer una experiencia sólida puede darte confianza, pero mantenerte actualizado seguirá marcando la diferencia.",
-      "{nombre}, enfocarte en conseguir una oportunidad puede ser el punto clave para avanzar en tus objetivos."
+      "Lo que hoy percibes como una carencia puede convertirse en un futuro objetivo claro y realista.",
+      "Poseer una experiencia sólida puede darte confianza, pero mantenerte actualizado seguirá marcando la diferencia.",
+      "Enfocarte en conseguir una oportunidad puede ser el punto clave para avanzar en tus objetivos."
     ],
     "pdf": [
       "0.F. Mentalidad de desarrollo y crecimiento profesional.",
@@ -144,9 +144,9 @@
     ],
     "respuesta_adecuada": 2,
     "feedback": [
-      "Evitar el conflicto puede darte tranquilidad momentánea, {nombre}, aunque aprender a gestionarlo refuerza tus habilidades profesionales.",
-      "Saber cuándo pedir apoyo también forma parte de una gestión profesional adecuada, {nombre}.",
-      "Afrontar los conflictos desde el diálogo, {nombre}, refleja iniciativa y capacidad de colaboración."
+      "Evitar el conflicto puede darte tranquilidad momentánea, aunque aprender a gestionarlo refuerza tus habilidades profesionales.",
+      "Saber cuándo pedir apoyo también forma parte de una gestión profesional adecuada.",
+      "Afrontar los conflictos desde el diálogo, refleja iniciativa y capacidad de colaboración."
     ],
     "pdf": [
       "0.D. Débil gestión de conflicto.",
