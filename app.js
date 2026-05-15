@@ -209,6 +209,19 @@ function stopBackgroundMusic() {
   backgroundMusic.currentTime = 0;
 }
 
+function playAudioWithDelay(audio, delay = 1500) {
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      try {
+        await audio.play();
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    }, delay);
+  });
+}
+
 async function handleStartButton() {
   if (!introAudioStarted) {
     introAudioStarted = true;
@@ -218,12 +231,12 @@ async function handleStartButton() {
 
     await loadIntroSubtitles();
 
-    try {
-      introAudio.addEventListener("playing", startIntroSubtitles, { once: true });
-      await introAudio.play();
-    } catch (error) {
-      console.warn("No se pudo reproducir inicio.mp3.", error);
-    }
+  try {
+    introAudio.addEventListener("playing", startIntroSubtitles, { once: true });
+    await playAudioWithDelay(introAudio, 1500);
+  } catch (error) {
+    console.warn("No se pudo reproducir inicio.mp3.", error);
+  }
 
     return;
   }
@@ -261,14 +274,14 @@ async function openNameModalWithAudio() {
   nameAudio.addEventListener("ended", showNameControls, { once: true });
 
   try {
-    await nameAudio.play();
+    await playAudioWithDelay(nameAudio, 1500);
   } catch (error) {
     console.warn("No se pudo reproducir mensaje_nombre.mp3.", error);
-
+  
     if (nameAudioNotice) {
       nameAudioNotice.textContent = "Pulsa para continuar cuando estés preparado.";
     }
-
+  
     showNameControls();
   }
 }
@@ -1046,7 +1059,7 @@ async function renderBlockTransitionQuestion(question) {
   transitionQuestionAudio.preload = "auto";
 
   try {
-    await transitionQuestionAudio.play();
+    await playAudioWithDelay(transitionQuestionAudio, 1500);
   } catch (error) {
     console.warn("No se pudo reproducir el audio de transición.", error);
   }
@@ -1425,14 +1438,22 @@ async function createPdfDocument() {
   const feedbackInfo = feedbacksData[key] || {};
 
   const colors = {
+    webBlue: [7, 151, 162],
+    webBlueDark: [3, 109, 120],
+    webBlueSoft: [232, 248, 249],
+  
     green: [36, 133, 92],
     greenSoft: [232, 246, 239],
+  
     orange: [211, 132, 37],
     orangeSoft: [255, 244, 229],
+  
     blue: [49, 119, 186],
     blueSoft: [232, 242, 252],
+  
     red: [181, 65, 65],
     redSoft: [252, 234, 234],
+  
     ink: [35, 45, 48],
     muted: [90, 105, 108]
   };
@@ -1458,7 +1479,7 @@ y = drawLongIntroTitlePdf(
   margin,
   y,
   usableWidth,
-  colors.bg-1
+  colors.webBlue
 );
 
 y += 2;
@@ -1477,7 +1498,7 @@ y += 6;
 // Matriz DAFO directamente a continuación del resumen
 y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
 
-  drawCenteredSaeClaim(doc, pageWidth, pageHeight, colors.bg-1);
+  drawCenteredSaeClaim(doc, pageWidth, pageHeight, colors.webBlue);
 
   /*
     PÁGINA 2
@@ -1525,7 +1546,7 @@ y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
 function drawPdfHeader(doc, projectLogo, saeLogo, title, subtitle, colors) {
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  doc.setFillColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
+  doc.setFillColor(colors.webBlue[0], colors.webBlue[1], colors.webBlue[2]);
   doc.rect(0, 0, pageWidth, 34, "F");
 
   if (projectLogo) {
@@ -1603,14 +1624,14 @@ function drawSummaryBoxPdf(doc, x, y, width, feedbackInfo, colors) {
     (reflexionLines.length ? 5 + reflexionLines.length * 4.5 : 0) +
     6;
 
-  doc.setFillColor(colors.bg-2[0], colors.bg-2[1], colors.bg-2[2]);
-  doc.setDrawColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
+  doc.setFillColor(colors.webBlueSoft[0], colors.webBlueSoft[1], colors.webBlueSoft[2]);
+  doc.setDrawColor(colors.webBlue[0], colors.webBlue[1], colors.webBlue[2]);
   doc.setLineWidth(0.5);
   doc.roundedRect(x, startY, width, boxHeight, 4, 4, "FD");
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12.2);
-  doc.setTextColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
+  doc.setTextColor(colors.webBlue[0], colors.webBlue[1], colors.webBlue[2]);
   doc.text(titleLines, innerX, innerY);
   innerY += titleLines.length * 5.2 + 3;
 
@@ -1622,7 +1643,7 @@ function drawSummaryBoxPdf(doc, x, y, width, feedbackInfo, colors) {
 
   if (reflexionLines.length) {
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
+    doc.setTextColor(colors.webBlue[0], colors.webBlue[1], colors.webBlue[2]);
     doc.text("A tener en cuenta:", innerX, innerY);
     innerY += 5;
 
