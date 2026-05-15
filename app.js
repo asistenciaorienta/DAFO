@@ -1376,8 +1376,8 @@ async function createPdfDocument() {
   const feedbackInfo = feedbacksData[key] || {};
 
   const title = userName
-    ? `${userName}, esta es tu valoración DAFO`
-    : "Esta es tu valoración DAFO";
+    ? `${userName}, tu reflexión sugiere...`
+    : "Tu reflexión sugiere...";
 
   let y = 16;
 
@@ -1410,19 +1410,10 @@ async function createPdfDocument() {
   doc.setFontSize(9.5);
   doc.setTextColor(255, 255, 255);
   
-  y = addWrappedText(
-    doc,
-    "Valoración personalizada de la Ruta DAFO para seguir avanzando profesionalmente.",
-    titleX,
-    y + 1,
-    titleWidth,
-    5
-  );
-
   y = 55; /*60*/
 
   // Bloque reflexión
-  y = drawSectionTitle(doc, "Una reflexión para seguir avanzando", margin, y);
+  y = drawSectionTitle(doc, "Valoración personalizada de tus ventajas y desafíos para seguir avanzando profesionalmente.", margin, y);
   y += 2;
 
   y = drawSoftBox(doc, margin, y, usableWidth, () => {
@@ -1478,8 +1469,6 @@ async function createPdfDocument() {
   y += 7;
 
   // Matriz DAFO
-  y = ensureSpace(doc, y, 90, pageHeight, margin);
-  y = drawSectionTitle(doc, "Sobre tu matriz DAFO", margin, y);
   y += 4;
 
   y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
@@ -1509,7 +1498,7 @@ async function createPdfDocument() {
     doc.setFontSize(13);
     doc.setTextColor(7, 108, 116);
     doc.text(pluralTitle(type), margin, y);
-    y += 7;
+    y += 6;/*7*/
 
     typeAnswers.forEach((answer, index) => {
       y = ensureSpace(doc, y, 46, pageHeight, margin);
@@ -2154,26 +2143,26 @@ function addPdfFooter(doc) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(90, 105, 108);
-    doc.text("Ruta DAFO: conócete y avanza · Servicio Andaluz de Empleo", 14, pageHeight - 8);
+    doc.text("Explora tu potencial: conócete y avanza· Servicio Andaluz de Empleo", 14, pageHeight - 8);
     doc.text(`Página ${page} de ${pageCount}`, pageWidth - 38, pageHeight - 8);
   }
 }
 
 async function savePdf() {
   const doc = await createPdfDocument();
-  doc.save("informe-ruta-dafo.pdf");
+  doc.save("informe-explora-tu-potencial.pdf");
 }
 
 async function sharePdf() {
   const doc = await createPdfDocument();
   const blob = doc.output("blob");
-  const file = new File([blob], "informe-ruta-dafo.pdf", { type: "application/pdf" });
+  const file = new File([blob], "informe-explora-tu-potencial.pdf", { type: "application/pdf" });
 
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({
-        title: "Informe Ruta DAFO",
-        text: "Te envío mi informe de Ruta DAFO.",
+        title: "Informe Explora tu potencial: conócete y avanza",
+        text: "Te envío el informe de Explora tu potencial: conócete y avanza.",
         files: [file]
       });
       return;
@@ -2182,7 +2171,7 @@ async function sharePdf() {
     }
   }
 
-  doc.save("informe-ruta-dafo.pdf");
+  doc.save("informe-explora-tu-potencial.pdf");
   alert("Tu navegador no permite compartir el PDF directamente. Se ha descargado para que puedas enviarlo manualmente.");
 }
 
