@@ -9,16 +9,26 @@
     "respuesta_adecuada": 0,
     "feedback": [
       "{nombre}, cuando reconoces lo que aportas puedes transmitir más seguridad y confianza.",
-      "{nombre}, dedicar tiempo a reconocer lo que aportas ayuda a enfocar mejor el camino que quieres seguir."
+      "{nombre}, dedicar tiempo a tus fortalezas ayuda a enfocar mejor el camino que quieres seguir."
     ],
     "pdf": [
-      "Alto autoconocimiento profesional. Perfil alineado con objetivo. Capacidad de diferenciación. Buena base para entrevista. Mayor coherencia currículum-puesto.",
-      "Autoconocimiento parcial. Necesidad de mayor reflexión estratégica. Posible dificultad para diferenciarse. Riesgo de mensajes poco claros. Perfil aún en consolidación."
+      "0.F. Alto autoconocimiento profesional.",
+      "0.F. Perfil profesional alineado con objetivo.",
+      "0.O. Capacidad de diferenciación de otras personas candidatas al puesto de trabajo.",
+      "0.O. Buena base para la entrevista de trabajo al tener claras tus capacidades.",
+      "0.F. Alta coherencia currículum-puesto.",
+      "0.A. Riesgo de sobreconfianza en tus capacidades.",
+      "1.D. Autoconocimiento profesional incompleto.",
+      "1.A. Reflexión insuficiente sobre la estrategia a seguir según tus capacidades.",
+      "1.D. Posible dificultad para diferenciarse de otras candidaturas.",
+      "1.A. Riesgo de transmitir mensajes poco claros sobre tus competencias.",
+      "1.D. Perfil profesional aún en consolidación.",
+      "1.F. Eres realista en relación a tus competencias."
     ]
   },
   {
     "tipo": "Fortaleza",
-    "pregunta": "¿Cómo adapto mi currículum al puesto cuando encuentro una oferta?",
+    "pregunta": "Cómo adapto mi currículum al puesto cuando encuentro una oferta.",
     "opciones": [
       "Ajusto algunos apartados según la oferta.",
       "Personalizo mi candidatura para cada oportunidad.",
@@ -31,9 +41,20 @@
       "Revisar tu currículum según cada oferta puede ayudarte a mostrar mejor lo que puedes aportar."
     ],
     "pdf": [
-      "Nivel intermedio de adaptación. Intención de mejora. Buen punto de partida. Necesita sistematización. Puede mejorar personalización.",
-      "Alta orientación al mercado. Conducta estratégica. Flexibilidad profesional. Comprensión de requisitos. Alta empleabilidad comparativa.",
-      "Rigidez estratégica. Menor diferenciación. Posible desajuste con ofertas. Falta de enfoque comercial. Oportunidades desaprovechadas."
+      "0.A. Adaptación incompleta de tu perfil a ofertas de empleo.",
+      "0.F. Buen punto de partida para obtener una candidatura más sólida.",
+      "0.D. Desconocimiento de la importancia de adaptar tu perfil a la candidatura.",
+      "0.O. Posibilidad de personalización de tu candidatura con bases sólidas para acceder a oportunidades laborales.",
+      "1.O. Alta orientación de tu candidatura a las exigencias del mercado.",
+      "1.F. Conoces la importancia de adaptar tu candidatura.",
+      "1.F. Alta comprensión de requisitos exigidos, lo que permite mejorar la adaptabilidad y la flexibilidad.",
+      "1.O. Alta empleabilidad comparativa con otras candidaturas.",
+      "2.A. Rigidez de tu candidatura cuando buscas empleo.",
+      "2.D. Tus candidaturas no poseen diferenciación.",
+      "2.A. Dificultad para adecuar tu candidatura a las ofertas que te interesan.",
+      "2.D. Desconocimiento de la importancia de adaptar tu perfil.",
+      "2.A. Riesgo de oportunidades laborales desaprovechadas.",
+      "2.A. Poca personalización de tu candidatura."
     ]
   },
   {
@@ -51,9 +72,17 @@
       "{nombre}, enfocarte en conseguir una oportunidad puede ser el punto clave para avanzar en tus objetivos."
     ],
     "pdf": [
-      "Mentalidad de desarrollo continuo. Trayectoria activa. Perfil en evolución. Capacidad de aprendizaje. Buen equilibrio experiencia-mejora.",
-      "Capital profesional consolidado. Madurez laboral. Confianza en procesos. Posicionamiento estable. Buen ajuste a roles similares.",
-      "Baja reflexión estratégica. Falta de autodiagnóstico. Posible desconexión perfil-objetivo. Oportunidad de mejora. Necesidad de contraste externo."
+      "0.F. Mentalidad de desarrollo y crecimiento profesional.",
+      "0.D. Perfil profesional sin completar.",
+      "0.F. Capacidad de aprendizaje.",
+      "0.O. Posees buena base para mejorar tu experiencia profesional.",
+      "1.F. Tu experiencia laboral te da confianza en procesos selectivos.",
+      "1.O. Posibilidad de ajustar tu perfil a varios puestos.",
+      "1.A. Riesgo de sobrevalorar las oportunidades que ofrece tu experiencia profesional.",
+      "2.D. Baja reflexión estratégica de tu experiencia profesional.",
+      "2.A. Falta de autodiagnóstico.",
+      "2.A. Posible desconexión perfil-objetivo.",
+      "2.D. Falta de contraste entre la experiencia y el puesto."
     ]
   },
   {
@@ -71,9 +100,14 @@
       "Mantener una red de contactos activa puede facilitar el acceso a nuevas oportunidades y ampliar tu visibilidad profesional."
     ],
     "pdf": [
-      "Uso parcial del networking. Potencial no explotado. Estrategia mejorable. Infrautilización de recursos. Necesidad de planificación relacional.",
-      "Baja activación de red. Posible incomodidad relacional. Oportunidades indirectas limitadas. Estrategia individualista. Necesidad de trabajar visibilidad.",
-      "Uso adecuado de los contactos como herramienta. Proactividad. Visibilidad profesional. Comprensión del valor relacional. Estrategia de oportunidad."
+      "0.F. Uso de la red de contactos, con posibilidades de mejora.",
+      "0.A. Infrautilización de la red de contactos como recurso de búsqueda de empleo.",
+      "0.D. Uso escaso de la red de contactos.",
+      "1.A. Reducción de oportunidades profesionales por uso inadecuado de la red de contactos.",
+      "1.D. Mal uso de la red de contactos.",
+      "1.O. Necesidad de trabajar tu visibilidad.",
+      "2.F. Uso adecuado de los contactos como herramienta.",
+      "2.O. Visibilidad profesional."
     ]
   },
   {
@@ -86,14 +120,18 @@
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "A veces, identificar qué te frena ayuda más de lo que parece para avanzar con más claridad.",
+      "A veces identificar qué te frena ayuda más de lo que parece para avanzar con más claridad.",
       "Reconocer las dificultades que te rodean también te permite buscar alternativas y prepararte mejor.",
       "Mantener una mirada crítica y realista sobre tu perfil puede ayudarte a seguir evolucionando profesionalmente."
     ],
     "pdf": [
-      "Baja autocrítica. Riesgo de repetición de errores. Falta de análisis reflexivo. Necesidad de orientación. Posible estancamiento.",
-      "Factores internos influyentes. Necesidad de gestión contextual. Impacto en continuidad. Requiere planificación adaptada. Puede afectar constancia.",
-      "Posible sobrevaloración del perfil. Baja conciencia de mejora. Riesgo de desajuste con mercado. Falta de contraste externo. Débil autodiagnóstico."
+      "0.D. Baja autocrítica o falta de análisis reflexivo para identificar qué frena tu avance profesional.",
+      "0.A. Riesgo de repetición de errores en tu búsqueda de empleo.",
+      "0.O. Necesidad de orientación para mejorar tu avance profesional.",
+      "1.D. Tienes factores personales que limitan la consecución del objetivo profesional.",
+      "1.O. Tus factores personales requieren una planificación adaptada.",
+      "2.A. Riesgo de desajuste con el mercado al no considerar los factores que condicionan tu avance.",
+      "2.D. Debilidad en el autodiagnóstico de factores externos que frenan tu desarrollo profesional."
     ]
   },
   {
@@ -111,9 +149,17 @@
       "Afrontar los conflictos desde el diálogo, {nombre}, refleja iniciativa y capacidad de colaboración."
     ],
     "pdf": [
-      "Tendencia a evitación. Débil gestión de conflicto. Posible impacto en trabajo en equipo. Competencia relacional mejorable. Necesidad de asertividad.",
-      "Conducta estructurada. Gestión formal de problemas. Capacidad de pedir ayuda. Orientación organizativa. Buen ajuste procedimental.",
-      "Alta competencia interpersonal. Iniciativa. Capacidad de diálogo. Madurez profesional. Perfil colaborativo fuerte."
+      "0.D. Débil gestión de conflicto.",
+      "0.D. Escasa asertividad.",
+      "0.A. Posible impacto en el trabajo en equipo por gestión ineficiente del conflicto.",
+      "0.O. Competencia para establecer relaciones profesionales mejorable.",
+      "0.F. Personalidad poco conflictiva.",
+      "1.F. Conducta estructurada en la gestión de conflictos.",
+      "1.F. Capacidad de pedir ayuda en situaciones laborales problemáticas.",
+      "1.D. Competencia de iniciativa no desarrollada.",
+      "2.F. Alta capacidad de gestión de problemas.",
+      "2.F. Capacidad de diálogo y madurez profesional.",
+      "2.F. Alto perfil colaborativo."
     ]
   },
   {
@@ -126,14 +172,22 @@
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "{nombre}, seguro que conoces a personas que trabajan sin enchufe. Quizás avances más enfocándote en los factores que dependen de ti.",
-      "{nombre}, saber que necesitas orientación y estructura es un punto de partida claro.",
-      "{nombre}, ¿has pensado en los factores positivos que tu edad puede aportar?"
+      "Seguro que conoces a personas que trabajan sin enchufe. Quizás avances más enfocándote en los factores que dependen de ti.",
+      "Saber que necesitas orientación y estructura es un punto de partida claro.",
+      "¿Has pensado en los factores positivos que tu edad puede aportar?"
     ],
     "pdf": [
-      "Creencias extremas sobre factores externos. Riesgo de indefensión. Baja percepción de control. Posible desmotivación. Necesidad de reencuadre.",
-      "Reconocimiento de necesidad. Apertura al aprendizaje. Base para orientación. Honestidad diagnóstica. Disposición a mejora.",
-      "Percepción de barrera estructural. Riesgo de autoexclusión. Necesidad de enfoque en competencias. Posible desmotivación. Requiere reencuadre estratégico."
+      "0.D. Creencia extrema de que acceder al trabajo depende de factores externos.",
+      "0.D. Baja percepción de control de tus posibilidades de trabajar.",
+      "0.D. Posible desmotivación para buscar empleo.",
+      "0.O. Necesidad de cambio de perspectiva sobre las barreras y estrategias para superarlas que afectan a tu búsqueda de empleo.",
+      "1.F. Capacidad de reconocer carencias en la búsqueda de trabajo.",
+      "1.F. Apertura al aprendizaje y honestidad diagnóstica.",
+      "1.O. Base óptima para recibir orientación laboral y disposición a la mejora.",
+      "1.A. Si no mejoras tu metodología de búsqueda de empleo puede retrasarse tu inserción laboral.",
+      "2.D. Riesgo de autoexclusión laboral y desmotivación al considerar la edad una barrera difícil de salvar.",
+      "2.O. Necesidad de enfoque en competencias.",
+      "2.O. Necesidad de cambio de perspectiva y estrategia en la búsqueda de empleo, centrando tu enfoque en competencias profesionales y transversales."
     ]
   },
   {
@@ -151,9 +205,15 @@
       "Tener la capacidad de anticiparte a los cambios ayuda a tomar decisiones más estratégicas y prepararte con mayor seguridad."
     ],
     "pdf": [
-      "Conciencia competitiva. Adaptación estratégica. Seguimiento del mercado. Mentalidad proactiva. Mejora continua.",
-      "Riesgo de obsolescencia. Baja vigilancia del entorno. Estrategia pasiva. Falta de actualización. Posible pérdida de competitividad.",
-      "Alta empleabilidad futura. Anticipación tecnológica. Resiliencia profesional. Mentalidad de aprendizaje. Ventaja competitiva."
+      "0.F. Conoces las necesidades del mercado y actúas para adaptarte.",
+      "0.F. Capacidad de adaptar tu estrategia a las necesidades de tu sector laboral.",
+      "0.O. Capacidad de mejora continua.",
+      "1.A. Riesgo de que tu perfil quede desfasado respecto a las demandas actuales de tu sector profesional.",
+      "1.D. Bajo conocimiento de los posibles cambios de tu sector profesional y posible falta de actualización.",
+      "1.A. Posible pérdida de competitividad por desactualización y estrategia pasiva.",
+      "2.F. Alta actualización profesional y mejora continua de tus competencias.",
+      "2.O. Capacidad de anticipación tecnológica.",
+      "2.F. Mentalidad abierta al aprendizaje y disciplina."
     ]
   },
   {
@@ -166,14 +226,19 @@
     ],
     "respuesta_adecuada": 0,
     "feedback": [
-      "{nombre}, comparar competencias de forma constructiva puede darte información muy útil.",
-      "{nombre}, a veces mirar lo que otras personas aportan puede ser incómodo, pero también muy revelador.",
-      "{nombre}, si esta pregunta incomoda, quizá haya aspectos de tu perfil que necesitan más desarrollo y visibilidad."
+      "Comparar competencias de forma constructiva puede darte información muy útil.",
+      "A veces mirar lo que otras personas aportan puede ser incómodo, pero también muy revelador.",
+      "Si esta pregunta incomoda, quizá haya aspectos de tu perfil que necesitan más desarrollo y visibilidad."
     ],
     "pdf": [
-      "Mentalidad de mejora continua. Conciencia competitiva. Apertura al aprendizaje. Enfoque evolutivo. Buena autocrítica.",
-      "Creencia de que todo depende de factores externos. Riesgo de pasividad. Baja percepción de control. Posible desmotivación. Necesidad de reorientación cognitiva.",
-      "Posible sobreconfianza. Baja autocrítica. Riesgo de estancamiento. Falta de actualización. Posible desventaja competitiva."
+      "0.F. Mentalidad de mejora en competencias.",
+      "0.F. Capacidad de autocrítica y evolución.",
+      "1.D. Tendencia a la actitud pasiva en la búsqueda de empleo.",
+      "1.D. Baja percepción de los factores de tu éxito profesional que dependen de ti.",
+      "1.A. Posible desapego por expectativas incumplidas.",
+      "2.D. Sobreconfianza y baja autocrítica sobre tus opciones reales de encontrar trabajo.",
+      "2.A. Riesgo de estancamiento profesional.",
+      "2.A. Posible desventaja competitiva por desconocimiento."
     ]
   },
   {
@@ -186,14 +251,20 @@
     ],
     "respuesta_adecuada": 1,
     "feedback": [
-      "Mejorar tus competencias digitales puede abrirte nuevas oportunidades profesionales, {nombre}.",
-      "{nombre}, tal vez no necesites saberlo todo, pero seguir actualizando tus conocimientos puede ayudarte a mantenerte preparado ante nuevos cambios.",
-      "{nombre}, detectar dónde necesitas apoyo o asesoramiento puede ayudarte a ganar seguridad y autonomía."
+      "Mejorar tus competencias digitales puede abrirte nuevas oportunidades profesionales.",
+      "Tal vez no necesites saberlo todo, pero seguir actualizando tus conocimientos puede ayudarte a mantenerte preparado ante nuevos cambios.",
+      "Detectar dónde necesitas apoyo o asesoramiento puede ayudarte a ganar seguridad y autonomía."
     ],
     "pdf": [
-      "Identificación de brecha digital. Conciencia de mejora. Disposición al aprendizaje. Adaptabilidad. Mejora de empleabilidad.",
-      "Adecuación actual. Competencia técnica suficiente. Posicionamiento estable. Cumplimiento de requisitos. Base sólida.",
-      "Dependencia funcional. Necesidad de apoyo técnico. Posible limitación operativa. Área clara de mejora. Requiere formación específica."
+      "0.F. Eres capaz de identificar las competencias técnicas y digitales que necesitas.",
+      "0.F. Disposición al aprendizaje y conciencia de mejora en competencias técnicas y digitales.",
+      "0.D. Careces de la actualización en competencias técnicas y digitales que requiere el puesto que persigues.",
+      "0.A. Barreras de acceso por falta de cualificación técnica.",
+      "1.F. Base sólida en competencias técnicas y digitales en la actualidad.",
+      "1.O. Tu actualización en competencias técnicas y digitales puede darte una ventaja competitiva no solo en tu sector.",
+      "2.F. Eres capaz de identificar áreas de mejora en competencias técnicas y digitales.",
+      "2.A. Barreras de acceso por falta de cualificación técnica.",
+      "2.D. Tu perfil requiere competencias técnicas y digitales que actualmente no posees."
     ]
   },
   {
@@ -205,12 +276,14 @@
     ],
     "respuesta_adecuada": 0,
     "feedback": [
-      "{nombre}, explorar nuevas posibilidades puede abrirte caminos profesionales que quizá aún no habías considerado.",
-      "{nombre}, quizá tu perfil tenga más posibilidades que las que estás contemplando ahora mismo."
+      "Explorar nuevas posibilidades puede abrirte caminos profesionales que quizá aún no habías considerado.",
+      "Quizá tu perfil tenga más posibilidades que las que estás contemplando ahora mismo."
     ],
     "pdf": [
-      "Visión estratégica. Ampliación de empleabilidad. Apertura profesional. Flexibilidad sectorial. Mayor probabilidad de inserción.",
-      "Foco limitado. Necesidad de exploración. Posible rigidez sectorial. Menor diversificación. Oportunidad no explorada."
+      "0.F. Conciencia de las múltiples opciones que pueden darte tus capacidades.",
+      "0.O. Adaptabilidad profesional a varios sectores, con lo que aumenta la probabilidad de inserción.",
+      "1.D. Foco profesional limitado por desconocimiento de las opciones que pueden darte tus capacidades en otros sectores profesionales.",
+      "1.D. Escasa diversificación del valor de tus competencias profesionales."
     ]
   },
   {
@@ -228,14 +301,22 @@
       "Si logras detectar áreas de mejora, podrías conseguir un perfil más competitivo ante nuevas oportunidades laborales."
     ],
     "pdf": [
-      "Mentalidad de crecimiento. Desarrollo continuo. Adaptación al mercado. Alta empleabilidad futura. Proactividad.",
-      "Estabilidad percibida. Posible estancamiento. Falta de planificación formativa. Menor actualización. Riesgo competitivo.",
-      "Déficit de autodiagnóstico. Necesidad de orientación externa. Baja conciencia estratégica. Oportunidades formativas no identificadas. Riesgo de estancamiento."
+      "0.F. Alta planificación del aprendizaje relacionado con tu ocupación.",
+      "0.F. Desarrollo continuo de las competencias requeridas por el puesto.",
+      "0.F. Conocimientos adaptados al mercado.",
+      "0.O. Alta empleabilidad futura asociada a tus conocimientos.",
+      "1.A. Riesgo de percepción de falsa estabilidad por no afrontar nuevos aprendizajes.",
+      "1.A. Riesgo de estancamiento profesional por falta de formación.",
+      "1.D. Falta de planificación formativa.",
+      "1.A. Pérdida de competitividad por falta de formación actualizada.",
+      "2.D. Déficit de autodiagnóstico en materia formativa.",
+      "2.D. Baja conciencia estratégica.",
+      "2.O. Oportunidades formativas no identificadas con riesgo de estancamiento."
     ]
   },
   {
     "tipo": "Oportunidad",
-    "pregunta": "¿Tienes en cuenta nichos laborales que están poco explorados?",
+    "pregunta": "¿Tienes en cuenta oportunidades que están poco exploradas?",
     "opciones": [
       "Sí",
       "No siempre",
@@ -243,14 +324,18 @@
     ],
     "respuesta_adecuada": 0,
     "feedback": [
-      "{nombre}, detectar oportunidades alineadas con tu perfil refleja una búsqueda activa y enfocada.",
-      "{nombre}, revisar cómo y dónde buscas empleo puede ayudarte a encontrar opciones más ajustadas a ti.",
-      "{nombre}, si detectas cómo y dónde buscar empleo te será más fácil encontrar opciones ajustadas a tu perfil."
+      "Detectar oportunidades alineadas con tu perfil refleja una búsqueda activa y enfocada.",
+      "Revisar cómo y dónde buscas empleo puede ayudarte a encontrar opciones más ajustadas a ti.",
+      "Si detectas cómo y dónde buscar empleo te ayudará a encontrar opciones más ajustadas a ti."
     ],
     "pdf": [
-      "Visión estratégica. Orientación a mercado emergente. Innovación profesional. Diversificación. Mayor empleabilidad.",
-      "Potencial de exploración. Estrategia parcialmente desarrollada. Oportunidad de mejora. Ampliación de horizonte laboral.",
-      "Enfoque tradicional. Posible limitación de oportunidades. Falta de exploración de mercado. Menor diversificación. Necesidad de apertura estratégica."
+      "0.F. Posees visión estratégica de otros sectores profesionales a los que puedes acceder.",
+      "0.O. Te puedes adaptar a mercados emergentes y aumentar tu empleabilidad.",
+      "1.F. A veces posees visión estratégica de otros sectores profesionales a los que también puedes acceder.",
+      "1.D. Horizonte laboral limitado para otras posibilidades de trabajo.",
+      "1.A. Limitación de oportunidades por desconocimiento de otros campos profesionales.",
+      "2.A. Pérdida de oportunidades por desconocimiento de otros campos profesionales.",
+      "2.O. Necesidad de apertura estratégica."
     ]
   },
   {
@@ -268,9 +353,15 @@
       "Mantener una búsqueda organizada puede ayudarte a avanzar con mayor constancia y claridad en tus objetivos."
     ],
     "pdf": [
-      "Necesidad de reorganización. Baja percepción de utilidad de la planificación. Riesgo de dispersión. Necesidad de hábitos constantes.",
-      "Inconsistencia estratégica. Necesidad de estructuración. Potencial de mejora. Variabilidad en resultados.",
-      "Organización. Disciplina. Alta empleabilidad conductual. Constancia estratégica. Gestión eficiente del tiempo."
+      "0.D. Creencia limitante respecto a los resultados de la planificación laboral.",
+      "0.D. Estrategia de búsqueda de empleo ineficiente.",
+      "0.O. Necesidad de revisión del método que sigues para planificar la búsqueda de empleo.",
+      "0.A. Riesgo de desmotivación por falta de resultados.",
+      "1.D. Estructura deficiente en la planificación de la búsqueda de empleo.",
+      "1.O. Alto potencial de mejora en la búsqueda de empleo.",
+      "1.A. Variabilidad en los resultados por falta de planificación.",
+      "2.F. Organización y gestión eficiente del tiempo.",
+      "2.F. Constancia estratégica y disciplina en la búsqueda de empleo."
     ]
   }
 ]
