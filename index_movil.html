@@ -18,14 +18,6 @@
   <span class="shape"></span>
   <span class="shape"></span>
 
-  <!-- QR: solo debe verse en portada -->
-  <button id="qrSmallBtn" class="qr-card" type="button" aria-label="Ampliar código QR">
-    <img class="qr-image" src="imagenes/QR_DAFO_movil.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
-  </button>
-  
-  <!-- Salir: oculto en portada, visible en preguntas/resumen -->
-  <button id="exitBtn" class="exit-button hidden" type="button">Salir</button>
-
   <main>
     <!-- PORTADA -->
     <section id="intro" class="page">
@@ -118,14 +110,6 @@
     <img class="brand-logo" src="imagenes/logo_junta_blanco_transparente.png" alt="Junta de Andalucía">
   </div>
 
-  <!-- MODAL QR -->
-  <div id="qrModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Código QR ampliado">
-    <div class="modal-card white">
-      <button id="qrCloseBtn" class="close-button" type="button" aria-label="Cerrar código QR">×</button>
-      <img class="qr-image" src="imagenes/QR_DAFO_movil.png" alt="Código QR de acceso a la aplicación Ruta DAFO">
-    </div>
-  </div>
-
   <!-- MODAL NOMBRE -->
   <div id="nameModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Introduce tu nombre">
     <form id="nameForm" class="modal-card">
@@ -156,22 +140,6 @@
       </div>
     </form>
   </div>
-  
-  <!-- MODAL SALIR -->
-  <div id="exitModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Salir de la actividad">
-    <div class="modal-card">
-      <h3>Te esperamos cuando quieras volver</h3>
-      <p class="lead">
-        Puedes dejar la actividad ahora. Cuando te apetezca seguir reflexionando
-        sobre tu camino profesional, estaremos aquí.
-      </p>
-      <div class="actions">
-        <button id="exitToStartBtn" type="button">Volver a la portada</button>
-        <button id="exitCancelBtn" class="secondary" type="button">Seguir en la actividad</button>
-      </div>
-    </div>
-  </div>
-
   <script src="app_movil.js"></script>
 </body>
 </html>
