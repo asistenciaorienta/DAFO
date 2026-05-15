@@ -72,9 +72,9 @@ main {
   z-index: 1;
   max-width: 1240px;
   width: 100%;
-  min-height: calc(100dvh - 110px);
+  min-height: calc(100dvh - 70px);
   margin: 0 auto;
-  padding: clamp(22px, 4vw, 42px);
+  padding: clamp(18px, 3vw, 34px);
 }
 
 h1,
@@ -117,10 +117,10 @@ h3 {
 }
 
 .page {
-  min-height: calc(100dvh - 150px);
+  min-height: calc(100dvh - 90px);
   display: grid;
   align-items: center;
-  padding-bottom: 24px;
+  padding-bottom: 14px;
 }
 
 /* LOGO INSTITUCIONAL */
@@ -140,6 +140,10 @@ h3 {
   height: auto;
   display: block;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,.20));
+}
+
+.brand-footer.hidden {
+  display: none !important;
 }
 
 /* QR Y SALIR */
@@ -360,19 +364,19 @@ button.primary {
 
 .activity-grid {
   display: grid;
-  grid-template-columns: minmax(270px, 360px) minmax(0, 1fr);
+  grid-template-columns: minmax(320px, 44vh) minmax(0, 1fr);
   gap: clamp(28px, 5vw, 64px);
   align-items: center;
-  min-height: calc(100dvh - var(--footer-space) - 70px);
-  padding-bottom: 16px;
+  min-height: calc(100dvh - 80px);
+  padding-bottom: 0;
 }
 
 .video-panel {
   position: relative;
   justify-self: center;
-  width: min(360px, calc((100dvh - var(--footer-space) - 130px) * 9 / 16), 100%);
+  height: min(82dvh, 760px);
+  width: auto;
   aspect-ratio: 9 / 16;
-  height: auto;
   overflow: hidden;
   background: #000;
   border-radius: 26px;
@@ -1563,3 +1567,153 @@ button.primary {
   font-weight: 400;
   letter-spacing: .01em;
 }
+@media (max-width: 900px) {
+  .video-panel {
+    height: min(62dvh, 620px);
+    width: auto;
+    max-width: 92vw;
+    aspect-ratio: 9 / 16;
+  }
+}
+
+@media (max-width: 520px) {
+  .video-panel {
+    height: min(58dvh, 560px);
+    width: auto;
+    max-width: 92vw;
+    border-radius: 22px;
+  }
+}
+
+.block-intro-title {
+  position: absolute;
+  z-index: 3;
+  right: clamp(28px, 8vw, 120px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: min(560px, 42vw);
+  font-size: clamp(3.2rem, 7vw, 6.8rem);
+  line-height: .92;
+  font-weight: 950;
+  letter-spacing: -.04em;
+  color: rgba(255,255,255,.96);
+  text-shadow: 0 18px 48px rgba(0,0,0,.26);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.block-intro-title.show {
+  opacity: 1;
+  animation: blockTitleIn .9s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.block-intro-title.hide {
+  animation: blockTitleOut .45s ease both;
+}
+
+@keyframes blockTitleIn {
+  from {
+    opacity: 0;
+    transform: translateY(-46%) translateX(28px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0) scale(1);
+  }
+}
+
+@keyframes blockTitleOut {
+  from {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px) scale(.98);
+  }
+}
+
+/* Entrada de bloque: vídeo protagonista a la izquierda */
+.activity-grid.video-focus {
+  grid-template-columns: minmax(320px, 44vh) minmax(0, 1fr);
+  align-items: center;
+  justify-items: start;
+  place-items: initial;
+}
+
+.activity-grid.video-focus #videoContainer {
+  justify-self: start;
+  height: min(86dvh, 790px);
+  width: auto;
+  max-width: 44vw;
+  aspect-ratio: 9 / 16;
+  transition:
+    transform .75s cubic-bezier(.22, 1, .36, 1),
+    height .45s ease,
+    width .45s ease;
+}
+
+.activity-grid.video-focus #questionCard {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(.98);
+}
+
+.question-card.pre-reveal {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(22px) scale(.98);
+}
+
+.question-card.reveal {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity .55s ease,
+    transform .65s cubic-bezier(.22, 1, .36, 1);
+}
+
+@media (max-width: 900px) {
+  .block-intro-title {
+    position: static;
+    transform: none;
+    max-width: 92vw;
+    margin: 0 auto 18px;
+    text-align: center;
+    font-size: clamp(2.4rem, 10vw, 4.2rem);
+  }
+
+  .block-intro-title.show {
+    animation: blockTitleMobileIn .75s ease both;
+  }
+
+  @keyframes blockTitleMobileIn {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .activity-grid.video-focus {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .activity-grid.video-focus #videoContainer {
+    justify-self: center;
+    height: min(60dvh, 620px);
+    width: auto;
+    max-width: 92vw;
+  }
+
+  .activity-grid.video-focus #questionCard {
+    display: none;
+  }
+}
+
+
