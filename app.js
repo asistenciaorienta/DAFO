@@ -26,23 +26,7 @@ const SUMMARY_VIDEOS = {
   feedback_16: "videos/feedback-16.mp4"
 };
 
-const BLOCK_TRANSITION_MESSAGES = {
-  Fortaleza: {
-    texto: "Reconocer lo que haces bien también forma parte de prepararte mejor.",
-    audio: "transiciones/fortaleza.mp3",
-    subtitulos: "transiciones/fortaleza.vtt"
-  },
-  Amenaza: {
-    texto: "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional.",
-    audio: "transiciones/amenaza.mp3",
-    subtitulos: "transiciones/amenaza.vtt"
-  },
-  Debilidad: {
-    texto: "Detectar un área de mejora es el primer paso para poder cambiarla.",
-    audio: "transiciones/debilidad.mp3",
-    subtitulos: "transiciones/debilidad.vtt"
-  }
-};
+let blockTransitionMessages = {};
 
 let questions = [];
 let groupedQuestions = {};
@@ -507,6 +491,20 @@ async function startApp() {
       console.warn("preguntas_reflexion.json tiene algún problema o no se pudo cargar.", reflectionError);
       reflectionQuestionsData = null;
     }
+
+    try {
+      const transitionsResponse = await fetch("transiciones.json");
+    
+      if (transitionsResponse.ok) {
+        blockTransitionMessages = await transitionsResponse.json();
+      } else {
+        console.warn("No se encontró transiciones.json. La app continuará sin transiciones aleatorias.");
+        blockTransitionMessages = {};
+      }
+    } catch (transitionError) {
+      console.warn("transiciones.json tiene algún problema o no se pudo cargar.", transitionError);
+      blockTransitionMessages = {};
+    }
     
     groupedQuestions = groupByType(questions);
     groupedQuestions = selectRandomQuestionsByType(groupedQuestions, 3, 3);
@@ -610,16 +608,20 @@ function insertReflectionQuestionIfAvailable(groupedItems, reflectionData) {
 
 function insertBlockTransitionQuestions(groupedItems) {
   SECTION_ORDER.forEach(type => {
-    const transitionMessage = BLOCK_TRANSITION_MESSAGES[type];
+    const transitionsOfType = blockTransitionMessages[type];
 
-    if (!transitionMessage) return;
+    if (!Array.isArray(transitionsOfType) || transitionsOfType.length === 0) return;
     if (!Array.isArray(groupedItems[type])) return;
+
+    const transitionMessage = getRandomArrayItem(transitionsOfType);
+
+    if (!transitionMessage || !transitionMessage.texto) return;
 
     groupedItems[type].push({
       tipo: type,
       esTransicionBloque: true,
       pregunta: transitionMessage.texto || "",
-      texto_boton: "Continuar",
+      texto_boton: transitionMessage.texto_boton || "Continuar",
       audio: transitionMessage.audio || "",
       subtitulos: transitionMessage.subtitulos || ""
     });
@@ -1405,15 +1407,16 @@ async function createPdfDocument() {
 
 let y = 43;
 
-y = drawSectionTitlePdf(
+y = drawLongIntroTitlePdf(
   doc,
   "Valoración personalizada de tus ventajas y desafíos para seguir avanzando profesionalmente.",
   margin,
   y,
-  colors.green
+  usableWidth,
+  colors.bg-1
 );
 
-y += 3;
+y += 2;
 
 y = drawSummaryBoxPdf(
   doc,
@@ -1429,7 +1432,7 @@ y += 6;
 // Matriz DAFO directamente a continuación del resumen
 y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
 
-  drawCenteredSaeClaim(doc, pageWidth, pageHeight, colors.green);
+  drawCenteredSaeClaim(doc, pageWidth, pageHeight, colors.bg-1);
 
   /*
     PÁGINA 2
@@ -1446,7 +1449,7 @@ y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
     colors
   );
 
-  y = 42;
+  let y = 42;
 
   y = drawAnswersPagePdf(doc, margin, y, usableWidth, pageHeight, colors);
 
@@ -1461,11 +1464,11 @@ y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
     projectLogo,
     saeLogo,
     "DAFO de empleabilidad",
-    "Síntesis final a partir de tus respuestas.",
+    "",
     colors
   );
 
-  y = 42;
+  let y = 42;
 
   y = drawEmployabilityDafoPdf(doc, margin, y, usableWidth, pageHeight);
 
@@ -1477,7 +1480,7 @@ y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
 function drawPdfHeader(doc, projectLogo, saeLogo, title, subtitle, colors) {
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  doc.setFillColor(colors.green[0], colors.green[1], colors.green[2]);
+  doc.setFillColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
   doc.rect(0, 0, pageWidth, 34, "F");
 
   if (projectLogo) {
@@ -1506,14 +1509,16 @@ function drawPdfHeader(doc, projectLogo, saeLogo, title, subtitle, colors) {
 }
 
 function drawSectionTitlePdf(doc, title, x, y, color) {
+  const finalColor = color || [7, 151, 162];
+
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.setTextColor(color[0], color[1], color[2]);
+  doc.setTextColor(finalColor[0], finalColor[1], finalColor[2]);
   doc.text(title, x, y);
 
-  doc.setDrawColor(color[0], color[1], color[2]);
-  doc.setLineWidth(0.9);
-  doc.line(x, y + 3, x + 48, y + 3);
+  doc.setDrawColor(finalColor[0], finalColor[1], finalColor[2]);
+  doc.setLineWidth(0.8);
+  doc.line(x, y + 3, x + 44, y + 3);
 
   return y + 8;
 }
@@ -1553,14 +1558,14 @@ function drawSummaryBoxPdf(doc, x, y, width, feedbackInfo, colors) {
     (reflexionLines.length ? 5 + reflexionLines.length * 4.5 : 0) +
     6;
 
-  doc.setFillColor(colors.greenSoft[0], colors.greenSoft[1], colors.greenSoft[2]);
-  doc.setDrawColor(colors.green[0], colors.green[1], colors.green[2]);
+  doc.setFillColor(colors.bg-2[0], colors.bg-2[1], colors.bg-2[2]);
+  doc.setDrawColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
   doc.setLineWidth(0.5);
   doc.roundedRect(x, startY, width, boxHeight, 4, 4, "FD");
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12.2);
-  doc.setTextColor(colors.green[0], colors.green[1], colors.green[2]);
+  doc.setTextColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
   doc.text(titleLines, innerX, innerY);
   innerY += titleLines.length * 5.2 + 3;
 
@@ -1572,7 +1577,7 @@ function drawSummaryBoxPdf(doc, x, y, width, feedbackInfo, colors) {
 
   if (reflexionLines.length) {
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(colors.green[0], colors.green[1], colors.green[2]);
+    doc.setTextColor(colors.bg-1[0], colors.bg-1[1], colors.bg-1[2]);
     doc.text("A tener en cuenta:", innerX, innerY);
     innerY += 5;
 
@@ -1603,12 +1608,17 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
 
     const blockColor = getDafoPdfColor(type);
 
+    // Más separación antes de cada bloque, excepto si estamos muy arriba.
+    if (y > 48) {
+      y += 5;
+    }
+
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11.2);
+    doc.setFontSize(11.5);
     doc.setTextColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
     doc.text(pluralTitle(type), x, y);
 
-    y += 4.5;
+    y += 6.5;
 
     typeAnswers.forEach((answer, index) => {
       const question = `${index + 1}. ${answer.pregunta}`;
@@ -1622,11 +1632,24 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
       doc.setFontSize(7.7);
       const responseLines = doc.splitTextToSize(response, width - 8);
 
+      /*
+        Antes el recuadro era demasiado alto porque tenía una altura fija
+        o demasiada reserva vertical. Ahora se calcula muy ajustado:
+        margen superior + pregunta + pequeño espacio + respuesta + margen inferior.
+      */
+      const topPadding = 4.5;
+      const gapBetween = 1.4;
+      const bottomPadding = 3.2;
+
+      const questionHeight = questionLines.length * 3.35;
+      const responseHeight = responseLines.length * 3.25;
+
       const boxHeight =
-        5.5 +
-        questionLines.length * 3.5 +
-        responseLines.length * 3.3 +
-        3.5;
+        topPadding +
+        questionHeight +
+        gapBetween +
+        responseHeight +
+        bottomPadding;
 
       if (y + boxHeight > pageHeight - 20) {
         return;
@@ -1637,24 +1660,25 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
       doc.setLineWidth(0.25);
       doc.roundedRect(x, y, width, boxHeight, 2.5, 2.5, "FD");
 
-      let innerY = y + 4.8;
+      let innerY = y + topPadding;
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7.9);
       doc.setTextColor(35, 45, 48);
       doc.text(questionLines, x + 4, innerY);
 
-      innerY += questionLines.length * 3.5 + 0.8;
+      innerY += questionHeight + gapBetween;
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.7);
       doc.setTextColor(60, 70, 74);
       doc.text(responseLines, x + 4, innerY);
 
-      y += boxHeight + 2.8;
+      y += boxHeight + 2.6;
     });
 
-    y += 1.5;
+    // Separación mayor entre bloques.
+    y += 6;
   });
 
   return y;
@@ -2399,4 +2423,52 @@ function getTotalSelectedQuestions(groupedItems) {
   return SECTION_ORDER.reduce((sum, type) => {
     return sum + (groupedItems[type] || []).length;
   }, 0);
+}
+
+function drawLongIntroTitlePdf(doc, text, x, y, width, color) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13.2);
+  doc.setTextColor(color[0], color[1], color[2]);
+
+  const lines = doc.splitTextToSize(String(text || ""), width);
+
+  // Forzamos como máximo dos líneas para que no se corte ni invada demasiado espacio.
+  const visibleLines = lines.slice(0, 2);
+
+  visibleLines.forEach((line, index) => {
+    if (index === visibleLines.length - 1) {
+      doc.text(line, x, y + index * 6);
+    } else {
+      drawJustifiedLinePdf(doc, line, x, y + index * 6, width);
+    }
+  });
+
+  doc.setDrawColor(color[0], color[1], color[2]);
+  doc.setLineWidth(0.8);
+  doc.line(x, y + visibleLines.length * 6 + 1.5, x + 48, y + visibleLines.length * 6 + 1.5);
+
+  return y + visibleLines.length * 6 + 7;
+}
+
+function drawJustifiedLinePdf(doc, text, x, y, width) {
+  const words = String(text || "").trim().split(/\s+/);
+
+  if (words.length <= 1) {
+    doc.text(text, x, y);
+    return;
+  }
+
+  const wordsWidth = words.reduce((sum, word) => sum + doc.getTextWidth(word), 0);
+  const spaceWidth = (width - wordsWidth) / (words.length - 1);
+
+  let cursorX = x;
+
+  words.forEach((word, index) => {
+    doc.text(word, cursorX, y);
+    cursorX += doc.getTextWidth(word);
+
+    if (index < words.length - 1) {
+      cursorX += spaceWidth;
+    }
+  });
 }
