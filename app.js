@@ -1182,7 +1182,7 @@ function buildAnswerFromCurrentSelection() {
       respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
       correcta: false,
       feedback: "No se ha podido registrar correctamente la respuesta.",
-      pdfFeedback: "No se ha podido registrar correctamente la valoración para el informe."
+      pdfItems: []
     };
   }
 
@@ -1198,7 +1198,9 @@ function buildAnswerFromCurrentSelection() {
     respuestaAdecuadaIndice: Number(currentQuestion.respuesta_adecuada),
     correcta: adequate,
     feedback: getFeedbackForSelectedOption(currentQuestion, originalIndex),
-    pdfFeedback: getPdfFeedbackForSelectedOption(currentQuestion, originalIndex)
+
+    // Nuevo sistema para DAFO de empleabilidad
+    pdfItems: getPdfItemsForSelectedOption(currentQuestion, originalIndex)
   };
 }
 
@@ -1218,12 +1220,55 @@ function getFeedbackForSelectedOption(question, selectedIndex) {
   return personalizeText(question.feedback || "Revisa este apartado con más profundidad.");
 }
 
-function getPdfFeedbackForSelectedOption(question, selectedIndex) {
-  if (Array.isArray(question.pdf)) {
-    return personalizeText(question.pdf[selectedIndex] || "");
+function getPdfItemsForSelectedOption(question, selectedIndex) {
+  if (!Array.isArray(question.pdf)) {
+    return [];
   }
 
-  return "";
+  const selectedPrefix = String(selectedIndex).trim();
+
+  return question.pdf
+    .map(item => String(item || "").trim())
+    .filter(Boolean)
+    .map(item => {
+      /*
+        Formato esperado:
+        0.F. Texto
+        0.D. Texto
+        0.O. Texto
+        0.A. Texto
+
+        También tolera:
+        0. F. Texto
+        0. D. Texto
+      */
+      const match = item.match(/^(\d+)\s*\.\s*([FDOA])\s*\.\s*(.+)$/i);
+
+      if (!match) {
+        return null;
+      }
+
+      const optionIndex = match[1];
+      const dafoCode = match[2].toUpperCase();
+      const text = match[3].trim();
+
+      if (optionIndex !== selectedPrefix) {
+        return null;
+      }
+
+      const typeMap = {
+        F: "Fortaleza",
+        D: "Debilidad",
+        O: "Oportunidad",
+        A: "Amenaza"
+      };
+
+      return {
+        tipo: typeMap[dafoCode],
+        texto: personalizeText(text)
+      };
+    })
+    .filter(Boolean);
 }
 
 function goNext() {
@@ -2132,8 +2177,9 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
 
   const boxData = boxes.map(box => {
     const items = answers
-      .filter(answer => answer.tipo === box.type)
-      .map(answer => answer.pdfFeedback || "")
+      .flatMap(answer => Array.isArray(answer.pdfItems) ? answer.pdfItems : [])
+      .filter(item => item.tipo === box.type)
+      .map(item => item.texto)
       .filter(Boolean);
 
     const height = calculateEmployabilityDafoBoxHeightPdf(doc, boxWidth, items);
