@@ -90,6 +90,9 @@ const sharePdfBtn = document.querySelector("#sharePdfBtn");
 const nameStartControls = document.querySelector("#nameStartControls");
 const nameAudioNotice = document.querySelector("#nameAudioNotice");
 
+const brandFooter = document.querySelector(".brand-footer");
+const blockIntroTitle = document.querySelector("#blockIntroTitle");
+
 bindEvents();
 setScreenMode("intro");
 
@@ -152,12 +155,21 @@ function setScreenMode(mode) {
     exitBtn.classList.add("hidden");
     qrModal.classList.add("hidden");
     exitModal.classList.add("hidden");
+
+    if (brandFooter) {
+      brandFooter.classList.remove("hidden");
+    }
+
     return;
   }
 
   qrSmallBtn.classList.add("hidden");
   qrModal.classList.add("hidden");
   exitBtn.classList.remove("hidden");
+
+  if (brandFooter) {
+    brandFooter.classList.toggle("hidden", mode !== "result");
+  }
 }
 
 function initBackgroundMusic() {
@@ -882,9 +894,34 @@ function prepareVideoFocusLayout() {
 
   if (!activityGrid || !card) return;
 
+  const type = SECTION_ORDER[sectionIndex];
+
   activityGrid.classList.add("video-focus");
   card.classList.add("pre-reveal");
   card.classList.remove("reveal");
+
+  showBlockIntroTitle(type);
+}
+
+function showBlockIntroTitle(type) {
+  if (!blockIntroTitle) return;
+
+  blockIntroTitle.textContent = pluralTitle(type);
+  blockIntroTitle.classList.remove("hidden", "hide");
+  blockIntroTitle.classList.add("show");
+}
+
+function hideBlockIntroTitle() {
+  if (!blockIntroTitle) return;
+
+  blockIntroTitle.classList.remove("show");
+  blockIntroTitle.classList.add("hide");
+
+  setTimeout(() => {
+    blockIntroTitle.classList.add("hidden");
+    blockIntroTitle.classList.remove("hide");
+    blockIntroTitle.textContent = "";
+  }, 480);
 }
 
 function showQuestionsLayoutImmediate() {
@@ -892,6 +929,8 @@ function showQuestionsLayoutImmediate() {
   const card = document.querySelector("#questionCard");
 
   if (!activityGrid || !card) return;
+
+  hideBlockIntroTitle();
 
   activityGrid.classList.remove("video-focus");
   card.classList.remove("pre-reveal");
@@ -907,7 +946,7 @@ function revealQuestionsAfterVideo() {
     showQuestionsLayoutImmediate();
     return;
   }
-
+  hideBlockIntroTitle();
   const firstRect = videoPanel.getBoundingClientRect();
 
   activityGrid.classList.remove("video-focus");
@@ -1751,20 +1790,30 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
 
   /*
     Tamaños base.
-    Si no entra todo, se reducen un poco de forma automática,
-    pero sin saltarse preguntas.
+    Ajustados para que entren todas las preguntas,
+    pero con el texto mejor centrado dentro de cada recuadro.
   */
   let titleFontSize = 10.6;
   let questionFontSize = 7.4;
   let responseFontSize = 7.1;
+
   let lineHeightQuestion = 3.15;
   let lineHeightResponse = 3.05;
-  let sectionGapTop = 4.2;
-  let sectionGapBottom = 4.4;
+
+  let sectionGapTop = 4.8;
+  let sectionGapBottom = 4.8;
   let boxGap = 2.1;
-  let topPadding = 3.2;
-  let bottomPadding = 2.4;
-  let innerGap = 1.1;
+
+  /*
+    Estos son los valores importantes:
+    - Más margen arriba.
+    - Menos margen abajo.
+    - Menos separación entre pregunta y respuesta.
+    Así el bloque se ve más centrado y no queda tanto hueco inferior.
+  */
+  let topPadding = 4.1;
+  let bottomPadding = 1.6;
+  let innerGap = 0.8;
 
   function calculateTotalHeight() {
     let total = 0;
@@ -1801,22 +1850,31 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
 
   /*
     Ajuste si no cabe.
-    Bajamos ligeramente fuente y espaciados hasta que quepa.
+    Bajamos ligeramente fuente y espaciados hasta que quepa,
+    pero protegemos los márgenes para que no vuelva a quedar mal centrado.
   */
-  let availableHeight = bottomLimit - y;
+  const availableHeight = bottomLimit - y;
   let totalHeight = calculateTotalHeight();
 
   while (totalHeight > availableHeight && questionFontSize > 6.2) {
     titleFontSize -= 0.25;
     questionFontSize -= 0.18;
     responseFontSize -= 0.18;
+
     lineHeightQuestion -= 0.08;
     lineHeightResponse -= 0.08;
-    sectionGapTop -= 0.15;
-    sectionGapBottom -= 0.15;
-    boxGap -= 0.08;
-    topPadding -= 0.06;
-    bottomPadding -= 0.06;
+
+    sectionGapTop = Math.max(3.4, sectionGapTop - 0.12);
+    sectionGapBottom = Math.max(3.4, sectionGapBottom - 0.12);
+    boxGap = Math.max(1.4, boxGap - 0.08);
+
+    /*
+      No reducimos demasiado estos márgenes.
+      Si bajan mucho, el texto vuelve a pegarse arriba.
+    */
+    topPadding = Math.max(3.6, topPadding - 0.04);
+    bottomPadding = Math.max(1.2, bottomPadding - 0.04);
+    innerGap = Math.max(0.6, innerGap - 0.03);
 
     totalHeight = calculateTotalHeight();
   }
@@ -1862,7 +1920,12 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
     doc.setLineWidth(0.25);
     doc.roundedRect(x, y, width, boxHeight, 2.4, 2.4, "FD");
 
-    let innerY = y + topPadding;
+    /*
+      Aquí estaba el detalle visual.
+      Antes era: let innerY = y + topPadding;
+      Ahora se baja un poco el texto para que no parezca pegado arriba.
+    */
+    let innerY = y + topPadding + 1.2;
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(questionFontSize);
@@ -2095,14 +2158,14 @@ function calculateDafoBoxHeightPdf(doc, width, items) {
   const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.1);
+  doc.setFontSize(7.8);
 
   let textHeight = 0;
 
   visibleItems.slice(0, 3).forEach(item => {
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
     const availableLines = lines.slice(0, 4);
-    textHeight += availableLines.length * 3.4 + 2;
+    textHeight += availableLines.length * 3.8 + 2.2;
   });
 
   const titleArea = 18;
@@ -2131,7 +2194,7 @@ function drawDafoBoxPdf(doc, x, y, width, height, title, items, color, bg) {
   doc.text(title, x + 5, y + 9);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.1);
+  doc.setFontSize(7.8);
   doc.setTextColor(255, 255, 255);
 
   const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
@@ -2145,7 +2208,7 @@ function drawDafoBoxPdf(doc, x, y, width, height, title, items, color, bg) {
     const availableLines = lines.slice(0, 4);
 
     doc.text(availableLines, x + 5, itemY);
-    itemY += availableLines.length * 3.4 + 2;
+    itemY += availableLines.length * 3.8 + 2.2;
   });
 }
 
@@ -2505,18 +2568,18 @@ function calculateEmployabilityDafoBoxHeightPdf(doc, width, items) {
   const visibleItems = items.length ? items : ["Sin información registrada."];
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.4);
+  doc.setFontSize(7.8);
 
   let textHeight = 0;
 
   visibleItems.forEach(item => {
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
-    textHeight += lines.length * 3.45 + 1.6;
+    textHeight += lines.length * 3.7 + 1.8;
   });
 
   const titleArea = 15;
   const bottomPadding = 6;
-  const minHeight = 48;
+  const minHeight = 50;
 
   return Math.max(minHeight, titleArea + textHeight + bottomPadding);
 }
@@ -2536,26 +2599,26 @@ function drawEmployabilityDafoBoxPdf(doc, x, y, width, height, title, items, col
   doc.text(title, x + 5, y + 8.8);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.4);
+  doc.setFontSize(7.8);
   doc.setTextColor(35, 45, 48);
-
+  
   const visibleItems = items.length ? items : ["Sin información registrada."];
   let itemY = y + 20;
   const maxY = y + height - 5;
-
+  
   visibleItems.forEach(item => {
     if (itemY >= maxY) return;
-
+  
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
-
+  
     const availableLines = lines.filter((line, index) => {
-      return itemY + index * 3.45 < maxY;
+      return itemY + index * 3.7 < maxY;
     });
-
+  
     if (!availableLines.length) return;
-
+  
     doc.text(availableLines, x + 5, itemY);
-    itemY += availableLines.length * 3.45 + 1.6;
+    itemY += availableLines.length * 3.7 + 1.8;
   });
 }
 
