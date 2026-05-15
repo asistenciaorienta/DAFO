@@ -921,20 +921,91 @@ body[data-screen="app"] .brand-footer {
 }
 
 @media (max-height: 700px) {
-  #intro h1 {
-    font-size: clamp(1.75rem, 8.8vw, 2.7rem);
+  .intro-dafo-logo {
+    width: min(105px, 30vw, 15vh);
+    max-height: 15vh;
   }
 
-  #intro .intro-dafo-logo {
-    width: min(120px, 32vw, 17vh);
-    max-height: 17vh;
+  #intro h1 {
+    font-size: clamp(1.7rem, 8vw, 2.6rem);
   }
 
   #intro .intro-grid {
-    gap: 10px;
+    gap: 8px;
   }
 
-  #intro .start-button {
+  .intro-kicker {
+    font-size: .72rem;
+    padding: 5px 9px;
+  }
+
+  .start-button {
     padding: 10px 18px;
   }
+}
+
+/* PORTADA MÓVIL DEFINITIVA */
+
+#intro {
+  min-height: 100dvh;
+  display: grid;
+}
+
+#intro .intro-grid {
+  min-height: calc(100dvh - 32px);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+}
+
+.intro-logo-top {
+  display: grid;
+  justify-items: center;
+  padding-top: 4px;
+}
+
+.intro-dafo-logo {
+  width: min(130px, 34vw, 18vh);
+  max-height: 18vh;
+  height: auto;
+  object-fit: contain;
+}
+
+.intro-panel {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+}
+
+.intro-kicker {
+  margin: 0;
+  padding: 6px 11px;
+  font-size: clamp(.72rem, 2.8vw, .9rem);
+}
+
+#intro h1 {
+  margin: 0;
+  max-width: 94vw;
+  font-size: clamp(2rem, 9vw, 3.2rem);
+  line-height: .96;
+}
+
+.intro-actions {
+  display: grid;
+  justify-items: center;
+  padding-bottom: 4px;
+}
+
+.start-button {
+  width: auto;
+  min-width: 150px;
+  padding: 12px 20px;
+  font-size: clamp(.9rem, 3.5vw, 1rem);
+  margin: 0;
 }
