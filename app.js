@@ -891,16 +891,20 @@ function renderVideo(selector, source, buttonText, type) {
 function prepareVideoFocusLayout() {
   const activityGrid = document.querySelector(".activity-grid");
   const card = document.querySelector("#questionCard");
+  const blockTitle = document.querySelector("#blockIntroTitle");
 
   if (!activityGrid || !card) return;
 
-  const type = SECTION_ORDER[sectionIndex];
-
   activityGrid.classList.add("video-focus");
+
   card.classList.add("pre-reveal");
   card.classList.remove("reveal");
 
-  showBlockIntroTitle(type);
+  if (blockTitle) {
+    const type = SECTION_ORDER[sectionIndex];
+    blockTitle.textContent = pluralTitle(type);
+    blockTitle.classList.remove("hidden");
+  }
 }
 
 function showBlockIntroTitle(type) {
@@ -927,62 +931,45 @@ function hideBlockIntroTitle() {
 function showQuestionsLayoutImmediate() {
   const activityGrid = document.querySelector(".activity-grid");
   const card = document.querySelector("#questionCard");
+  const blockTitle = document.querySelector("#blockIntroTitle");
 
   if (!activityGrid || !card) return;
 
-  hideBlockIntroTitle();
-
   activityGrid.classList.remove("video-focus");
+
+  if (blockTitle) {
+    blockTitle.classList.add("hidden");
+  }
+
   card.classList.remove("pre-reveal");
   card.classList.add("reveal");
 }
 
 function revealQuestionsAfterVideo() {
   const activityGrid = document.querySelector(".activity-grid");
-  const videoPanel = document.querySelector("#videoContainer");
   const card = document.querySelector("#questionCard");
+  const blockTitle = document.querySelector("#blockIntroTitle");
 
-  if (!activityGrid || !videoPanel || !card) {
+  if (!activityGrid || !card) {
     showQuestionsLayoutImmediate();
     return;
   }
-  hideBlockIntroTitle();
-  const firstRect = videoPanel.getBoundingClientRect();
 
+  // Quitamos el modo presentación de vídeo
   activityGrid.classList.remove("video-focus");
 
-  const lastRect = videoPanel.getBoundingClientRect();
+  // Ocultamos el título grande del bloque, si existe
+  if (blockTitle) {
+    blockTitle.classList.add("hidden");
+  }
 
-  const deltaX = firstRect.left - lastRect.left;
-  const deltaY = firstRect.top - lastRect.top;
-  const scaleX = firstRect.width / lastRect.width;
-  const scaleY = firstRect.height / lastRect.height;
+  // Mostramos suavemente la tarjeta de preguntas
+  card.classList.remove("pre-reveal");
+  card.classList.add("reveal");
 
-  videoPanel.style.transformOrigin = "top left";
-  videoPanel.style.transition = "none";
-  videoPanel.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
-
-  card.classList.add("pre-reveal");
-  card.classList.remove("reveal");
-
-  requestAnimationFrame(() => {
-    videoPanel.style.transition = "transform .78s cubic-bezier(.22, 1, .36, 1)";
-    videoPanel.style.transform = "translate(0, 0) scale(1)";
-
-    setTimeout(() => {
-      card.classList.remove("pre-reveal");
-      card.classList.add("reveal");
-    
-      hideOptionsTemporarily();
-      showOptionsAfterDelay(3000);
-    }, 260);
-  });
-
-  videoPanel.addEventListener("transitionend", () => {
-    videoPanel.style.transition = "";
-    videoPanel.style.transform = "";
-    videoPanel.style.transformOrigin = "";
-  }, { once: true });
+  // Opciones a los 3 segundos
+  hideOptionsTemporarily();
+  showOptionsAfterDelay(3000);
 }
 
 function hideOptionsTemporarily() {
