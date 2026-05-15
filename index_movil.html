@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Explora tu potencial: conócete y avanza</title>
   <link rel="icon" type="image/png" href="imagenes/logo_DAFO.png">
-  <link rel="stylesheet" href="styles_new.css">
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,9 +50,13 @@
 
     <!-- ACTIVIDAD -->
     <section id="app" class="page hidden">
+      <div id="blockIntroTitle" class="block-intro-title hidden"></div>
+    
       <div class="activity-grid">
         <div id="videoContainer" class="video-panel"></div>
-
+      
+        <div id="blockIntroTitle" class="block-intro-title hidden"></div>
+      
         <article id="questionCard" class="question-card waiting-video">
           <img class="corner-logo" src="imagenes/logo_DAFO.png" alt="Logotipo DAFO">
 
@@ -84,22 +88,26 @@
     <section id="result" class="page hidden">
       <article class="result-screen final-screen">
     
-        <div class="final-video-row">
-          <div class="final-video-center">
+        <div class="final-layout">
+          
+          <div class="final-video-column">
             <div id="summaryVideoContainer" class="video-panel result-video-panel"></div>
           </div>
-         </div>
     
-        <section class="result-reflection-section final-text-section">
-          <h4 id="finalReflectionTitle" class="result-section-title">
-            {nombre}, aquí puedes descargar tu reflexión personalizada.
-          </h4>
-        </section>
-       
-        <div class="actions result-actions">
-          <button id="downloadPdfBtn" type="button">Guardar PDF</button>
-          <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
-          <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
+          <div class="final-content-column">
+            <section class="result-reflection-section final-text-section">
+              <h4 id="finalReflectionTitle" class="result-section-title">
+                {nombre}, aquí puedes descargar tu reflexión personalizada.
+              </h4>
+            </section>
+           
+            <div class="actions result-actions">
+              <button id="downloadPdfBtn" type="button">Guardar PDF</button>
+              <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
+              <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
+            </div>
+          </div>
+    
         </div>
     
       </article>
@@ -126,11 +134,11 @@
       <h3>Antes de empezar</h3>
   
       <p class="lead">
-        Enfócate en tus metas profesionales antes de iniciar la actividad,... tómate tu tiempo y reflexiona antes de contestar.
+        Enfócate en tus metas profesionales... De ahí partimos... Tómate tu tiempo... Es importante... Y reflexiona antes de contestar.
       </p>
   
       <p class="lead">
-        Al finalizar recibirás una reflexión personalizada que te ayudará en tu camino profesional.
+        Al finalizar recibirás un análisis orientativo personalizado, que te ayudará en tu camino profesional.
       </p>
   
       <p class="lead">
@@ -166,6 +174,6 @@
     </div>
   </div>
 
-  <script src="app_new.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
