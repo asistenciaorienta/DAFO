@@ -1,0 +1,48 @@
+{
+  "Fortaleza": [
+    {
+      "texto": "Reconocer lo que haces bien también forma parte de prepararte mejor.",
+      "audio": "transiciones/fortaleza.mp3"
+    },
+    {
+      "texto": "Mirar tu situación con honestidad puede ayudarte a detectar aspectos que hasta ahora habían pasado desapercibidos.",
+      "audio": "transiciones/fortaleza2.mp3"
+    },
+    {
+      "texto": "El mercado cambia constantemente; revisar cómo te posicionas frente a él también forma parte del proceso.",
+      "audio": "transiciones/fortaleza3.mp3"
+    }
+  ],
+  "Amenaza": [
+    {
+      "texto": "Identificar obstáculos te permite diseñar una respuesta más sólida y realista para tu objetivo profesional.",
+      "audio": "transiciones/amenaza.mp3"
+    },
+    {
+      "texto": "Entender qué influye en tu situación profesional permite afrontarla con más claridad y preparación.",
+      "audio": "transiciones/amenaza2.mp3"
+    },
+    {
+      "texto": "A veces el problema no es falta de capacidad, sino repetir estrategias que ya no están funcionando.",
+      "audio": "transiciones/amenaza3.mp3"
+    },
+    {
+      "texto": "Conocerte mejor también es prepararte mejor.",
+      "audio": "transiciones/amenaza4.mp3"
+    }
+  ],
+  "Debilidad": [
+    {
+      "texto": "Detectar un área de mejora es el primer paso para poder cambiarla.",
+      "audio": "transiciones/debilidad.mp3"
+    },
+    {
+      "texto": "Identificar lo que hoy te limita también puede ayudarte a encontrar nuevas formas de avanzar.",
+      "audio": "transiciones/debilidad2.mp3"
+    },
+    {
+      "texto": "Las decisiones profesionales no siempre cambian por hacer más, sino por entender mejor qué necesitas ajustar.",
+      "audio": "transiciones/debilidad3.mp3"
+    }
+  ]
+}
