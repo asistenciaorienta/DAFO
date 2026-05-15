@@ -1395,34 +1395,39 @@ async function createPdfDocument() {
     Resumen + matriz DAFO
   */
   drawPdfHeader(
-    doc,
-    projectLogo,
-    saeLogo,
-    userName ? `${userName}, tu reflexión sugiere...` : "Tu reflexión sugiere...",
-    "Valoración personalizada de tus ventajas y desafíos para seguir avanzando profesionalmente.",
-    colors
-  );
+  doc,
+  projectLogo,
+  saeLogo,
+  userName ? `${userName}, tu reflexión sugiere...` : "Tu reflexión sugiere...",
+  "",
+  colors
+);
 
-  let y = 58;
+let y = 43;
 
-  y = drawSectionTitlePdf(doc, "Resumen personalizado", margin, y, colors.green);
-  y += 3;
+y = drawSectionTitlePdf(
+  doc,
+  "Valoración personalizada de tus ventajas y desafíos para seguir avanzando profesionalmente.",
+  margin,
+  y,
+  colors.green
+);
 
-  y = drawSummaryBoxPdf(
-    doc,
-    margin,
-    y,
-    usableWidth,
-    feedbackInfo,
-    colors
-  );
+y += 3;
 
-  y += 7;
+y = drawSummaryBoxPdf(
+  doc,
+  margin,
+  y,
+  usableWidth,
+  feedbackInfo,
+  colors
+);
 
-  y = drawSectionTitlePdf(doc, "Sobre tu matriz DAFO", margin, y, colors.green);
-  y += 4;
+y += 6;
 
-  y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
+// Matriz DAFO directamente a continuación del resumen
+y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
 
   drawCenteredSaeClaim(doc, pageWidth, pageHeight, colors.green);
 
@@ -1437,11 +1442,11 @@ async function createPdfDocument() {
     projectLogo,
     saeLogo,
     "Tus respuestas",
-    "Preguntas realizadas durante la actividad y respuestas seleccionadas.",
+    "",
     colors
   );
 
-  y = 58;
+  y = 42;
 
   y = drawAnswersPagePdf(doc, margin, y, usableWidth, pageHeight, colors);
 
@@ -1460,7 +1465,7 @@ async function createPdfDocument() {
     colors
   );
 
-  y = 60;
+  y = 42;
 
   y = drawEmployabilityDafoPdf(doc, margin, y, usableWidth, pageHeight);
 
@@ -1473,30 +1478,31 @@ function drawPdfHeader(doc, projectLogo, saeLogo, title, subtitle, colors) {
   const pageWidth = doc.internal.pageSize.getWidth();
 
   doc.setFillColor(colors.green[0], colors.green[1], colors.green[2]);
-  doc.rect(0, 0, pageWidth, 46, "F");
+  doc.rect(0, 0, pageWidth, 34, "F");
 
   if (projectLogo) {
-    addImageKeepingRatio(doc, projectLogo, 14, 8, 22, 22);
+    addImageKeepingRatio(doc, projectLogo, 14, 6, 18, 18);
   }
 
   if (saeLogo) {
-    addImageKeepingRatio(doc, saeLogo, pageWidth - 14 - 52, 10, 52, 20);
+    addImageKeepingRatio(doc, saeLogo, pageWidth - 14 - 46, 7, 46, 17);
   }
 
-  const titleX = 44;
-  const titleWidth = pageWidth - titleX - 72;
+  const titleX = 38;
+  const titleWidth = pageWidth - titleX - 66;
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(17);
+  doc.setFontSize(14.5);
   doc.setTextColor(255, 255, 255);
 
-  let y = addWrappedText(doc, title, titleX, 15, titleWidth, 7);
+  let y = addWrappedText(doc, title, titleX, 13, titleWidth, 5.8);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9.5);
-  doc.setTextColor(240, 250, 246);
-
-  addWrappedText(doc, subtitle, titleX, y + 1, titleWidth, 5);
+  if (subtitle) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(240, 250, 246);
+    addWrappedText(doc, subtitle, titleX, y, titleWidth, 4);
+  }
 }
 
 function drawSectionTitlePdf(doc, title, x, y, color) {
@@ -1595,58 +1601,60 @@ function drawAnswersPagePdf(doc, x, y, width, pageHeight, colors) {
 
     if (!typeAnswers.length) return;
 
-    y = ensureSpaceFixedPage(doc, y, 18, pageHeight);
-
     const blockColor = getDafoPdfColor(type);
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12.3);
+    doc.setFontSize(11.2);
     doc.setTextColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
     doc.text(pluralTitle(type), x, y);
-    y += 5;
+
+    y += 4.5;
 
     typeAnswers.forEach((answer, index) => {
       const question = `${index + 1}. ${answer.pregunta}`;
       const response = `Tu respuesta: ${answer.respuestaUsuario || "Sin respuesta escrita."}`;
 
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(8.6);
-      const questionLines = doc.splitTextToSize(question, width - 10);
+      doc.setFontSize(7.9);
+      const questionLines = doc.splitTextToSize(question, width - 8);
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.2);
-      const responseLines = doc.splitTextToSize(response, width - 10);
+      doc.setFontSize(7.7);
+      const responseLines = doc.splitTextToSize(response, width - 8);
 
       const boxHeight =
-        7 +
-        questionLines.length * 4 +
-        responseLines.length * 3.8 +
-        5;
+        5.5 +
+        questionLines.length * 3.5 +
+        responseLines.length * 3.3 +
+        3.5;
 
-      y = ensureSpaceFixedPage(doc, y, boxHeight + 4, pageHeight);
+      if (y + boxHeight > pageHeight - 20) {
+        return;
+      }
 
       doc.setFillColor(blockColor.bg[0], blockColor.bg[1], blockColor.bg[2]);
       doc.setDrawColor(blockColor.color[0], blockColor.color[1], blockColor.color[2]);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(x, y, width, boxHeight, 3, 3, "FD");
+      doc.setLineWidth(0.25);
+      doc.roundedRect(x, y, width, boxHeight, 2.5, 2.5, "FD");
 
-      let innerY = y + 5.5;
+      let innerY = y + 4.8;
 
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(8.6);
+      doc.setFontSize(7.9);
       doc.setTextColor(35, 45, 48);
-      doc.text(questionLines, x + 5, innerY);
-      innerY += questionLines.length * 4 + 1;
+      doc.text(questionLines, x + 4, innerY);
+
+      innerY += questionLines.length * 3.5 + 0.8;
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.2);
+      doc.setFontSize(7.7);
       doc.setTextColor(60, 70, 74);
-      doc.text(responseLines, x + 5, innerY);
+      doc.text(responseLines, x + 4, innerY);
 
-      y += boxHeight + 4;
+      y += boxHeight + 2.8;
     });
 
-    y += 2;
+    y += 1.5;
   });
 
   return y;
@@ -1865,7 +1873,7 @@ function calculateDafoBoxHeightPdf(doc, width, items) {
   const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.2);
+  doc.setFontSize(7.1);
 
   let textHeight = 0;
 
@@ -1877,31 +1885,35 @@ function calculateDafoBoxHeightPdf(doc, width, items) {
 
   const titleArea = 18;
   const bottomPadding = 6;
-  const minHeight = 42;
+  const minHeight = 40;
 
   return Math.max(minHeight, titleArea + textHeight + bottomPadding);
 }
 
 function drawDafoBoxPdf(doc, x, y, width, height, title, items, color, bg) {
-  doc.setFillColor(bg[0], bg[1], bg[2]);
+  const titleHeight = 14;
+
+  // Fondo general oscuro
+  doc.setFillColor(color[0], color[1], color[2]);
   doc.setDrawColor(color[0], color[1], color[2]);
   doc.setLineWidth(0.5);
   doc.roundedRect(x, y, width, height, 4, 4, "FD");
 
-  doc.setFillColor(color[0], color[1], color[2]);
-  doc.roundedRect(x, y, width, 13, 4, 4, "F");
+  // Cabecera clara
+  doc.setFillColor(bg[0], bg[1], bg[2]);
+  doc.roundedRect(x, y, width, titleHeight, 4, 4, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(8.8);
-  doc.setTextColor(255, 255, 255);
-  doc.text(title, x + 5, y + 8.7);
+  doc.setFontSize(8.6);
+  doc.setTextColor(color[0], color[1], color[2]);
+  doc.text(title, x + 5, y + 9);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.2);
-  doc.setTextColor(35, 45, 48);
+  doc.setFontSize(7.1);
+  doc.setTextColor(255, 255, 255);
 
   const visibleItems = items.length ? items : ["Sin reflexiones registradas."];
-  let itemY = y + 19;
+  let itemY = y + titleHeight + 8;
   const maxY = y + height - 5;
 
   visibleItems.slice(0, 3).forEach(item => {
