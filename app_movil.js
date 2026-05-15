@@ -67,15 +67,6 @@ const app = document.querySelector("#app");
 const result = document.querySelector("#result");
 const startBtn = document.querySelector("#startBtn");
 
-const qrSmallBtn = document.querySelector("#qrSmallBtn");
-const qrModal = document.querySelector("#qrModal");
-const qrCloseBtn = document.querySelector("#qrCloseBtn");
-
-const exitBtn = document.querySelector("#exitBtn");
-const exitModal = document.querySelector("#exitModal");
-const exitToStartBtn = document.querySelector("#exitToStartBtn");
-const exitCancelBtn = document.querySelector("#exitCancelBtn");
-
 const nameModal = document.querySelector("#nameModal");
 const nameForm = document.querySelector("#nameForm");
 const userNameInput = document.querySelector("#userNameInput");
@@ -99,38 +90,6 @@ setScreenMode("intro");
 function bindEvents() {
   startBtn.addEventListener("click", handleStartButton);
 
-  qrSmallBtn.addEventListener("click", () => {
-    qrModal.classList.remove("hidden");
-  });
-
-  qrCloseBtn.addEventListener("click", () => {
-    qrModal.classList.add("hidden");
-  });
-
-  qrModal.addEventListener("click", event => {
-    if (event.target === qrModal) {
-      qrModal.classList.add("hidden");
-    }
-  });
-
-  exitBtn.addEventListener("click", () => {
-    exitModal.classList.remove("hidden");
-  });
-
-  exitCancelBtn.addEventListener("click", () => {
-    exitModal.classList.add("hidden");
-  });
-
-  exitModal.addEventListener("click", event => {
-    if (event.target === exitModal) {
-      exitModal.classList.add("hidden");
-    }
-  });
-
-  exitToStartBtn.addEventListener("click", () => {
-    location.reload();
-  });
-
   nameForm.addEventListener("submit", handleNameSubmit);
 
   questionForm.addEventListener("submit", event => {
@@ -150,26 +109,7 @@ function bindEvents() {
 }
 
 function setScreenMode(mode) {
-  if (mode === "intro") {
-    qrSmallBtn.classList.remove("hidden");
-    exitBtn.classList.add("hidden");
-    qrModal.classList.add("hidden");
-    exitModal.classList.add("hidden");
-
-    if (brandFooter) {
-      brandFooter.classList.remove("hidden");
-    }
-
-    return;
-  }
-
-  qrSmallBtn.classList.add("hidden");
-  qrModal.classList.add("hidden");
-  exitBtn.classList.remove("hidden");
-
-  if (brandFooter) {
-    brandFooter.classList.toggle("hidden", mode !== "result");
-  }
+  document.body.dataset.screen = mode;
 }
 
 function initBackgroundMusic() {
