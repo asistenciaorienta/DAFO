@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Explora tu potencial: conócete y avanza</title>
   <link rel="icon" type="image/png" href="imagenes/logo_DAFO.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles_movil.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,16 +50,14 @@
 
     <!-- ACTIVIDAD -->
     <section id="app" class="page hidden">
-      <div id="blockIntroTitle" class="block-intro-title hidden"></div>
-    
       <div class="activity-grid">
         <div id="videoContainer" class="video-panel"></div>
-      
+    
         <div id="blockIntroTitle" class="block-intro-title hidden"></div>
-      
+    
         <article id="questionCard" class="question-card waiting-video">
           <img class="corner-logo" src="imagenes/logo_DAFO.png" alt="Logotipo DAFO">
-
+    
           <div class="progress-wrap">
             <div class="progress-label only-percent">
               <span id="progressPercent">0%</span>
@@ -70,12 +68,12 @@
           </div>
           
           <h3 id="sectionTitle"></h3>
-
+    
           <form id="questionForm">
             <h4 id="questionText"></h4>
             <div id="optionsList" class="options-list" role="group" aria-label="Opciones de respuesta"></div>
             <input id="answerInput" type="hidden" required>
-
+    
             <div class="actions">
               <button id="continueBtn" class="primary" type="button" disabled>Continuar</button>
             </div>
@@ -174,6 +172,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app_movil.js"></script>
 </body>
 </html>
