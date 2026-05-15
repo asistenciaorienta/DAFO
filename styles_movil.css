@@ -792,7 +792,7 @@ body[data-screen="app"] .brand-footer {
 }
 
 #intro h1 {
-  font-size: clamp(2.15rem, 10.5vw, 3.25rem);
+  font-size: clamp(1.85rem, 9.5vw, 2.85rem);
   line-height: .96;
   letter-spacing: -.025em;
   margin-bottom: 0;
@@ -804,7 +804,7 @@ body[data-screen="app"] .brand-footer {
 }
 
 #intro .intro-dafo-logo {
-  width: min(145px, 38vw);
+  width: min(115px, 32vw);
   max-height: 145px;
   object-fit: contain;
 }
@@ -844,11 +844,11 @@ body[data-screen="app"] .brand-footer {
   }
 
   #intro h1 {
-    font-size: clamp(1.9rem, 10vw, 2.65rem);
+    font-size: clamp(1.85rem, 9.5vw, 2.85rem);
   }
 
   #intro .intro-dafo-logo {
-    width: min(118px, 34vw);
+    width: min(115px, 32vw);
     max-height: 118px;
   }
 
