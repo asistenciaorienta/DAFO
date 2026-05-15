@@ -1449,7 +1449,7 @@ y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
     colors
   );
 
-  let y = 42;
+  y = 42;
 
   y = drawAnswersPagePdf(doc, margin, y, usableWidth, pageHeight, colors);
 
@@ -1464,11 +1464,11 @@ y = drawDafoMatrixPdf(doc, margin, y, usableWidth);
     projectLogo,
     saeLogo,
     "DAFO de empleabilidad",
-    "",
+    "Síntesis final a partir de tus respuestas.",
     colors
   );
 
-  let y = 42;
+  y = 42;
 
   y = drawEmployabilityDafoPdf(doc, margin, y, usableWidth, pageHeight);
 
