@@ -59,6 +59,8 @@ let backgroundMusic = null;
 let backgroundMusicStarted = false;
 let backgroundMusicShouldPlay = false;
 let optionsDelayTimer = null;
+let introSkipEnabled = false;
+let introSkipTimer = null;
 
 const intro = document.querySelector("#intro");
 const app = document.querySelector("#app");
@@ -223,22 +225,69 @@ function playAudioWithDelay(audio, delay = 1500) {
 }
 
 async function handleStartButton() {
+  // Primera pulsación: reproduce el audio de portada
   if (!introAudioStarted) {
     introAudioStarted = true;
+    introSkipEnabled = false;
+
     introAudio = new Audio("inicio.mp3");
     introAudio.preload = "auto";
-    startBtn.textContent = "Entrar ›";
+
+    startBtn.textContent = "Saltar ›";
+    startBtn.disabled = true;
 
     await loadIntroSubtitles();
 
-  try {
-    introAudio.addEventListener("playing", startIntroSubtitles, { once: true });
-    await playAudioWithDelay(introAudio, 1500);
-  } catch (error) {
-    console.warn("No se pudo reproducir inicio.mp3.", error);
-  }
+    try {
+      introAudio.addEventListener("playing", () => {
+        startIntroSubtitles();
+
+        // El botón Saltar se activa a los 2 segundos de empezar el mp3
+        if (introSkipTimer) {
+          clearTimeout(introSkipTimer);
+        }
+
+        introSkipTimer = setTimeout(() => {
+          introSkipEnabled = true;
+          startBtn.disabled = false;
+        }, 2000);
+      }, { once: true });
+
+      introAudio.addEventListener("ended", () => {
+        stopIntroSubtitles();
+
+        introSkipEnabled = true;
+        startBtn.disabled = false;
+        startBtn.textContent = "Entrar ›";
+      }, { once: true });
+
+      await introAudio.play();
+    } catch (error) {
+      console.warn("No se pudo reproducir inicio.mp3.", error);
+      introSkipEnabled = true;
+      startBtn.disabled = false;
+      startBtn.textContent = "Entrar ›";
+    }
 
     return;
+  }
+
+  // Si el audio está sonando y ya han pasado 2 segundos, Saltar detiene todo
+  if (introAudio && !introAudio.paused && introSkipEnabled) {
+    stopIntroAudioAndGoToName();
+    return;
+  }
+
+  // Si el audio ya terminó, Entrar abre el modal del nombre
+  if (!introAudio || introAudio.paused) {
+    stopIntroAudioAndGoToName();
+  }
+}
+
+function stopIntroAudioAndGoToName() {
+  if (introSkipTimer) {
+    clearTimeout(introSkipTimer);
+    introSkipTimer = null;
   }
 
   stopIntroSubtitles();
@@ -247,6 +296,10 @@ async function handleStartButton() {
     introAudio.pause();
     introAudio.currentTime = 0;
   }
+
+  introSkipEnabled = false;
+  startBtn.disabled = false;
+  startBtn.textContent = "Entrar ›";
 
   openNameModalWithAudio();
 }
@@ -2196,9 +2249,26 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
     }
   ];
 
+  /*
+    Recoge todos los elementos DAFO generados desde las respuestas.
+    Cada answer puede traer varios pdfItems, por ejemplo:
+    [
+      { tipo: "Fortaleza", texto: "Alto autoconocimiento profesional." },
+      { tipo: "Oportunidad", texto: "Capacidad de diferenciación." }
+    ]
+  */
+  const allPdfItems = answers
+    .flatMap(answer => {
+      if (Array.isArray(answer.pdfItems)) {
+        return answer.pdfItems;
+      }
+
+      return [];
+    })
+    .filter(item => item && item.tipo && item.texto);
+
   const boxData = boxes.map(box => {
-    const items = answers
-      .flatMap(answer => Array.isArray(answer.pdfItems) ? answer.pdfItems : [])
+    const items = allPdfItems
       .filter(item => item.tipo === box.type)
       .map(item => item.texto)
       .filter(Boolean);
@@ -2212,11 +2282,30 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
     };
   });
 
-  const row1Height = Math.max(boxData[0].height, boxData[1].height);
-  const row2Height = Math.max(boxData[2].height, boxData[3].height);
+  /*
+    Distribución 2x2:
+    FORTALEZAS      DEBILIDADES
+    OPORTUNIDADES   AMENAZAS
+  */
+  let row1Height = Math.max(boxData[0].height, boxData[1].height);
+  let row2Height = Math.max(boxData[2].height, boxData[3].height);
 
-  // Página 3 fija: no añadimos páginas nuevas aquí.
+  /*
+    Como quieres una página 3 fija, evitamos que el DAFO se salga por abajo.
+    Si hay muchos textos, reducimos proporcionalmente la altura visual.
+  */
+  const bottomLimit = pageHeight - 24;
+  const availableHeight = bottomLimit - y;
+  const totalHeight = row1Height + row2Height + gap;
 
+  if (totalHeight > availableHeight) {
+    const scale = availableHeight / totalHeight;
+
+    row1Height = Math.max(48, row1Height * scale);
+    row2Height = Math.max(48, row2Height * scale);
+  }
+
+  // FORTALEZAS
   drawEmployabilityDafoBoxPdf(
     doc,
     x,
@@ -2229,6 +2318,7 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
     boxData[0].bg
   );
 
+  // DEBILIDADES
   drawEmployabilityDafoBoxPdf(
     doc,
     x + boxWidth + gap,
@@ -2241,6 +2331,7 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
     boxData[1].bg
   );
 
+  // OPORTUNIDADES
   drawEmployabilityDafoBoxPdf(
     doc,
     x,
@@ -2253,6 +2344,7 @@ function drawEmployabilityDafoPdf(doc, x, y, width, pageHeight) {
     boxData[2].bg
   );
 
+  // AMENAZAS
   drawEmployabilityDafoBoxPdf(
     doc,
     x + boxWidth + gap,
@@ -2334,18 +2426,18 @@ function calculateEmployabilityDafoBoxHeightPdf(doc, width, items) {
   const visibleItems = items.length ? items : ["Sin información registrada."];
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.4);
+  doc.setFontSize(6.4);
 
   let textHeight = 0;
 
-  visibleItems.slice(0, 3).forEach(item => {
+  visibleItems.forEach(item => {
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
-    textHeight += lines.length * 3.6 + 2;
+    textHeight += lines.length * 2.9 + 1.2;
   });
 
-  const titleArea = 15;
-  const bottomPadding = 7;
-  const minHeight = 48;
+  const titleArea = 13;
+  const bottomPadding = 5;
+  const minHeight = 42;
 
   return Math.max(minHeight, titleArea + textHeight + bottomPadding);
 }
@@ -2357,27 +2449,34 @@ function drawEmployabilityDafoBoxPdf(doc, x, y, width, height, title, items, col
   doc.roundedRect(x, y, width, height, 4, 4, "FD");
 
   doc.setFillColor(color[0], color[1], color[2]);
-  doc.roundedRect(x, y, width, 13, 4, 4, "F");
+  doc.roundedRect(x, y, width, 12, 4, 4, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.4);
+  doc.setFontSize(8.6);
   doc.setTextColor(255, 255, 255);
-  doc.text(title, x + 5, y + 8.8);
+  doc.text(title, x + 5, y + 8.2);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.4);
+  doc.setFontSize(6.4);
   doc.setTextColor(35, 45, 48);
 
   const visibleItems = items.length ? items : ["Sin información registrada."];
-  let itemY = y + 20;
-  const maxY = y + height - 5;
+  let itemY = y + 18;
+  const maxY = y + height - 4;
 
-  visibleItems.slice(0, 3).forEach(item => {
+  visibleItems.forEach(item => {
     if (itemY >= maxY) return;
 
     const lines = doc.splitTextToSize(`• ${item}`, width - 12);
-    doc.text(lines, x + 5, itemY);
-    itemY += lines.length * 3.6 + 2;
+
+    const availableLines = lines.filter((line, index) => {
+      return itemY + index * 2.9 < maxY;
+    });
+
+    if (!availableLines.length) return;
+
+    doc.text(availableLines, x + 5, itemY);
+    itemY += availableLines.length * 2.9 + 1.2;
   });
 }
 
