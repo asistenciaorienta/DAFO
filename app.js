@@ -902,8 +902,11 @@ function prepareVideoFocusLayout() {
 
   if (blockTitle) {
     const type = SECTION_ORDER[sectionIndex];
+
     blockTitle.textContent = pluralTitle(type);
     blockTitle.classList.remove("hidden");
+    blockTitle.classList.remove("fade-out");
+    blockTitle.classList.add("fade-in");
   }
 }
 
@@ -939,6 +942,8 @@ function showQuestionsLayoutImmediate() {
 
   if (blockTitle) {
     blockTitle.classList.add("hidden");
+    blockTitle.classList.remove("fade-in");
+    blockTitle.classList.remove("fade-out");
   }
 
   card.classList.remove("pre-reveal");
@@ -955,21 +960,25 @@ function revealQuestionsAfterVideo() {
     return;
   }
 
-  // Quitamos el modo presentación de vídeo
-  activityGrid.classList.remove("video-focus");
-
-  // Ocultamos el título grande del bloque, si existe
   if (blockTitle) {
-    blockTitle.classList.add("hidden");
+    blockTitle.classList.remove("fade-in");
+    blockTitle.classList.add("fade-out");
   }
 
-  // Mostramos suavemente la tarjeta de preguntas
-  card.classList.remove("pre-reveal");
-  card.classList.add("reveal");
+  setTimeout(() => {
+    if (blockTitle) {
+      blockTitle.classList.add("hidden");
+      blockTitle.classList.remove("fade-out");
+    }
 
-  // Opciones a los 3 segundos
-  hideOptionsTemporarily();
-  showOptionsAfterDelay(3000);
+    activityGrid.classList.remove("video-focus");
+
+    card.classList.remove("pre-reveal");
+    card.classList.add("reveal");
+
+    hideOptionsTemporarily();
+    showOptionsAfterDelay(3000);
+  }, 450);
 }
 
 function hideOptionsTemporarily() {
