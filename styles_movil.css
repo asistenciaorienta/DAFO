@@ -328,37 +328,40 @@ button.secondary {
   min-height: auto;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 10px;
   align-items: start;
   justify-items: center;
-  padding: 8px 10px 18px;
+  padding: 14px 10px 18px;
 }
 
 /* Vídeo */
 
 .video-panel {
   position: relative;
-  width: min(330px, 86vw, calc((100dvh - 120px) * 9 / 16));
-  height: min(62dvh, calc(86vw * 16 / 9));
-  max-height: 62dvh;
-  aspect-ratio: 9 / 16;
+  width: 100%;
+  max-width: 94vw;
   margin: 0 auto;
   border-radius: 24px;
   overflow: hidden;
-  background: bg-1;
+  background: transparent;
   box-shadow: var(--shadow);
   justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .video-panel video,
 .video-panel iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
   display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 120px);
+  border: 0;
   object-fit: contain;
   object-position: center center;
-  background: #000;
+  background: transparent;
 }
 
 /* Estado inicial de bloque: vídeo protagonista */
@@ -367,17 +370,24 @@ button.secondary {
   min-height: auto;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  align-items: start;
   align-content: start;
   justify-items: center;
-  padding-top: 8px;
+  gap: 10px;
+  padding-top: 16px;
 }
 
 .activity-grid.video-focus #videoContainer {
-  width: min(350px, 90vw, calc((100dvh - 105px) * 9 / 16));
-  height: min(66dvh, calc(90vw * 16 / 9));
-  max-height: 66dvh;
+  width: 100%;
+  max-width: 94vw;
+  height: auto;
+  max-height: none;
+}
+
+.activity-grid.video-focus #videoContainer video {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 95px);
 }
 
 .activity-grid.video-focus #questionCard {
@@ -387,35 +397,26 @@ button.secondary {
 /* Título grande de bloque, si lo usas en JS */
 
 .block-intro-title {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto 4px;
-  padding: 8px 14px;
+  width: min(100%, 96vw);
+  max-width: 520px;
+  margin: 10px auto 8px;
+  padding: 10px 14px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, .22);
-  border: 1px solid rgba(255, 255, 255, .18);
+  background: rgba(0, 0, 0, .24);
+  border: 1px solid rgba(255, 255, 255, .20);
   color: #ffffff;
   text-align: center;
-  font-size: clamp(1rem, 4.5vw, 1.25rem);
-  line-height: 1.1;
+  font-size: clamp(1.05rem, 4.8vw, 1.35rem);
+  line-height: 1.12;
   font-weight: 900;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 14px 34px rgba(0,0,0,.22);
+  text-shadow: 0 12px 30px rgba(0,0,0,.24);
   box-shadow: 0 10px 24px rgba(0,0,0,.16);
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   transition: opacity .45s ease, transform .45s ease;
-  /*
-  max-width: 100%;
-  font-size: clamp(2rem, 10vw, 3.7rem);
-  line-height: .95;
-  font-weight: 950;
-  transform: translateY(12px);
-  transition:
-    opacity .55s ease,
-    transform .55s cubic-bezier(.22, 1, .36, 1);*/
 }
 
 .block-intro-title.visible {
@@ -425,7 +426,7 @@ button.secondary {
 
 .block-intro-title.hiding {
   opacity: 0;
-  transform: translateY(-8px);/*-10*/
+  transform: translateY(-6px);
 }
 
 /* Capa inicio vídeo */
@@ -722,16 +723,6 @@ button.secondary {
   font-weight: 850;
 }
 
-.result-actions {
-  width: 100%;
-  justify-content: center;
-  margin-top: 4px;
-}
-
-.result-actions button {
-  width: 100%;
-}
-
 /* =========================
    MODALES
    ========================= */
@@ -907,4 +898,50 @@ main {
   padding: 0 12px;
   display: grid;
   overflow-x: hidden;
+}
+.final-top-logo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 10px;
+}
+
+.final-junta-logo {
+  display: block;
+  width: auto;
+  max-width: calc(100vw - 32px);
+  max-height: 54px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.20));
+}
+
+.result-actions {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.result-main-actions {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.result-main-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 10px;
+  font-size: .92rem;
+}
+
+.result-actions #restartBtn {
+  flex: 0 0 auto;
+  padding-inline: 12px;
+}
+
+.restart-button {
+  width: 100%;
 }
