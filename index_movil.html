@@ -90,8 +90,14 @@
     <section id="result" class="page hidden">
       <article class="result-screen final-screen">
     
+        <div class="final-top-logo">
+          <img 
+            class="final-junta-logo" 
+            src="imagenes/logo_junta_blanco_transparente.png" 
+            alt="Junta de Andalucía">
+        </div>
+    
         <div class="final-layout">
-          
           <div class="final-video-column">
             <div id="summaryVideoContainer" class="video-panel result-video-panel"></div>
           </div>
@@ -104,9 +110,12 @@
             </section>
            
             <div class="actions result-actions">
-              <button id="downloadPdfBtn" type="button">Guardar PDF</button>
-              <button id="sharePdfBtn" class="secondary" type="button">Compartir / enviar PDF</button>
-              <button id="restartBtn" class="secondary" type="button">Reiniciar</button>
+              <div class="result-main-actions">
+                <button id="downloadPdfBtn" type="button">Guardar PDF</button>
+                <button id="sharePdfBtn" class="secondary" type="button">Compartir</button>
+              </div>
+            
+              <button id="restartBtn" class="secondary restart-button" type="button">Reiniciar</button>
             </div>
           </div>
     
