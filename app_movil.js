@@ -676,7 +676,14 @@ function renderCurrentStep() {
     goNext();
     return;
   }
+  const blockIntroTitle = document.querySelector("#blockIntroTitle");
 
+  if (blockIntroTitle) {
+    blockIntroTitle.textContent = pluralTitle(type);
+    blockIntroTitle.classList.remove("hidden", "hiding");
+    blockIntroTitle.classList.add("visible");
+  }
+  
   selectedOptionIndex = null;
 
   const questionText = document.querySelector("#questionText");
@@ -906,15 +913,19 @@ function scrollToQuestionCard(delay = 500) {
 function revealQuestionsAfterVideo() {
   const activityGrid = document.querySelector(".activity-grid");
   const card = document.querySelector("#questionCard");
-  const blockTitle = document.querySelector("#blockIntroTitle");
+  const blockIntroTitle = document.querySelector("#blockIntroTitle");
 
   if (activityGrid) {
     activityGrid.classList.remove("video-focus");
   }
 
-  if (blockTitle) {
-    blockTitle.classList.remove("visible");
-    blockTitle.classList.add("hiding");
+  if (blockIntroTitle) {
+    blockIntroTitle.classList.remove("visible");
+    blockIntroTitle.classList.add("hiding");
+
+    setTimeout(() => {
+      blockIntroTitle.classList.add("hidden");
+    }, 450);
   }
 
   if (card) {
@@ -926,7 +937,7 @@ function revealQuestionsAfterVideo() {
   hideOptionsTemporarily();
   showOptionsAfterDelay(3000);
 
-  scrollToQuestionCard(650);
+  scrollToQuestionCard(500);
 }
 
 function hideOptionsTemporarily() {
