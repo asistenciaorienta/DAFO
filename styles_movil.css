@@ -962,8 +962,15 @@ body[data-screen="app"] .brand-footer {
   display: grid;
 }
 
+#intro.page {
+  min-height: 100svh;
+  display: grid;
+  align-items: stretch;
+  padding: 14px 18px 18px;
+}
+
 #intro .intro-grid {
-  min-height: 100dvh;
+  min-height: calc(100svh - 32px);
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;
@@ -979,16 +986,20 @@ body[data-screen="app"] .brand-footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 .intro-junta-logo {
-  width: min(260px, 74vw);
-  max-height: 70px;
+  /*width: min(260px, 74vw);
+  max-height: 70px;*/
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 8px 18px rgba(0,0,0,.20));
+  display: block;
+  width: auto;
+  max-width: calc(100vw - 32px);
+  max-height: 54px;
 }
-
 /* Bloque central */
 .intro-panel {
   width: 100%;
@@ -1021,12 +1032,26 @@ body[data-screen="app"] .brand-footer {
 
 /* Logo app debajo del título */
 .intro-dafo-logo {
-  width: min(145px, 38vw, 19vh);
+  /*width: min(145px, 38vw, 19vh);*/  
+  width: min(150px, 42vw);
   max-height: 19vh;
   height: auto;
   object-fit: contain;
   margin-top: 4px;
   filter: drop-shadow(0 10px 24px rgba(0,0,0,.22));
+}
+
+.intro-center {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.intro-center h1 {
+  margin: 0;
+  font-size: clamp(2rem, 9vw, 3.2rem);
+  line-height: .98;
 }
 
 /* Botón abajo */
@@ -1037,10 +1062,32 @@ body[data-screen="app"] .brand-footer {
 }
 
 .start-button {
-  width: auto;
+ /* width: auto;*/
   min-width: 160px;
-  margin: 0;
+  /*margin: 0;*/
   padding: 12px 22px;
   font-size: clamp(.95rem, 3.6vw, 1.05rem);
 }
 
+.start-button {
+  margin: 0 0 18px;
+  width: min(260px, 82vw);
+}
+.intro-subtitle-box {
+  width: min(92vw, 420px);
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+}
+
+.intro-subtitle {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(0,0,0,.30);
+  color: #ffffff;
+  font-size: clamp(1rem, 4.5vw, 1.25rem);
+  line-height: 1.3;
+  text-align: center;
+  font-weight: 600;
+}
