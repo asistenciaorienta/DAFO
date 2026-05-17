@@ -911,6 +911,7 @@ function scrollToQuestionCard(delay = 500) {
   }, delay);
 }
 
+
 function revealQuestionsAfterVideo() {
   const activityGrid = document.querySelector(".activity-grid");
   const card = document.querySelector("#questionCard");
