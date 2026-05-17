@@ -889,36 +889,44 @@ function showQuestionsLayoutImmediate() {
   card.classList.add("reveal");
 }
 
+function scrollToQuestionCard(delay = 500) {
+  const card = document.querySelector("#questionCard");
+
+  if (!card) return;
+
+  setTimeout(() => {
+    card.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest"
+    });
+  }, delay);
+}
+
 function revealQuestionsAfterVideo() {
   const activityGrid = document.querySelector(".activity-grid");
   const card = document.querySelector("#questionCard");
   const blockTitle = document.querySelector("#blockIntroTitle");
 
-  if (!activityGrid || !card) {
-    showQuestionsLayoutImmediate();
-    return;
+  if (activityGrid) {
+    activityGrid.classList.remove("video-focus");
   }
 
   if (blockTitle) {
-    blockTitle.classList.remove("show");
-    blockTitle.classList.add("hide");
+    blockTitle.classList.remove("visible");
+    blockTitle.classList.add("hiding");
   }
 
-  setTimeout(() => {
-    if (blockTitle) {
-      blockTitle.classList.add("hidden");
-      blockTitle.classList.remove("hide");
-      blockTitle.textContent = "";
-    }
-
-    activityGrid.classList.remove("video-focus");
-
+  if (card) {
     card.classList.remove("pre-reveal");
+    card.classList.remove("waiting-video");
     card.classList.add("reveal");
+  }
 
-    hideOptionsTemporarily();
-    showOptionsAfterDelay(3000);
-  }, 420);
+  hideOptionsTemporarily();
+  showOptionsAfterDelay(3000);
+
+  scrollToQuestionCard(650);
 }
 
 function hideOptionsTemporarily() {
@@ -983,6 +991,9 @@ function finishSectionVideo(type) {
   }
 
   revealQuestionsAfterVideo();
+
+  // Esperamos a que aparezca suavemente la tarjeta y después centramos la pantalla en ella
+  scrollToQuestionCard(750);
 }
 
 async function handleGlobalVideoStartClick(event) {
