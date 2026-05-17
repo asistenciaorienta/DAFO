@@ -339,13 +339,13 @@ button.secondary {
 .video-panel {
   position: relative;
   width: min(330px, 86vw, calc((100dvh - 120px) * 9 / 16));
-  height: min(58dvh, calc(86vw * 16 / 9));
-  max-height: 58dvh;
+  height: min(62dvh, calc(86vw * 16 / 9));
+  max-height: 62dvh;
   aspect-ratio: 9 / 16;
   margin: 0 auto;
   border-radius: 24px;
   overflow: hidden;
-  background: #000;
+  background: bg-1;
   box-shadow: var(--shadow);
   justify-self: center;
 }
