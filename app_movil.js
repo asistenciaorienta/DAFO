@@ -728,6 +728,7 @@ function renderCurrentStep() {
     if (isNormalQuestion) {
       hideOptionsTemporarily();
       showOptionsAfterDelay(3000);
+      scrollToQuestionCard(900);
     }
   }
 
@@ -897,17 +898,26 @@ function showQuestionsLayoutImmediate() {
 }
 
 function scrollToQuestionCard(delay = 500) {
+  const continueButton = document.querySelector("#continueBtn");
   const card = document.querySelector("#questionCard");
 
-  if (!card) return;
-
   setTimeout(() => {
-    const top = card.getBoundingClientRect().top + window.scrollY - 14;
+    if (continueButton) {
+      continueButton.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest"
+      });
+      return;
+    }
 
-    window.scrollTo({
-      top,
-      behavior: "smooth"
-    });
+    if (card) {
+      card.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
+      });
+    }
   }, delay);
 }
 
@@ -935,11 +945,11 @@ function revealQuestionsAfterVideo() {
     card.classList.remove("waiting-video");
     card.classList.add("reveal");
   }
-
+  
   hideOptionsTemporarily();
   showOptionsAfterDelay(3000);
-
-  scrollToQuestionCard(500);
+  
+  scrollToQuestionCard(900);
 }
 
 function hideOptionsTemporarily() {
@@ -2610,11 +2620,15 @@ function addPdfFooter(doc) {
 }
 
 async function savePdf() {
+  stopBackgroundMusic();
+
   const doc = await createPdfDocument();
   doc.save("informe-explora-tu-potencial.pdf");
 }
 
 async function sharePdf() {
+  stopBackgroundMusic();
+
   const doc = await createPdfDocument();
   const blob = doc.output("blob");
   const file = new File([blob], "informe-explora-tu-potencial.pdf", { type: "application/pdf" });
