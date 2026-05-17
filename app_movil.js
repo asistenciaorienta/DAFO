@@ -902,10 +902,11 @@ function scrollToQuestionCard(delay = 500) {
   if (!card) return;
 
   setTimeout(() => {
-    card.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest"
+    const top = card.getBoundingClientRect().top + window.scrollY - 14;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth"
     });
   }, delay);
 }
@@ -1002,9 +1003,6 @@ function finishSectionVideo(type) {
   }
 
   revealQuestionsAfterVideo();
-
-  // Esperamos a que aparezca suavemente la tarjeta y después centramos la pantalla en ella
-  scrollToQuestionCard(750);
 }
 
 async function handleGlobalVideoStartClick(event) {
